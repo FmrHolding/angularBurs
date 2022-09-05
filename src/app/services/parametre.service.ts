@@ -11,11 +11,15 @@ export class ParametreService {
   constructor(private httpClient: HttpClient) { }
 
   public getFirmalar(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'burs/firmalar');
+    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/firmalar');
+  }
+
+  public getCinsiyet(): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/cinsiyet');
   }
 
   public getUniversiteler(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/universiteler');
+    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/universiteler');
   }
 
   public getUniversiteSinif(): Observable<any[]> {
@@ -35,7 +39,7 @@ export class ParametreService {
   }
 
   public getBankalar(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/bankalar');
+    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/bankalar');
   }
 
   public getOgrenimler(): Observable<any[]> {
@@ -47,7 +51,7 @@ export class ParametreService {
   }
 
   public getAileBeraber(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/aileberaber');
+    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/aileberaber');
   }
 
   public getAileBirliktelik(): Observable<any[]> {
@@ -71,7 +75,7 @@ export class ParametreService {
   }
 
   public getMedeniDurum(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/medenidurum');
+    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/medenidurum');
   }
 
   public getOturduguEv(): Observable<any[]> {
@@ -79,6 +83,6 @@ export class ParametreService {
   }
 
   public getSigaraDurumu(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/sigaradurumu');
+    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/sigaradurumu');
   }
 }

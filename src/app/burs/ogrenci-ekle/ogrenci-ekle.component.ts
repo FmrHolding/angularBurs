@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IMyDpOptions, MyDatePicker } from 'mydatepicker';
@@ -8,6 +8,7 @@ import { ParametreService } from 'src/app/services/parametre.service';
 import Swal from 'sweetalert2';
 import localeTr from '@angular/common/locales/tr';
 import { registerLocaleData } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 registerLocaleData(localeTr, 'tr');
 
 @Component({
@@ -16,7 +17,7 @@ registerLocaleData(localeTr, 'tr');
   styles: [
   ]
 })
-export class OgrenciEkleComponent implements OnInit {
+export class OgrenciEkleComponent implements OnInit, OnDestroy {
 
   onBilgiForm: FormGroup;
   firmalar = [];
@@ -28,9 +29,13 @@ export class OgrenciEkleComponent implements OnInit {
   submitted = false;
   file: File = null;
   kayitVar: boolean;
+  private ngUnsubscribe$ = new Subject<void>();
 
-  dogumtarihi: any = { year: 0, month: 0, day: 0 };
-  basvurutarihi: any = { year: 0, month: 0, day: 0 };
+  dogumtarihi: any = { year: new Date().getFullYear(), month: 1, day: 1 };
+  basvurutarihi: any = {
+    year: new Date().getFullYear(), month: new Date().getMonth() + 1,
+    day: new Date().getDate()
+  };
 
   public myDatePickerOptions: IMyDpOptions = {
     todayBtnTxt: 'Today',
@@ -68,20 +73,7 @@ export class OgrenciEkleComponent implements OnInit {
       kvkkonay: ['', [Validators.required]],
       islemtarihi: [null]
     });
-
-    this.cinsiyetler = [
-      { id: 1, cinsiyeti: 'Erkek' },
-      { id: 2, cinsiyeti: 'Kadın' }
-    ];
-
-    this.medenidurumlar = [
-      { id: 1, medenihal: 'Bekar' },
-      { id: 2, medenihal: 'Evli' },
-      { id: 3, medenihal: 'Boşanmış' }
-    ];
   }
-
-  get f() { return this.onBilgiForm.controls; }
 
   ngOnInit(): void {
     if (localStorage.getItem('kvkkOnay') !== null) {
@@ -90,7 +82,9 @@ export class OgrenciEkleComponent implements OnInit {
         this.kayitOnay = true;
         this.kayitVar = true;
         this.onBilgiForm.get('kvkkonay').setValue(this.kayitOnay);
-        this.getFirmalar();
+        this.getViewFirmalar();
+        this.getViewCinsiyet();
+        this.getViewMedeniDurum();
       } else {
         this.router.navigate(['/kvkk']);
       }
@@ -99,11 +93,31 @@ export class OgrenciEkleComponent implements OnInit {
     }
   }
 
-  getFirmalar(): void {
-    this.parametreService.getFirmalar().subscribe(
-      data => {
-        this.firmalar = data;
-      });
+  getViewFirmalar(): void {
+    this.parametreService.getFirmalar().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+      next: (data: any) => {
+        this.firmalar = data.value;
+      },
+      error: (err) => this.toastr.error(err, 'Hata')
+    });
+  }
+
+  getViewCinsiyet(): void {
+    this.parametreService.getCinsiyet().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+      next: (data: any) => {
+        this.cinsiyetler = data.value;
+      },
+      error: (err) => this.toastr.error(err, 'Hata')
+    });
+  }
+
+  getViewMedeniDurum(): void {
+    this.parametreService.getMedeniDurum().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+      next: (data: any) => {
+        this.medenidurumlar = data.value;
+      },
+      error: (err) => this.toastr.error(err, 'Hata')
+    });
   }
 
   secilenResim(fileInput: any): any {
@@ -127,8 +141,8 @@ export class OgrenciEkleComponent implements OnInit {
   tcKimlikKontrol(): void {
     const tckimlik = this.onBilgiForm.get('tckimlik').value;
     if (tckimlik.length === 11) {
-      this.ogrenciService.getOgrenciGetir(tckimlik).subscribe(
-        (data: any) => {
+      this.ogrenciService.getOgrenciGetir(tckimlik).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+        next:(data: any) => {
           if (data !== null) {
             this.kayitVar = true;
             this.onBilgiForm.setValue(data);
@@ -141,6 +155,8 @@ export class OgrenciEkleComponent implements OnInit {
           } else {
             this.kayitVar = false;
           }
+        },
+        error: (err) => this.toastr.error(err, 'Hata')
         });
     }
   }
@@ -178,54 +194,6 @@ export class OgrenciEkleComponent implements OnInit {
   }
 
   sendOnBilgi(): void {
-    this.submitted = true;
-    if (this.onBilgiForm.invalid) {
-      switch (this.onBilgiForm.invalid) {
-        case this.onBilgiForm.get('resim').invalid:
-          Swal.fire('Resim seçmediniz.');
-          break;
-        case this.onBilgiForm.get('tckimlik').invalid:
-          Swal.fire('T.C. Kimlik Noyu girmediniz veya Eksik girdiniz.');
-          break;
-        case this.onBilgiForm.get('basvurutarihi').invalid:
-          Swal.fire('Başvuru tarihini girmediniz.');
-          break;
-        case this.onBilgiForm.get('firmaid').invalid:
-          Swal.fire('Firma alanını boş bıraktınız.');
-          break;
-        case this.onBilgiForm.get('adisoyadi').invalid:
-          Swal.fire('Adı Soyadı girmediniz.');
-          break;
-        case this.onBilgiForm.get('babaadi').invalid:
-          Swal.fire('Baba Adı girmediniz.');
-          break;
-        case this.onBilgiForm.get('anneadi').invalid:
-          Swal.fire('Anne Adı girmediniz.');
-          break;
-        case this.onBilgiForm.get('dogumyeri').invalid:
-          Swal.fire('Doğum Yeri girmediniz.');
-          break;
-        case this.onBilgiForm.get('dogumtarihi').invalid:
-          Swal.fire('Doğum Tarihi girmediniz.');
-          break;
-        case this.onBilgiForm.get('cinsiyet').invalid:
-          Swal.fire('Cinsiyet girmediniz.');
-          break;
-        case this.onBilgiForm.get('medenidurum').invalid:
-          Swal.fire('Medeni Durum girmediniz.');
-          break;
-        case this.onBilgiForm.get('ceptelefonu').invalid:
-          Swal.fire('Cep Telefonu girmediniz veya Eksik girdiniz.');
-          break;
-        case this.onBilgiForm.get('email').invalid:
-          Swal.fire('Email Adresi girmediniz.');
-          break;
-        default:
-          break;
-      }
-      return;
-    }
-
     Swal.fire({
       title: 'Ön Bilgi Kayıt',
       text: 'Girmiş olduğunuz kayıt edilecektir.. Onaylıyor musunuz?',
@@ -258,8 +226,7 @@ export class OgrenciEkleComponent implements OnInit {
         formData.append('islemtarihi', this.onBilgiForm.get('islemtarihi').value);
         formData.append('file', this.file);
 
-        this.ogrenciService.setOgrenciKayit(formData)
-          .subscribe((data: any) => {
+        this.ogrenciService.setOgrenciKayit(formData).subscribe((data: any) => {
             if (data === 1) {
               localStorage.setItem('ogrencino', data.toString());
               this.toastr.success('Öğrenci Ön Bilgi Kayıt Başarılı.', 'Bilgilendirme');
@@ -272,8 +239,13 @@ export class OgrenciEkleComponent implements OnInit {
           },
             err => this.toastr.error(err, 'Hata')
           );
+          
       }
     });
   }
 
+  ngOnDestroy(): void {
+    this.ngUnsubscribe$.next();
+    this.ngUnsubscribe$.complete();
+  }
 }

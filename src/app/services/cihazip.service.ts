@@ -7,9 +7,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CihazipService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpclient: HttpClient) { }
 
-  public getIPAddress(): Observable<any> {
-    return this.httpClient.get('http://api.ipify.org/?format=json');
+  public getDeviceIp(): Observable<string> {
+    return this.httpclient.get<string>('https://api.ipify.org/?format=json');
   }
 }

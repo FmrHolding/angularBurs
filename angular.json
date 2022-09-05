@@ -24,11 +24,16 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/animate.css/animate.min.css",
               "src/styles.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
+              "src/assets/js/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "src/assets/js/plugins/metisMenu/jquery.metisMenu.js",
+              "node_modules/jquery-slimscroll/jquery.slimscroll.min.js",
               "src/assets/js/inspinia.js"
             ]
           },

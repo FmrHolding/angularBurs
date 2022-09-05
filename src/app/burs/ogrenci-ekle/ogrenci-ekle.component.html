@@ -34,7 +34,7 @@
                         </div>
                         <div class="col-lg-6">
                             <label for="">Başvuru Tarihi *</label>
-                            <my-date-picker #basvuruTarihi [options]="myDatePickerOptions" [locale]="locale"
+                            <my-date-picker [options]="myDatePickerOptions" [locale]="locale"
                                 [selDate]="basvurutarihi" (dateChanged)="onBasvuruTarihi($event)"
                                 placeholder="Başvuru Tarihi">
                             </my-date-picker>
