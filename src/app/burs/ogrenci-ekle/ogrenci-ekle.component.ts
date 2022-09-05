@@ -138,11 +138,13 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
     }
   }
 
-  tcKimlikKontrol(): void {
-    const tckimlik = this.onBilgiForm.get('tckimlik').value;
-    if (tckimlik.length === 11) {
-      this.ogrenciService.getOgrenciGetir(tckimlik).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-        next:(data: any) => {
+  onTcKimlikKontrol(event): void {
+    //const tckimlik = this.onBilgiForm.get('tckimlik').value;
+    if (event.target.value.length === 11) {
+      if (!this.getTcKimlikDogrula(event.target.value)) this.toastr.error("TC Kimlk Geçerli değil", 'Hata');
+      /*
+      this.ogrenciService.getOgrenciGetir(event.target.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+        next: (data: any) => {
           if (data !== null) {
             this.kayitVar = true;
             this.onBilgiForm.setValue(data);
@@ -157,8 +159,39 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
           }
         },
         error: (err) => this.toastr.error(err, 'Hata')
-        });
+      });
+      */
     }
+  }
+
+  getTcKimlikDogrula(tckimlik: string): boolean {
+    let returnValue: boolean = false;
+    if (tckimlik.length == 11) {
+      const bir = parseInt(tckimlik[0]);
+      const iki = parseInt(tckimlik[1]);
+      const uc = parseInt(tckimlik[2]);
+      const dort = parseInt(tckimlik[3]);
+      const bes = parseInt(tckimlik[4]);
+      const alti = parseInt(tckimlik[5]);
+      const yedi = parseInt(tckimlik[6]);
+      const sekiz = parseInt(tckimlik[7]);
+      const dokuz = parseInt(tckimlik[8]);
+      const on = parseInt(tckimlik[9]);
+      const onbir = parseInt(tckimlik[10]);
+
+      const tekler = (bir + uc + bes + yedi + dokuz) * 7;
+      const ciftler = (iki + dort + alti + sekiz);
+      const cikart = tekler - ciftler;
+      const mod10bir = cikart % 10;
+      const toplam = (bir + iki + uc + dort + bes + alti + yedi + sekiz + dokuz + mod10bir);
+      const mod10iki = toplam % 10;
+      const soniki = mod10bir + mod10iki;
+      const _soniki = on + onbir;
+      if (soniki === _soniki) returnValue = true;
+      else returnValue = false;
+    }
+    console.log(returnValue);
+    return returnValue;
   }
 
   onBasvuruTarihi(event): void {
@@ -227,19 +260,19 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
         formData.append('file', this.file);
 
         this.ogrenciService.setOgrenciKayit(formData).subscribe((data: any) => {
-            if (data === 1) {
-              localStorage.setItem('ogrencino', data.toString());
-              this.toastr.success('Öğrenci Ön Bilgi Kayıt Başarılı.', 'Bilgilendirme');
-              setTimeout(() => {
-                this.router.navigate(['/detay']);
-              }, 1500);
-            } else {
-              this.toastr.error(data, 'Hata');
-            }
-          },
-            err => this.toastr.error(err, 'Hata')
-          );
-          
+          if (data === 1) {
+            localStorage.setItem('ogrencino', data.toString());
+            this.toastr.success('Öğrenci Ön Bilgi Kayıt Başarılı.', 'Bilgilendirme');
+            setTimeout(() => {
+              this.router.navigate(['/detay']);
+            }, 1500);
+          } else {
+            this.toastr.error(data, 'Hata');
+          }
+        },
+          err => this.toastr.error(err, 'Hata')
+        );
+
       }
     });
   }
