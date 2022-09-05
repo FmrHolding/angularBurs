@@ -142,7 +142,9 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
     //const tckimlik = this.onBilgiForm.get('tckimlik').value;
     if (event.target.value.length === 11) {
       if (!this.getTcKimlikDogrula(event.target.value)) {
-        this.toastr.error("TC Kimlk Geçerli değil", 'Hata');
+        this.toastr.error("TC Kimlik doğrulanmadı", 'Hata');
+      }else{
+        this.toastr.success("TC Kimlik doğrulandı", 'Başarılı');
       }
       /*
       this.ogrenciService.getOgrenciGetir(event.target.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
