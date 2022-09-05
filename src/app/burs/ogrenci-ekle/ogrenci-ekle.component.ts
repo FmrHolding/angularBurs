@@ -20,13 +20,13 @@ registerLocaleData(localeTr, 'tr');
 export class OgrenciEkleComponent implements OnInit, OnDestroy {
 
   onBilgiForm: FormGroup;
+  submittedRequest = false;
   firmalar = [];
   cinsiyetler = [];
   medenidurumlar = [];
   locale: any = localeTr[0];
   yuklenecekResim: string = 'assets/images/null.png';
   kayitOnay: boolean;
-  submitted = false;
   file: File = null;
   kayitVar: boolean;
   private ngUnsubscribe$ = new Subject<void>();
@@ -79,9 +79,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
     if (localStorage.getItem('kvkkOnay') !== null) {
       const kvkkOnayi = localStorage.getItem('kvkkOnay');
       if (kvkkOnayi === 'true') {
-        this.kayitOnay = true;
-        this.kayitVar = true;
-        this.onBilgiForm.get('kvkkonay').setValue(this.kayitOnay);
+        this.onBilgiForm.get("basvurutarihi").setValue(new Date());
         this.getViewFirmalar();
         this.getViewCinsiyet();
         this.getViewMedeniDurum();
@@ -92,6 +90,8 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
       this.router.navigate(['/kvkk']);
     }
   }
+
+  get getControlRequest() { return this.onBilgiForm.controls; }
 
   getViewFirmalar(): void {
     this.parametreService.getFirmalar().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
@@ -139,32 +139,28 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   }
 
   onTcKimlikKontrol(event): void {
-    //const tckimlik = this.onBilgiForm.get('tckimlik').value;
     if (event.target.value.length === 11) {
       if (!this.getTcKimlikDogrula(event.target.value)) {
         this.toastr.error("TC Kimlik doğrulanmadı", 'Hata');
-      }else{
-        this.toastr.success("TC Kimlik doğrulandı", 'Başarılı');
+      } else {
+        this.ogrenciService.getOgrenciGetir(event.target.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+          next: (data: any) => {
+            if (data !== null) {
+              this.kayitVar = true;
+              this.onBilgiForm.setValue(data);
+              localStorage.setItem('ogrencino', data.id);
+              const dogumTarihi = new Date(data.dogumtarihi);
+              const basvuruTarihi = new Date(data.basvurutarihi);
+              this.dogumtarihi = { year: dogumTarihi.getFullYear(), month: dogumTarihi.getMonth() + 1, day: dogumTarihi.getDate() };
+              this.basvurutarihi = { year: basvuruTarihi.getFullYear(), month: basvuruTarihi.getMonth() + 1, day: basvuruTarihi.getDate() };
+              Swal.fire('Uyarı !', 'Daha önce başvuru yapmışsınız. Eğer bilgileinizde düzeltme istiyorsanız lütfen 0544 592 75 63 irtibat numarasını arayınız.', 'warning');
+            } else {
+              this.kayitVar = false;
+            }
+          },
+          error: (err) => this.toastr.error(err, 'Hata')
+        });
       }
-      /*
-      this.ogrenciService.getOgrenciGetir(event.target.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-        next: (data: any) => {
-          if (data !== null) {
-            this.kayitVar = true;
-            this.onBilgiForm.setValue(data);
-            localStorage.setItem('ogrencino', data.id);
-            const dogumTarihi = new Date(data.dogumtarihi);
-            const basvuruTarihi = new Date(data.basvurutarihi);
-            this.dogumtarihi = { year: dogumTarihi.getFullYear(), month: dogumTarihi.getMonth() + 1, day: dogumTarihi.getDate() };
-            this.basvurutarihi = { year: basvuruTarihi.getFullYear(), month: basvuruTarihi.getMonth() + 1, day: basvuruTarihi.getDate() };
-            Swal.fire('Uyarı !', 'Daha önce başvuru yapmışsınız. Eğer bilgileinizde düzeltme istiyorsanız lütfen 0544 592 75 63 irtibat numarasını arayınız.', 'warning');
-          } else {
-            this.kayitVar = false;
-          }
-        },
-        error: (err) => this.toastr.error(err, 'Hata')
-      });
-      */
     }
   }
 
@@ -226,54 +222,54 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   }
 
   sendOnBilgi(): void {
-    Swal.fire({
-      title: 'Ön Bilgi Kayıt',
-      text: 'Girmiş olduğunuz kayıt edilecektir.. Onaylıyor musunuz?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonText: 'Vazgeç',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet'
-    }).then((result) => {
-      if (result.value) {
-        const formData: FormData = new FormData();
-        formData.append('id', this.onBilgiForm.get('id').value);
-        formData.append('basvurutarihi', this.onBilgiForm.get('basvurutarihi').value);
-        formData.append('firmaid', this.onBilgiForm.get('firmaid').value);
-        formData.append('adisoyadi', this.onBilgiForm.get('adisoyadi').value);
-        formData.append('babaadi', this.onBilgiForm.get('babaadi').value);
-        formData.append('anneadi', this.onBilgiForm.get('anneadi').value);
-        formData.append('dogumyeri', this.onBilgiForm.get('dogumyeri').value);
-        formData.append('dogumtarihi', this.onBilgiForm.get('dogumtarihi').value);
-        formData.append('cinsiyet', this.onBilgiForm.get('cinsiyet').value);
-        formData.append('medenihal', this.onBilgiForm.get('medenidurum').value);
-        formData.append('tckimlik', this.onBilgiForm.get('tckimlik').value);
-        formData.append('ceptelefonu', this.onBilgiForm.get('ceptelefonu').value);
-        formData.append('email', this.onBilgiForm.get('email').value);
-        formData.append('resim', this.onBilgiForm.get('resim').value);
-        formData.append('resimboyutu', this.onBilgiForm.get('resimboyutu').value);
-        formData.append('resimuzanti', this.onBilgiForm.get('resimuzanti').value);
-        formData.append('kvkkonay', this.onBilgiForm.get('kvkkonay').value);
-        formData.append('islemtarihi', this.onBilgiForm.get('islemtarihi').value);
-        formData.append('file', this.file);
+    this.submittedRequest = true;
+    if (this.onBilgiForm.invalid) {
+      return;
+    } else {
+      Swal.fire({
+        title: 'Ön Bilgi Kayıt',
+        text: 'Girmiş olduğunuz kayıt edilecektir.. Onaylıyor musunuz?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonText: 'Vazgeç',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Evet'
+      }).then((result) => {
+        if (result.value) {
+          const formData: FormData = new FormData();
+          formData.append('basvurutarihi', this.onBilgiForm.get('basvurutarihi').value);
+          formData.append('firmaid', this.onBilgiForm.get('firmaid').value);
+          formData.append('adisoyadi', this.onBilgiForm.get('adisoyadi').value);
+          formData.append('babaadi', this.onBilgiForm.get('babaadi').value);
+          formData.append('anneadi', this.onBilgiForm.get('anneadi').value);
+          formData.append('dogumyeri', this.onBilgiForm.get('dogumyeri').value);
+          formData.append('dogumtarihi', this.onBilgiForm.get('dogumtarihi').value);
+          formData.append('cinsiyet', this.onBilgiForm.get('cinsiyet').value);
+          formData.append('medenidurum', this.onBilgiForm.get('medenidurum').value);
+          formData.append('tckimlik', this.onBilgiForm.get('tckimlik').value);
+          formData.append('ceptelefonu', this.onBilgiForm.get('ceptelefonu').value);
+          formData.append('email', this.onBilgiForm.get('email').value);
+          formData.append('ogrenciresim', this.file);
+          formData.append('kvkkonay', localStorage.getItem('kvkkOnay'));
 
-        this.ogrenciService.setOgrenciKayit(formData).subscribe((data: any) => {
-          if (data === 1) {
-            localStorage.setItem('ogrencino', data.toString());
-            this.toastr.success('Öğrenci Ön Bilgi Kayıt Başarılı.', 'Bilgilendirme');
-            setTimeout(() => {
-              this.router.navigate(['/detay']);
-            }, 1500);
-          } else {
-            this.toastr.error(data, 'Hata');
-          }
-        },
-          err => this.toastr.error(err, 'Hata')
-        );
-
-      }
-    });
+          this.ogrenciService.setOgrenciKayit(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+            next: (data: any) => {
+              if (data === 200) {
+                localStorage.setItem('ogrencino', data.toString());
+                this.toastr.success('Öğrenci Ön Bilgi Kayıt Başarılı.', 'Bilgilendirme');
+                setTimeout(() => {
+                  this.router.navigate(['/detay']);
+                }, 1500);
+              } else {
+                this.toastr.error(data.title, 'Hata');
+              }
+            },
+            error: (err) => this.toastr.error(err, 'Hata')
+          });
+        }
+      });
+    }
   }
 
   ngOnDestroy(): void {

@@ -7,7 +7,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TckverifyPipe } from './pipes/tckverify.pipe';
-import { ErrorIntercept } from './error.interceptor';
 
 @NgModule({
   declarations: [
@@ -21,11 +20,7 @@ import { ErrorIntercept } from './error.interceptor';
     HttpClientModule,
     ToastrModule.forRoot()
   ],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: ErrorIntercept,
-    multi: true
-  }],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
