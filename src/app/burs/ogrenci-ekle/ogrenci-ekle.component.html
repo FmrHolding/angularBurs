@@ -30,13 +30,12 @@
                             <input type="text" class="form-control" formControlName="tckimlik"
                                 placeholder="T.C. Kimlik No"
                                 onkeypress="if (event.keyCode != 8 && event.keyCode != 0 && (event.keyCode < 48 || event.keyCode > 57)) return false;"
-                                maxlength="11" minlength="11" (keyup)="onTcKimlikKontrol($event)">
+                                maxlength="11" (keyup)="onTcKimlikKontrol($event)">
                         </div>
                         <div class="col-lg-6">
                             <label for="">Başvuru Tarihi *</label>
-                            <my-date-picker [options]="myDatePickerOptions" [locale]="locale"
-                                [selDate]="basvurutarihi" (dateChanged)="onBasvuruTarihi($event)"
-                                placeholder="Başvuru Tarihi">
+                            <my-date-picker [options]="myDatePickerOptions" [locale]="locale" [selDate]="basvurutarihi"
+                                (dateChanged)="onBasvuruTarihi($event)" placeholder="Başvuru Tarihi">
                             </my-date-picker>
                         </div>
                     </div>

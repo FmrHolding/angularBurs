@@ -8,7 +8,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { MyDatePickerModule } from 'mydatepicker';
 import { ToastrModule } from 'ngx-toastr';
 
-
 @NgModule({
   declarations: [
     OgrenciEkleComponent
