@@ -204,8 +204,6 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   }
 
   sendOnBilgi(): void {
-    console.log(this.onBilgiForm.invalid);    
-    console.log(this.onBilgiForm.value);
     this.submittedRequest = true;
     if (this.onBilgiForm.invalid) {
       return;

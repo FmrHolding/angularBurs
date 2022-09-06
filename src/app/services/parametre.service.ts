@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -11,11 +11,17 @@ export class ParametreService {
   constructor(private httpClient: HttpClient) { }
 
   public getFirmalar(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/firmalar');
+    let reqheaders = new HttpHeaders();
+    reqheaders = reqheaders.append('Content-Type', 'application/json');
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/firmalar',
+      { headers: reqheaders });
   }
 
   public getCinsiyet(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/cinsiyet');
+    let reqheaders = new HttpHeaders();
+    reqheaders = reqheaders.append('Content-Type', 'application/json');
+    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/cinsiyet',
+    { headers: reqheaders });
   }
 
   public getUniversiteler(): Observable<any[]> {
@@ -74,8 +80,11 @@ export class ParametreService {
     return this.httpClient.get<any[]>(environment.apiURL + 'detay/kardessayilari');
   }
 
-  public getMedeniDurum(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/medenidurum');
+  public getMedeniDurum(): Observable<any[]> {    
+    let reqheaders = new HttpHeaders();
+    reqheaders = reqheaders.append('Content-Type', 'application/json');
+    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/medenidurum',
+    { headers: reqheaders });
   }
 
   public getOturduguEv(): Observable<any[]> {
