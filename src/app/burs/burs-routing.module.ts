@@ -10,7 +10,7 @@ const routes: Routes = [{
       path: 'ogrenci', loadChildren: () =>
         import('./ogrenci-ekle/ogrenci-ekle.module').then(m => m.OgrenciEkleModule)
     }, {
-      path: 'detay', loadChildren: () =>
+      path: 'detay/:id', loadChildren: () =>
         import('./ogrenci-detay/ogrenci-detay.module').then(m => m.OgrenciDetayModule)
     }
   ]
