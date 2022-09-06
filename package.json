@@ -27,6 +27,7 @@
     "metismenu": "^3.0.7",
     "mydatepicker": "^9.0.2",
     "ngx-device-detector": "^4.0.1",
+    "ngx-mask": "^14.0.3",
     "ngx-toastr": "^15.0.0",
     "rxjs": "~7.5.0",
     "sweetalert2": "^11.4.29",

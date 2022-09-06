@@ -6,7 +6,7 @@ import { OgrenciEkleComponent } from './ogrenci-ekle.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MyDatePickerModule } from 'mydatepicker';
-import { ToastrModule } from 'ngx-toastr';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
   declarations: [
@@ -18,7 +18,7 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule,
     NgSelectModule,
     MyDatePickerModule,
-    ToastrModule.forRoot()
+    NgxMaskModule.forRoot()
   ],
   providers: [{
     provide: LOCALE_ID,

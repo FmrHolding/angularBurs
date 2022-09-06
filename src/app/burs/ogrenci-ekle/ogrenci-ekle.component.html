@@ -130,10 +130,8 @@
                     <div class="form-group row">
                         <div class="col-lg-6">
                             <label for=""> Cep Telefonu *</label>
-                            <input type="text" class="form-control" formControlName="ceptelefonu"
-                                placeholder="Cep Telefonu"
-                                onkeypress="if (event.keyCode != 8 && event.keyCode != 0 && (event.keyCode < 48 || event.keyCode > 57)) return false;"
-                                maxlength="11" minlength="11">
+                            <input type="text" class="form-control" formControlName="ceptelefonu" mask='(0000) 000 00 00' [validation]="true"
+                                placeholder="Cep Telefonu">
                             <div *ngIf="submittedRequest && getControlRequest['ceptelefonu'].errors"
                                 class="text-danger">
                                 Cep Telefonu girmediniz.

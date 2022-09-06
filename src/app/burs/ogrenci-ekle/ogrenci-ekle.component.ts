@@ -54,7 +54,6 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   ) {
 
     this.onBilgiForm = this.formBuilder.group({
-      id: [null],
       basvurutarihi: ['', [Validators.required]],
       firmaid: ['', [Validators.required]],
       adisoyadi: ['', [Validators.required]],
@@ -65,21 +64,18 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
       cinsiyet: ['', [Validators.required]],
       medenidurum: ['', [Validators.required]],
       tckimlik: ['', [Validators.required, Validators.minLength(11)]],
-      ceptelefonu: ['', [Validators.required, Validators.minLength(11)]],
-      email: ['', [Validators.required, Validators.pattern(/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)]],
-      resim: ['', [Validators.required]],
-      resimboyutu: [null],
-      resimuzanti: [null],
-      kvkkonay: ['', [Validators.required]],
-      islemtarihi: [null]
+      ceptelefonu: ['', [Validators.required]],
+      email: ['', [Validators.required,Validators.pattern(/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)]],
+      resim: ['', [Validators.required]],    
+      kvkkonay: ['', [Validators.required]]
     });
   }
 
   ngOnInit(): void {
     if (localStorage.getItem('kvkkOnay') !== null) {
-      const kvkkOnayi = localStorage.getItem('kvkkOnay');
-      if (kvkkOnayi === 'true') {
-        this.onBilgiForm.get("basvurutarihi").setValue(new Date());
+      if (localStorage.getItem('kvkkOnay') === 'true') {
+        this.onBilgiForm.get("basvurutarihi").setValue(new Date().toLocaleDateString());
+        this.onBilgiForm.get("kvkkonay").setValue(localStorage.getItem('kvkkOnay'));
         this.getViewFirmalar();
         this.getViewCinsiyet();
         this.getViewMedeniDurum();
@@ -208,7 +204,8 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   }
 
   sendOnBilgi(): void {
-    console.log(this.onBilgiForm.invalid);
+    console.log(this.onBilgiForm.invalid);    
+    console.log(this.onBilgiForm.value);
     this.submittedRequest = true;
     if (this.onBilgiForm.invalid) {
       return;
@@ -238,10 +235,10 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
           formData.append('ceptelefonu', this.onBilgiForm.get('ceptelefonu').value);
           formData.append('email', this.onBilgiForm.get('email').value);
           formData.append('ogrenciresim', this.file);
-          formData.append('kvkkonay', localStorage.getItem('kvkkOnay'));
+          formData.append('kvkkonay', this.onBilgiForm.get('kvkkonay').value);
           this.ogrenciService.setOgrenciKayit(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              if (data === 200) {
+              if (data === 201) {
                 localStorage.setItem('ogrencino', data.toString());
                 this.toastr.success('Öğrenci Ön Bilgi Kayıt Başarılı.', 'Bilgilendirme');
                 setTimeout(() => {
