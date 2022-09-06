@@ -12,7 +12,7 @@
                                 <img [src]="yuklenecekResim" class="rounded-circle circle-border m-b-md" alt="profile">
                             </div>
                         </div>
-                        <div class="col-lg-2 col-md-2 col-sm-2">
+                        <div class="col-lg-3 col-md-3 col-sm-3">
                             <div class="custom-file">
                                 <input id="logo" type="file" class="custom-file-input" name="ogrenciresim"
                                     accept="image/*" (change)="secilenResim($event)">
@@ -52,6 +52,9 @@
                             <ng-select [items]="firmalar" bindLabel="unvani" bindValue="id" (change)="onSirket($event)"
                                 placeholder="Firma Seçiniz">
                             </ng-select>
+                            <div *ngIf="submittedRequest && getControlRequest['firmaid'].errors" class="text-danger">
+                                Herhangi bir firma seçmediniz.
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -59,6 +62,9 @@
                             <label for=""> Adı Soyadı *</label>
                             <input type="text" class="form-control" formControlName="adisoyadi"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
+                            <div *ngIf="submittedRequest && getControlRequest['adisoyadi'].errors" class="text-danger">
+                                Ad Soyad bilginizi girmediniz.
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -66,11 +72,17 @@
                             <label for=""> Baba Adı *</label>
                             <input type="text" class="form-control" formControlName="babaadi"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
+                            <div *ngIf="submittedRequest && getControlRequest['babaadi'].errors" class="text-danger">
+                                Baba adı bilginizi girmediniz.
+                            </div>
                         </div>
                         <div class="col-lg-6">
                             <label for=""> Anne Adı *</label>
                             <input type="text" class="form-control" formControlName="anneadi"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
+                            <div *ngIf="submittedRequest && getControlRequest['anneadi'].errors" class="text-danger">
+                                Anne adı bilginizi girmediniz.
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -78,6 +90,9 @@
                             <label for=""> Doğum Yeri *</label>
                             <input type="text" class="form-control" formControlName="dogumyeri"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
+                            <div *ngIf="submittedRequest && getControlRequest['dogumyeri'].errors" class="text-danger">
+                                Doğum yeri bilginizi girmediniz.
+                            </div>
                         </div>
                         <div class="col-lg-6">
                             <label for=""> Doğum Tarihi *</label>
@@ -85,6 +100,10 @@
                                 placeholder="Doğum Tarihi" [selDate]="dogumtarihi"
                                 (dateChanged)="onDogumTarihi($event)">
                             </my-date-picker>
+                            <div *ngIf="submittedRequest && getControlRequest['dogumtarihi'].errors"
+                                class="text-danger">
+                                Doğum Tarihi girmediniz.
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -93,12 +112,19 @@
                             <ng-select [items]="cinsiyetler" bindLabel="cinsiyeti" bindValue="id"
                                 (change)="onCinsiyet($event)" placeholder="Cinsiyet Seçiniz">
                             </ng-select>
+                            <div *ngIf="submittedRequest && getControlRequest['cinsiyet'].errors" class="text-danger">
+                                Cinsiyet seçmediniz.
+                            </div>
                         </div>
                         <div class="col-lg-6">
                             <label for=""> Medeni Durum *</label>
                             <ng-select [items]="medenidurumlar" bindLabel="durumu" bindValue="id"
                                 (change)="onMedeniDurum($event)" placeholder="Medeni Durum Seçiniz">
                             </ng-select>
+                            <div *ngIf="submittedRequest && getControlRequest['medenidurum'].errors"
+                                class="text-danger">
+                                Medeni Hali seçmediniz.
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -108,11 +134,19 @@
                                 placeholder="Cep Telefonu"
                                 onkeypress="if (event.keyCode != 8 && event.keyCode != 0 && (event.keyCode < 48 || event.keyCode > 57)) return false;"
                                 maxlength="11" minlength="11">
+                            <div *ngIf="submittedRequest && getControlRequest['ceptelefonu'].errors"
+                                class="text-danger">
+                                Cep Telefonu girmediniz.
+                            </div>
                         </div>
                         <div class="col-lg-6">
                             <label for=""> E-Mail Adresi *</label>
                             <input type="email" class="form-control" formControlName="email"
                                 placeholder="E-Mail Adresi Giriniz">
+                            <div *ngIf="submittedRequest && getControlRequest['email'].errors"
+                                class="text-danger">
+                                Email adresini girmediniz.
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">

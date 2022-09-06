@@ -96,7 +96,11 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   getViewFirmalar(): void {
     this.parametreService.getFirmalar().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.firmalar = data.value;
+        if (data.statusCode == 200) {
+          this.firmalar = data.data;
+        } else {
+          this.toastr.error(data.message, 'Hata')
+        }
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
@@ -105,7 +109,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   getViewCinsiyet(): void {
     this.parametreService.getCinsiyet().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.cinsiyetler = data.value;
+        this.cinsiyetler = data.data;
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
@@ -114,7 +118,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   getViewMedeniDurum(): void {
     this.parametreService.getMedeniDurum().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.medenidurumlar = data.value;
+        this.medenidurumlar = data.data;
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
@@ -142,24 +146,6 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
     if (event.target.value.length === 11) {
       if (!this.getTcKimlikDogrula(event.target.value)) {
         this.toastr.error("TC Kimlik doğrulanmadı", 'Hata');
-      } else {
-        this.ogrenciService.getOgrenciGetir(event.target.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-          next: (data: any) => {
-            if (data !== null) {
-              this.kayitVar = true;
-              this.onBilgiForm.setValue(data);
-              localStorage.setItem('ogrencino', data.id);
-              const dogumTarihi = new Date(data.dogumtarihi);
-              const basvuruTarihi = new Date(data.basvurutarihi);
-              this.dogumtarihi = { year: dogumTarihi.getFullYear(), month: dogumTarihi.getMonth() + 1, day: dogumTarihi.getDate() };
-              this.basvurutarihi = { year: basvuruTarihi.getFullYear(), month: basvuruTarihi.getMonth() + 1, day: basvuruTarihi.getDate() };
-              Swal.fire('Uyarı !', 'Daha önce başvuru yapmışsınız. Eğer bilgileinizde düzeltme istiyorsanız lütfen 0544 592 75 63 irtibat numarasını arayınız.', 'warning');
-            } else {
-              this.kayitVar = false;
-            }
-          },
-          error: (err) => this.toastr.error(err, 'Hata')
-        });
       }
     }
   }
@@ -222,6 +208,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   }
 
   sendOnBilgi(): void {
+    console.log(this.onBilgiForm.invalid);
     this.submittedRequest = true;
     if (this.onBilgiForm.invalid) {
       return;
@@ -252,7 +239,6 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
           formData.append('email', this.onBilgiForm.get('email').value);
           formData.append('ogrenciresim', this.file);
           formData.append('kvkkonay', localStorage.getItem('kvkkOnay'));
-
           this.ogrenciService.setOgrenciKayit(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data === 200) {
