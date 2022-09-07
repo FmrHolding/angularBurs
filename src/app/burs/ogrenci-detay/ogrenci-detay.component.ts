@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { IMyDpOptions } from 'mydatepicker';
 import { ToastrService } from 'ngx-toastr';
 import { OgrenciService } from 'src/app/services/ogrenci.service';
@@ -15,7 +15,7 @@ registerLocaleData(localeTr, 'tr');
   selector: 'app-ogrenci-detay',
   templateUrl: './ogrenci-detay.component.html'
 })
-export class OgrenciDetayComponent implements OnInit,OnDestroy {
+export class OgrenciDetayComponent implements OnInit, OnDestroy {
 
   public onOkulForm: FormGroup;
   public onBankaForm: FormGroup;
@@ -58,7 +58,7 @@ export class OgrenciDetayComponent implements OnInit,OnDestroy {
   };
 
   constructor(
-    private router: Router,
+    private route: ActivatedRoute,
     private fb: FormBuilder,
     private parametreService: ParametreService,
     private ogrenciService: OgrenciService,
@@ -94,20 +94,20 @@ export class OgrenciDetayComponent implements OnInit,OnDestroy {
       annebababirliktelik: [null, [Validators.required]],
       babaogrenim: [null],
       babameslek: [null],
-      babagelir: [null],
+      babagelir: [0],
       babaisadresi: [null],
       babatelefon: [null],
       anneogrenim: [null],
       annemeslek: [null],
-      annegelir: [null],
+      annegelir: [0],
       anneisadresi: [null],
       annetelefon: [null],
-      ailedigergelirtoplam: [null, [Validators.required]],
-      ailedigergeliraciklama: [null, [Validators.required]],
+      ailedigergelirtoplam: [0, [Validators.required]],
+      ailedigergeliraciklama: ['Yok', [Validators.required]],
       aileikametadresi: [null, [Validators.required]],
       ailemulkdurum: [null, [Validators.required]],
-      sabittelefon: [null, [Validators.required]],
-      ailekira: [null, [Validators.required]],
+      sabittelefon: [0, [Validators.required]],
+      ailekira: [0, [Validators.required]],
       ailesaglik: [null, [Validators.required]]
     });
 
@@ -143,15 +143,15 @@ export class OgrenciDetayComponent implements OnInit,OnDestroy {
       ikametyeri: [null, [Validators.required]],
       yurtadi: [null, [Validators.required]],
       evyurtkirasi: [null, [Validators.required]],
-      evyurtdiger: [null, [Validators.required]],
-      sagliksorunu: [null, [Validators.required]],
+      evyurtdiger: ['Yok', [Validators.required]],
+      sagliksorunu: ['Yok', [Validators.required]],
       sigara: [null, [Validators.required]],
       ogrenimdekiadres: [null, [Validators.required]],
-      dernek: [null, [Validators.required]],
-      bursveren: [null, [Validators.required]],
-      bursmiktari: [null, [Validators.required]],
-      krediveren: [null, [Validators.required]],
-      kredimiktari: [null, [Validators.required]],
+      dernek: ['Yok', [Validators.required]],
+      bursveren: ['Yok', [Validators.required]],
+      bursmiktari: [0, [Validators.required]],
+      krediveren: ['Yok', [Validators.required]],
+      kredimiktari: [0, [Validators.required]],
       fikirdusunce: [null]
     });
 
@@ -185,42 +185,34 @@ export class OgrenciDetayComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
-    //if (localStorage.getItem('kvkkOnay') !== null) {
-      const kvkkOnayi = localStorage.getItem('kvkkOnay');
-      //if (kvkkOnayi === 'true') {
-        //if (localStorage.getItem('ogrencino') !== null) {
-        this.ogrenciNo = parseInt(localStorage.getItem('ogrencino'));
-        this.onOkulForm.get('ogrenciid').setValue(this.ogrenciNo);
-        this.onBankaForm.get('ogrenciid').setValue(this.ogrenciNo);
-        this.onSosyoEkonomiForm.get('ogrenciid').setValue(this.ogrenciNo);
-        this.onKardesForm.get('ogrenciid').setValue(this.ogrenciNo);
-        this.onKisiselForm.get('ogrenciid').setValue(this.ogrenciNo);
-        this.onReferansForm.get('ogrenciid').setValue(this.ogrenciNo);
-        this.onEvrakForm.get('ogrenciid').setValue(this.ogrenciNo);
-        this.getUniversiteler();
-        this.getUniversiteSinif();
-        this.getUniversiteBurslar();
-        this.getUniversiteTipleri();
-        this.getLiseler();
-        this.getLiseTipleri();
-        this.getBankalar();
-        this.getOgrenimler();
-        this.getAileBeraber();
-        this.getAileBirliktelik();
-        this.getAiledenAyri();
-        this.getIkametEdilecekYer();
-        this.getIsDurum();
-        this.getKardesSayilari();
-        this.getMedeniDurum();
-        this.getOturduguEv();
-        this.getSigaraDurumu();
-      //} else {
-        //this.router.navigate(['/kvkk']);
-      //}
-      //}
-    //} else {
-      //this.router.navigate(['/kvkk']);
-    //}
+    const ogrenciNo = parseInt(this.route.snapshot.paramMap.get('id'));
+    this.ogrenciNo = parseInt(localStorage.getItem('ogrencino'));
+    this.onOkulForm.get('ogrenciid').setValue(this.ogrenciNo);
+    this.onBankaForm.get('ogrenciid').setValue(this.ogrenciNo);
+    this.onSosyoEkonomiForm.get('ogrenciid').setValue(this.ogrenciNo);
+    this.onKardesForm.get('ogrenciid').setValue(this.ogrenciNo);
+    this.onKisiselForm.get('ogrenciid').setValue(this.ogrenciNo);
+    this.onReferansForm.get('ogrenciid').setValue(this.ogrenciNo);
+    this.onEvrakForm.get('ogrenciid').setValue(this.ogrenciNo);
+    /*
+    this.getUniversiteler();
+    this.getUniversiteSinif();
+    this.getUniversiteBurslar();
+    this.getUniversiteTipleri();
+    this.getLiseler();
+    this.getLiseTipleri();
+    this.getBankalar();
+    this.getOgrenimler();
+    this.getAileBeraber();
+    this.getAileBirliktelik();
+    this.getAiledenAyri();
+    this.getIkametEdilecekYer();
+    this.getIsDurum();
+    this.getKardesSayilari();
+    this.getMedeniDurum();
+    this.getOturduguEv();
+    this.getSigaraDurumu();
+    */
   }
 
   getUniversiteler(): void {

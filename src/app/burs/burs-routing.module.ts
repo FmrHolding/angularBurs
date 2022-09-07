@@ -4,7 +4,7 @@ import { BursComponent } from './burs.component';
 
 const routes: Routes = [{
   path: '', component: BursComponent,
-  title: 'Burs Formu',
+  data: { title: 'Burs Kayıt Formu' },
   children: [
     {
       path: 'ogrenci', loadChildren: () =>

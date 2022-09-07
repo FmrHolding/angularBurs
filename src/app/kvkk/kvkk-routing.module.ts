@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { KvkkComponent } from './kvkk.component';
 
 const routes: Routes = [{
-  path:'',component:KvkkComponent,
-  title:'KVKK Onay Formu'
+  path: '', component: KvkkComponent,
+  data: { title: 'KVKK Onay Formu' }
 }];
 
 @NgModule({

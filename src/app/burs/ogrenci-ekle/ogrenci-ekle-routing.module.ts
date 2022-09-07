@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { OgrenciEkleComponent } from './ogrenci-ekle.component';
 
 const routes: Routes = [{
-  path:'',component:OgrenciEkleComponent,
-  title:'Öğrenci Ön Bilgi Formu'
+  path: '', component: OgrenciEkleComponent,
+  data: { title: 'Öğrenci Ön Bilgi Formu' }
 }];
 
 @NgModule({

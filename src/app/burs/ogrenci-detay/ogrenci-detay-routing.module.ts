@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { OgrenciDetayComponent } from './ogrenci-detay.component';
 
 const routes: Routes = [{
-  path:'',component:OgrenciDetayComponent,
-  title:'Öğrenci Detay Formu'
+  path: '', component: OgrenciDetayComponent,
+  data: { title: 'Öğrenci Detay Formu' }
 }];
 
 @NgModule({

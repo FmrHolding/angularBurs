@@ -158,7 +158,7 @@
                                 formControlName="babaisadresi">
                         </div>
                         <div class="col-lg-3" *ngIf="!babaolu">
-                            <label for=""> Babanızın Cep No (Yoksa 0 sıfır yazınız) *</label>
+                            <label for=""> Babanızın Cep No *</label>
                             <input type="number" class="form-control" placeholder="Babanızın Cep Telefonu"
                                 formControlName="babatelefon">
                         </div>
@@ -188,7 +188,7 @@
                                 formControlName="anneisadresi">
                         </div>
                         <div class="col-lg-3">
-                            <label for=""> Anneniz Cep No (Yoksa 0 sıfır yazınız) *</label>
+                            <label for=""> Anneniz Cep No *</label>
                             <input type="number" class="form-control" placeholder="Anneniz Cep Telefonu"
                                 formControlName="annetelefon">
                         </div>
@@ -196,7 +196,7 @@
                     <div class="form-group row">
                         <div class="col-lg-12">
                             <label for=""> Varsa, Ailenin Toplam Gelirine Katkı Sağlayan Diğer Aylık Net Gelirler
-                                Toplamı (Yoksa "0" sıfır olarak giriniz) *</label>
+                                Toplamı *</label>
                             <input type="number" class="form-control" placeholder="Net Gelirler Toplamı"
                                 formControlName="ailedigergelirtoplam">
                         </div>
@@ -204,7 +204,7 @@
                     <div class="form-group row">
                         <div class="col-lg-12">
                             <label for=""> Varsa, Ailenin Toplam Net Gelirine Katkı Sağlayan Diğer Bireyler Hakkında
-                                Verilebilecek Bilgiler (Yoksa "Yok" yazınız.) *
+                                Verilebilecek Bilgiler*
                             </label>
                             <input type="text" class="form-control" placeholder="Net Gelirler Muhteviyatı"
                                 formControlName="ailedigergeliraciklama">
@@ -227,7 +227,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-4">
-                            <label for="">Ailenizin Sabit Telefonu (Yoksa 0 sıfır yazınız) *</label>
+                            <label for="">Ailenizin Sabit Telefonu *</label>
                             <input type="number" class="form-control" placeholder="Sabit Telefon"
                                 formControlName="sabittelefon">
                         </div>
@@ -238,7 +238,7 @@
                             </ng-select>
                         </div>
                         <div class="col-lg-4">
-                            <label for="">Aylık Kira (Yoksa 0 sıfır yazınız) *</label>
+                            <label for="">Aylık Kira *</label>
                             <input type="number" class="form-control" placeholder="Aylık Kira"
                                 formControlName="ailekira">
                         </div>
@@ -418,7 +418,7 @@
                             </ng-select>
                         </div>
                         <div class="col-lg-3">
-                            <label for=""> Ailemden Ayrı Bir Şehirde İkamet Edeceğim *</label>
+                            <label for=""> Ayrı Bir Şehirde İkamet Edeceğim *</label>
                             <ng-select [items]="ailedenberaber" bindLabel="beraber" bindValue="id"
                                 (change)="onAiledenAyri($event)" placeholder="Aileden Ayrı İkamet Durumu">
                             </ng-select>
@@ -436,7 +436,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-12">
-                            <label for=""> Sürekli bir sağlık sorunuz var mı ?Varsa Nedir (Yoksa yok yazınız) *</label>
+                            <label for=""> Sürekli bir sağlık sorunuz var mı? Varsa Nedir *</label>
                             <input type="text" class="form-control" placeholder="Sağlık Sorunu"
                                 formControlName="sagliksorunu">
                         </div>
@@ -454,7 +454,7 @@
                             <input type="text" class="form-control" placeholder="Kira" formControlName="evyurtkirasi">
                         </div>
                         <div class="col-lg-6">
-                            <label for=""> Diğer Bilgiler (Yoksa yok yazılacak) *</label>
+                            <label for=""> Diğer Bilgiler *</label>
                             <input type="text" class="form-control" placeholder="Diğer Bilgiler"
                                 formControlName="evyurtdiger">
                         </div>
@@ -468,33 +468,31 @@
                     <div class="form-group row">
                         <div class="col-lg-12">
                             <label for=""> Üyesi Olduğunuz Herhangi Bir Kuruluş, Vakıf, Dernek v.b. Var mı? Varsa
-                                nedir bilgi veriniz. (Yoksa yok yazınız) *</label>
+                                nedir bilgi veriniz. *</label>
                             <input type="text" class="form-control" placeholder="Kuruluş, Vakıf, Dernek vb Varsa"
                                 formControlName="dernek">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-9">
-                            <label for=""> Başka Kurumlardan Burs Alıyorsanız, Bu Kurumların Adları (Yoksa yok
-                                yazınız) *</label>
+                            <label for=""> Başka Kurumlardan Burs Alıyorsanız, Bu Kurumların Adları *</label>
                             <input type="text" class="form-control" placeholder="Burs Aldığınız Kurum Adı"
                                 formControlName="bursveren">
                         </div>
                         <div class="col-lg-3">
-                            <label for=""> Burs Miktarı (Yoksa 0 sıfır yazınız) *</label>
+                            <label for=""> Burs Miktarı *</label>
                             <input type="number" class="form-control" placeholder="Burs Miktarı"
                                 formControlName="bursmiktari">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-9">
-                            <label for=""> Başka Kurumlardan Kredi Alıyorsanız, Bu Kurumların Adları (Yoksa yok
-                                yazınız) *</label>
+                            <label for=""> Başka Kurumlardan Kredi Alıyorsanız, Bu Kurumların Adları *</label>
                             <input type="text" class="form-control" placeholder="Kredi Aldığınız Kurum Adı"
                                 formControlName="krediveren">
                         </div>
                         <div class="col-lg-3">
-                            <label for=""> Kredi Miktarı (Yoksa 0 sıfır yazınız) *</label>
+                            <label for=""> Kredi Miktarı *</label>
                             <input type="number" class="form-control" placeholder="Kredi Miktarı"
                                 formControlName="kredimiktari">
                         </div>
