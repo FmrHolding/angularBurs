@@ -1,0 +1,25 @@
+<form [formGroup]="frmKardes" autocomplete="off">
+    <div class="form-group row">
+        <div class="col-lg-3">
+            <label for=""> Adı ve Soyadı *</label>
+            <input type="text" class="form-control" placeholder="Adı ve Soyadı" formControlName="adisoyadi">
+        </div>
+        <div class="col-lg-1">
+            <label for=""> Yaş *</label>
+            <input type="number" class="form-control" placeholder="Yaş" formControlName="yas">
+        </div>
+        <div class="col-lg-2">
+            <label for=""> Medeni Durum *</label>
+            <ng-select [items]="medenidurumlar" bindLabel="medenihal" bindValue="id" placeholder="Medeni Durumu">
+            </ng-select>
+        </div>
+        <div class="col-lg-2">
+            <label for=""> Okulu *</label>
+            <input type="text" class="form-control" placeholder="Okulu" formControlName="okul">
+        </div>
+        <div class="col-lg-2">
+            <label for=""> Aldığı Burs / Net Gelir *</label>
+            <input type="number" class="form-control" placeholder="Yoksa 0 sıfır yazınız" formControlName="burs">
+        </div>
+    </div>
+</form>

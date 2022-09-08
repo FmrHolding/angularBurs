@@ -1,0 +1,51 @@
+<br>
+<h4>(Bu bölümün doldurulması bursunuzun değerlendirilmesinde önem arz etmektedir.)</h4>
+<hr>
+<form [formGroup]="frmReferans" autocomplete="off">
+    <div class="form-group row">
+        <div class="col-lg-3">
+            <label for=""> Adı ve Soyadı</label>
+            <input type="text" class="form-control" placeholder="Adı ve Soyadı" formControlName="referans1adisoyadi">
+        </div>
+        <div class="col-lg-3">
+            <label for=""> Yakınlık Derecesi</label>
+            <input type="text" class="form-control" placeholder="Yakınlık Derecesi" formControlName="referans2yakinlik">
+        </div>
+        <div class="col-lg-4">
+            <label for=""> Mesleği/Görevi</label>
+            <input type="text" class="form-control" placeholder="Görevi" formControlName="referans1gorevi">
+        </div>
+        <div class="col-lg-2">
+            <label for="">Cep Telefonu</label>
+            <input type="number" class="form-control" placeholder="Telefonu" formControlName="referans1telefon">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-3">
+            <input type="text" class="form-control" placeholder="Adı ve Soyadı" formControlName="referans2adisoyadi">
+        </div>
+        <div class="col-lg-3">
+            <input type="text" class="form-control" placeholder="Yakınlık Derecesi" formControlName="referans1yakinlik">
+        </div>
+        <div class="col-lg-4">
+            <input type="text" class="form-control" placeholder="Görevi" formControlName="referans2gorevi">
+        </div>
+        <div class="col-lg-2">
+            <input type="number" class="form-control" placeholder="Telefonu" formControlName="referans2telefon">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-3">
+            <input type="text" class="form-control" placeholder="Adı ve Soyadı" formControlName="referans3adisoyadi">
+        </div>
+        <div class="col-lg-3">
+            <input type="text" class="form-control" placeholder="Yakınlık Derecesi" formControlName="referans3yakinlik">
+        </div>
+        <div class="col-lg-4">
+            <input type="text" class="form-control" placeholder="Görevi" formControlName="referans3gorevi">
+        </div>
+        <div class="col-lg-2">
+            <input type="number" class="form-control" placeholder="Telefonu" formControlName="referans3telefon">
+        </div>
+    </div>
+</form>

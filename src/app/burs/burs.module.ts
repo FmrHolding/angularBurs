@@ -3,15 +3,20 @@ import { CommonModule } from '@angular/common';
 
 import { BursRoutingModule } from './burs-routing.module';
 import { BursComponent } from './burs.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
   declarations: [
-    BursComponent
+    BursComponent,
+    
   ],
   imports: [
     CommonModule,
-    BursRoutingModule
+    BursRoutingModule,
+    ReactiveFormsModule,
+    NgSelectModule
   ]
 })
 export class BursModule { }

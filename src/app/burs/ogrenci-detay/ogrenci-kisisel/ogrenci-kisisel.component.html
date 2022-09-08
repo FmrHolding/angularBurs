@@ -1,0 +1,121 @@
+<form [formGroup]="frmKisisel" autocomplete="off">
+    <div class="form-group row">
+        <div class="col-lg-3">
+            <label for=""> Ailemle Birlikte İkamet Edeceğim *</label>
+            <ng-select [items]="aileberaber" bindLabel="beraber" bindValue="id"
+                (change)="onAileileBeraber($event)" placeholder="Aile İkamet Durumu">
+            </ng-select>
+        </div>
+        <div class="col-lg-3">
+            <label for=""> Ayrı Bir Şehirde İkamet Edeceğim *</label>
+            <ng-select [items]="ailedenberaber" bindLabel="beraber" bindValue="id"
+                (change)="onAiledenAyri($event)"
+                placeholder="Aileden Ayrı İkamet Durumu">
+            </ng-select>
+        </div>
+        <div class="col-lg-3">
+            <label for=""> İkamet Edeceğim Yer *</label>
+            <ng-select [items]="ikametedilecekyer" bindLabel="ikametyeri" bindValue="id"
+                (change)="onIkametYeri($event)" placeholder="İkamet Edilecek Yer">
+            </ng-select>
+        </div>
+        <div class="col-lg-3">
+            <label for=""> Yurt Adı *</label>
+            <input type="text" class="form-control" placeholder="Yurt Adı"
+                formControlName="yurtadi">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-12">
+            <label for=""> Sürekli bir sağlık sorunuz var mı? Varsa Nedir *</label>
+            <input type="text" class="form-control" placeholder="Sağlık Sorunu"
+                formControlName="sagliksorunu">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-12">
+            <label for=""> Öğrenimdeki Devamlı Adresim *</label>
+            <input type="text" class="form-control"
+                placeholder="Öğrenimdeki Devamlı Adresi"
+                formControlName="ogrenimdekiadres">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-3">
+            <label for=""> Kirasını Giriniz. *</label>
+            <input type="text" class="form-control" placeholder="Kira"
+                formControlName="evyurtkirasi">
+        </div>
+        <div class="col-lg-6">
+            <label for=""> Diğer Bilgiler *</label>
+            <input type="text" class="form-control" placeholder="Diğer Bilgiler"
+                formControlName="evyurtdiger">
+        </div>
+        <div class="col-lg-3">
+            <label for=""> Sigara Kullanıyor musunuz? *</label>
+            <ng-select [items]="sigaradurumu" bindLabel="sigara" bindValue="id"
+                (change)="onSigara($event)" placeholder="Sigara Kullanımı">
+            </ng-select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-12">
+            <label for=""> Üyesi Olduğunuz Herhangi Bir Kuruluş, Vakıf, Dernek v.b. Var
+                mı? Varsa
+                nedir bilgi veriniz. *</label>
+            <input type="text" class="form-control"
+                placeholder="Kuruluş, Vakıf, Dernek vb Varsa" formControlName="dernek">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-9">
+            <label for=""> Başka Kurumlardan Burs Alıyorsanız, Bu Kurumların Adları
+                *</label>
+            <input type="text" class="form-control"
+                placeholder="Burs Aldığınız Kurum Adı" formControlName="bursveren">
+        </div>
+        <div class="col-lg-3">
+            <label for=""> Burs Miktarı *</label>
+            <input type="number" class="form-control" placeholder="Burs Miktarı"
+                formControlName="bursmiktari">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-9">
+            <label for=""> Başka Kurumlardan Kredi Alıyorsanız, Bu Kurumların Adları
+                *</label>
+            <input type="text" class="form-control"
+                placeholder="Kredi Aldığınız Kurum Adı" formControlName="krediveren">
+        </div>
+        <div class="col-lg-3">
+            <label for=""> Kredi Miktarı *</label>
+            <input type="number" class="form-control" placeholder="Kredi Miktarı"
+                formControlName="kredimiktari">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-9">
+            <label for=""> Herhangi Bir İşletmede Çalışıp Gelir Elde Ediyor musunuz?
+                *</label>
+            <ng-select [items]="medenidurumlar" bindLabel="medenihal" bindValue="id">
+                <ng-option>Hayır</ng-option>
+                <ng-option>Evet</ng-option>
+            </ng-select>
+        </div>
+        <div class="col-lg-3">
+            <label for="">Aylık Kazanç Miktarı *</label>
+            <input type="number" class="form-control" placeholder="Aylık Kazanç Miktarı"
+                formControlName="kazancmiktari">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-12">
+            <label for=""> Kısaca kendinizden, hedeflerinizden ve diğer eklemek
+                istediğiniz
+                düşüncelerinizden bahsedermisiniz. (Bu alan zorunlu değildir) *</label>
+            <textarea cols="30" rows="3" class="form-control"
+                formControlName="fikirdusunce"
+                placeholder="Kısaca kendinizden, hedeflerinizden ve diğer eklemek istediğiniz düşüncelerinizden bahsedermisiniz"></textarea>
+        </div>
+    </div>
+</form>

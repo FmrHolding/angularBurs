@@ -2,10 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { OgrenciDetayComponent } from './ogrenci-detay.component';
 
-const routes: Routes = [{
-  path: '', component: OgrenciDetayComponent,
-  data: { title: 'Öğrenci Detay Formu' }
-}];
+const routes: Routes = [
+  {
+    path: '', component: OgrenciDetayComponent,
+    data: { title: 'Öğrenci Detay Formu' }
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

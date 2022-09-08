@@ -1,0 +1,39 @@
+<form [formGroup]="frmBanka" autocomplete="off">
+    <div class="form-group row">
+        <div class="col-lg-6">
+            <label for="">Banka Adı *</label>
+            <ng-select [items]="bankalar" bindLabel="bankaadi" bindValue="id"
+                (change)="onBanka($event)" placeholder="Banka Seçiniz">
+            </ng-select>
+        </div>
+        <div class="col-lg-6">
+            <label for=""> Şube Kodu *</label>
+            <input type="text" class="form-control" formControlName="subekodu"
+                placeholder="Şube Kodu">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-6">
+            <label for="">Hesap No *</label>
+            <input type="text" class="form-control" formControlName="hesapno"
+                placeholder="Hesap No">
+        </div>
+        <div class="col-lg-6">
+            <label for=""> İBAN No *</label>
+            <input type="text" class="form-control" formControlName="ibanno"
+                placeholder="İBAN No">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-6">
+            <label for="">İBAN Sahibinin (Hesap Sahibinin) Adı Soyadı *</label>
+            <input type="text" class="form-control" formControlName="ibansahibi"
+                placeholder="Hesap Sahibinin Adı Soyadı">
+        </div>
+        <div class="col-lg-6">
+            <label for=""> T.C. Kimlik No (Hesap Sahibinin) *</label>
+            <input type="text" class="form-control" formControlName="ibansahibitc"
+                placeholder="Hesap Sahibini T.C. Kimlik No">
+        </div>
+    </div>
+</form>

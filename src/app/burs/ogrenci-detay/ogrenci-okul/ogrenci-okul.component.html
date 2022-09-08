@@ -1,0 +1,67 @@
+<form [formGroup]="frmOkul" autocomplete="off">
+    <div class="form-group row">
+        <div class="col-lg-6">
+            <label for="">Üniversiteniz *</label>
+            <ng-select [items]="universitler" bindLabel="universiteadi" bindValue="id" (change)="onUniversite($event)"
+                placeholder="Üniversite">
+            </ng-select>
+        </div>
+        <div class="col-lg-6">
+            <label for=""> Fakülteniz *</label>
+            <input type="text" class="form-control" formControlName="fakulte" placeholder="Fakülte">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-6">
+            <label for=""> Bölümünüz *</label>
+            <input type="text" class="form-control" formControlName="bolum" placeholder="Bölüm">
+        </div>
+        <div class="col-lg-6">
+            <label for="">Sınıfınız *</label>
+            <ng-select [items]="universitesinif" bindLabel="sinifi" bindValue="id" (change)="onUniversiteSinif($event)"
+                placeholder="Sınıf Seçiniz">
+            </ng-select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-6">
+            <label for=""> Üniversite Tipi *</label>
+            <ng-select [items]="universitetipleri" bindLabel="universitetipi" bindValue="id"
+                (change)="onUniversiteTipi($event)" placeholder="Üniversite Tipi Seçiniz">
+            </ng-select>
+        </div>
+        <div class="col-lg-6">
+            <label for="">Vakıf (Özel) Üniversitesi Bursluluk Oranı*</label>
+            <ng-select [items]="universiteburslar" bindLabel="bursturu" bindValue="id"
+                (change)="onUniversiteBursTuru($event)" placeholder="Burs Türü Seçiniz">
+                <ng-template ng-option-tmp let-item="item">
+                    <strong>Taşıyıcı Kodu:</strong> {{item.code}} <br />
+                    <strong>Firma:</strong> {{item.title}} <br />
+                    <strong>Şoför:</strong> {{item.name}} {{item.surname}} <br />
+                    <strong>TC Kimlik:</strong> {{item.tckno}} <br />
+                </ng-template>
+            </ng-select>
+        </div>
+    </div>
+    <hr>
+    <div class="form-group row">
+        <div class="col-lg-6">
+            <label for=""> Bitirdiğiniz Lise *</label>
+            <input type="text" class="form-control" formControlName="liseadi" placeholder="Lise Adı">
+        </div>
+        <div class="col-lg-6">
+            <label for=""> Bitirdiğiniz Lise Tipi *</label>
+            <ng-select [items]="lisetipleri" bindLabel="lisetipi" bindValue="id" (change)="onLiseTipi($event)"
+                placeholder="Lise Türü">
+            </ng-select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-6">
+            <label for=""> Bitirdiğiniz Lise Türü *</label>
+            <ng-select [items]="liseler" bindLabel="liseturu" bindValue="id" (change)="onLiseTuru($event)"
+                placeholder="Lise Türü">
+            </ng-select>
+        </div>
+    </div>
+</form>

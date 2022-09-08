@@ -130,8 +130,8 @@
                     <div class="form-group row">
                         <div class="col-lg-6">
                             <label for=""> Cep Telefonu *</label>
-                            <input type="text" class="form-control" formControlName="ceptelefonu" mask='(0000) 000 00 00' [validation]="true"
-                                placeholder="Cep Telefonu">
+                            <input type="text" class="form-control" formControlName="ceptelefonu"
+                                mask='(0000) 000 00 00' [validation]="true" placeholder="Cep Telefonu">
                             <div *ngIf="submittedRequest && getControlRequest['ceptelefonu'].errors"
                                 class="text-danger">
                                 Cep Telefonu girmediniz.
@@ -141,8 +141,7 @@
                             <label for=""> E-Mail Adresi *</label>
                             <input type="email" class="form-control" formControlName="email"
                                 placeholder="E-Mail Adresi Giriniz">
-                            <div *ngIf="submittedRequest && getControlRequest['email'].errors"
-                                class="text-danger">
+                            <div *ngIf="submittedRequest && getControlRequest['email'].errors" class="text-danger">
                                 Email adresini girmediniz.
                             </div>
                         </div>
@@ -162,9 +161,12 @@
             <div class="ibox-content">
                 <div class="text-center">
                     <h2 class="text-danger"><strong> Yıldızlı (*) alanlar zorunlu girilmesi gerekmektedir. Bu
-                            alanları doğru
-                            girmeye özen gösteriniz.</strong>
-                    </h2>
+                            alanları doğru girmeye özen gösteriniz.</strong>
+                    <br>
+                    <br>
+                    FORM BİLGİLERİNİ DOLDURUKEN BİLGİ ALMAK VEYA SORUN BİLDİRMEK İÇİN 0544 592 75 63 NUMARADAN SİNAN
+                    ÖZTÜRK BEYLE İRTİBATA GEÇEBİLİRSİNİZ.
+                </h2>
                 </div>
             </div>
         </div>

@@ -1,0 +1,57 @@
+<form [formGroup]="frmEvrak" autocomplete="off">
+    <div class="form-group row">
+        <div class="col-lg-3">
+            <label for=""> Referans Mektubu</label>
+            <div class="form-group">
+                <input type="file" name="referansmektubu"
+                    (change)="referansMektubu($event)" accept="application/pdf" />
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <label for=""> İkametgâh *</label>
+            <div class="form-group">
+                <input type="file" name="ikametgah" (change)="ikametgah($event)"
+                    accept="application/pdf" />
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <label for=""> Sabıka Kaydı *</label>
+            <div class="form-group">
+                <input type="file" name="sabikakaydi" (change)="sabikaKaydi($event)"
+                    accept="application/pdf" />
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <label for=""> Öğrenci Belgesi *</label>
+            <div class="form-group">
+                <input type="file" name="ogrencibelgesi"
+                    (change)="ogrenciBelgesi($event)" accept="application/pdf" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-3">
+            <label for=""> Transkript *</label>
+            <div class="form-group">
+                <input type="file" name="transkript" (change)="transkrip($event)"
+                    accept="application/pdf" />
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <label for=""> Nüfus Cüzdanı Fotokopisi *</label>
+            <div class="form-group">
+                <input type="file" name="nufuscuzdani" (change)="nufusCuzdani($event)"
+                    accept="application/pdf" />
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <label for=""> Burs Yatırılacak Hesap Cüzdanı Fotokopisi (Hesap bilgilerinin
+                olduğu kısım
+                olacak) *</label>
+            <div class="form-group">
+                <input type="file" name="hesapcuzdani" (change)="hesapCuzdani($event)"
+                    accept="application/pdf" />
+            </div>
+        </div>
+    </div>
+</form>
