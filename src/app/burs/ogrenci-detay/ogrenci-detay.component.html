@@ -4,7 +4,8 @@
             <div class="ibox-content">
                 <div class="tabs-container">
                     <ul class="nav nav-tabs" role="tablist">
-                        <li><a class="nav-link active show" data-toggle="tab" href="#okul">OKUL</a></li>
+                        <li><a class="nav-link active show" data-toggle="tab" href="#lise">LİSE</a></li>
+                        <li><a class="nav-link active show" data-toggle="tab" href="#universite">ÜNİVERSİTE</a></li>
                         <li><a class="nav-link" data-toggle="tab" href="#banka">BANKA</a></li>
                         <li><a class="nav-link" data-toggle="tab" href="#ekonomik">SOSYO-EKONOMİK</a></li>
                         <li><a class="nav-link" data-toggle="tab" href="#kardes">KARDEŞ</a></li>
@@ -14,9 +15,14 @@
                     </ul>
                 </div>
                 <div class="tab-content">
-                    <div role="tabpanel" id="okul" class="tab-pane active show">
+                    <div role="tabpanel" id="lise" class="tab-pane active show">
                         <div class="panel-body">
-                            <app-ogrenci-okul></app-ogrenci-okul>
+                            <app-ogrenci-lise></app-ogrenci-lise>
+                        </div>
+                    </div>
+                    <div role="tabpanel" id="universite" class="tab-pane">
+                        <div class="panel-body">
+                            <app-ogrenci-universite></app-ogrenci-universite>
                         </div>
                     </div>
                     <div role="tabpanel" id="banka" class="tab-pane">
@@ -52,13 +58,16 @@
                 </div>
                 <div class="ibox-content">
                     <div class="text-center">
-                        <h2 class="text-danger"><strong> Yıldızlı (*) alanlar zorunlu girilmesi
-                                gerekmektedir. Bu alanları doğru girmeye özen gösteriniz.</strong>
-                            <br>
-                            <br>
-                            FORM BİLGİLERİNİ DOLDURUKEN BİLGİ ALMAK VEYA SORUN BİLDİRMEK İÇİN 0544 592 75 63 NUMARADAN
-                            SİNAN ÖZTÜRK BEYLE İRTİBATA GEÇEBİLİRSİNİZ.
-                        </h2>
+                        <label class="text-danger">
+                            <span class="font-bold"> Yıldızlı (*) alanlar zorunlu girilmesi gerekmektedir. Bu
+                                alanları doğru girmeye özen gösteriniz.</span>
+                        </label>
+                        <br>
+                        <label class="text-dark">
+                            Form Bilgilerini Doldururken Bilgi Almak veya Sorun Bildirmek İçin <span
+                                class="font-bold text-danger">0544 592 75 63</span> Numaradan 
+                               <span class="font-bold text-dark">Sinan ÖZTÜRK</span> Beyle İrtibata Geçebilirsiniz.
+                        </label>
                     </div>
                 </div>
             </div>

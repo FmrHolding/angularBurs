@@ -10,7 +10,7 @@ import { OgrenciEvrakComponent } from './ogrenci-evrak/ogrenci-evrak.component';
 import { OgrenciKardesComponent } from './ogrenci-kardes/ogrenci-kardes.component';
 import { OgrenciKisiselComponent } from './ogrenci-kisisel/ogrenci-kisisel.component';
 import { OgrenciLiseComponent } from './ogrenci-lise/ogrenci-lise.component';
-import { OgrenciOkulComponent } from './ogrenci-okul/ogrenci-okul.component';
+import { OgrenciUniversiteComponent } from './ogrenci-universite/ogrenci-universite.component';
 import { OgrenciReferansComponent } from './ogrenci-referans/ogrenci-referans.component';
 import { OgrenciEkonomikComponent } from './ogrenci-ekonomik/ogrenci-ekonomik.component';
 
@@ -22,7 +22,7 @@ import { OgrenciEkonomikComponent } from './ogrenci-ekonomik/ogrenci-ekonomik.co
     OgrenciKardesComponent,
     OgrenciKisiselComponent,
     OgrenciLiseComponent,
-    OgrenciOkulComponent,
+    OgrenciUniversiteComponent,
     OgrenciReferansComponent,
     OgrenciEkonomikComponent
   ],

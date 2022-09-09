@@ -55,33 +55,6 @@ export class OgrenciEkonomikComponent implements OnInit,OnDestroy {
   ngOnInit(): void {
   }
 
-  getAileBeraber(): void {
-    this.parameterService.getAileBeraber().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-      next: (data: any) => {
-        this.aileberaber = data;
-      },
-      error: (err) => this.toastr.error(err, 'Hata')
-    });
-  }
-
-  getAileBirliktelik(): void {
-    this.parameterService.getAileBirliktelik().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-      next: (data: any) => {
-        this.ailebirlikteligi = data;
-      },
-      error: (err) => this.toastr.error(err, 'Hata')
-    });
-  }
-
-  getAiledenAyri(): void {
-    this.parameterService.getAiledenAyri().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-      next: (data: any) => {
-        this.ailedenberaber = data;
-      },
-      error: (err) => this.toastr.error(err, 'Hata')
-    });
-  }
-
   getIkametEdilecekYer(): void {
     this.parameterService.getIkametEdilecekYer().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {

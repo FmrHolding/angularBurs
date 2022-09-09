@@ -13,15 +13,8 @@ export class ParametreService {
   public getFirmalar(): Observable<any[]> {
     let reqheaders = new HttpHeaders();
     reqheaders = reqheaders.append('Content-Type', 'application/json');
-    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/firmalar',
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/firma',
       { headers: reqheaders });
-  }
-
-  public getCinsiyet(): Observable<any[]> {
-    let reqheaders = new HttpHeaders();
-    reqheaders = reqheaders.append('Content-Type', 'application/json');
-    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/cinsiyet',
-    { headers: reqheaders });
   }
 
   public getUniversiteler(): Observable<any[]> {
@@ -56,42 +49,16 @@ export class ParametreService {
     return this.httpClient.get<any[]>(environment.apiURL + 'detay/lisetipleri');
   }
 
-  public getAileBeraber(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/aileberaber');
-  }
-
-  public getAileBirliktelik(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/ailebirliktelik');
-  }
-
-  public getAiledenAyri(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/ailedenayri');
-  }
 
   public getIkametEdilecekYer(): Observable<any[]> {
     return this.httpClient.get<any[]>(environment.apiURL + 'detay/ikametedilecekyer');
-  }
-
-  public getIsDurum(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/isdurum');
   }
 
   public getKardesSayilari(): Observable<any[]> {
     return this.httpClient.get<any[]>(environment.apiURL + 'detay/kardessayilari');
   }
 
-  public getMedeniDurum(): Observable<any[]> {    
-    let reqheaders = new HttpHeaders();
-    reqheaders = reqheaders.append('Content-Type', 'application/json');
-    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/medenidurum',
-    { headers: reqheaders });
-  }
-
   public getOturduguEv(): Observable<any[]> {
     return this.httpClient.get<any[]>(environment.apiURL + 'detay/oturduguev');
-  }
-
-  public getSigaraDurumu(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/sigaradurumu');
   }
 }

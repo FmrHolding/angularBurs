@@ -7,11 +7,11 @@ import { OgrenciService } from 'src/app/services/ogrenci.service';
 import { ParametreService } from 'src/app/services/parametre.service';
 
 @Component({
-  selector: 'app-ogrenci-okul',
-  templateUrl: './ogrenci-okul.component.html'
+  selector: 'app-ogrenci-universite',
+  templateUrl: './ogrenci-universite.component.html'
 })
 
-export class OgrenciOkulComponent implements OnInit,OnDestroy {
+export class OgrenciUniversiteComponent implements OnInit,OnDestroy {
 
   public frmOkul: FormGroup;
   public liseler: any[];

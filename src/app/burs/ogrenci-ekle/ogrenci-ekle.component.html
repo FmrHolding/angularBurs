@@ -5,7 +5,7 @@
                 <h5>BURS İSTEĞİNDE BULUNAN ÖĞRENCİNİN ÖN BİLGİ FORMU</h5>
             </div>
             <div class="ibox-content">
-                <form [formGroup]="onBilgiForm" (ngSubmit)="sendOnBilgi()" autocomplete="off">
+                <form [formGroup]="frmOnBilgi" (ngSubmit)="sendOnBilgi()" autocomplete="off">
                     <div class="form-group row">
                         <div class="col-lg-12">
                             <div class="profile-image">
@@ -23,30 +23,9 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="form-group row">
-                        <div class="col-lg-6">
-                            <label for=""> T.C. Kimlik No *</label>
-                            <input type="text" class="form-control" formControlName="tckimlik"
-                                placeholder="T.C. Kimlik No"
-                                onkeypress="if (event.keyCode != 8 && event.keyCode != 0 && (event.keyCode < 48 || event.keyCode > 57)) return false;"
-                                maxlength="11" (keyup)="onTcKimlikKontrol($event)">
-                            <div *ngIf="submittedRequest && getControlRequest['tckimlik'].errors" class="text-danger">
-                                TC Kimlik Numaranızı girmediniz.
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <label for="">Başvuru Tarihi *</label>
-                            <my-date-picker [options]="myDatePickerOptions" [locale]="locale" [selDate]="basvurutarihi"
-                                (dateChanged)="onBasvuruTarihi($event)" placeholder="Başvuru Tarihi">
-                            </my-date-picker>
-                            <div *ngIf="submittedRequest && getControlRequest['basvurutarihi'].errors"
-                                class="text-danger">
-                                Başvuru Tarihi girmediniz.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
                             <label for="">Hangi Birimimizin Referansı Üzerinden Başvuru Yapıyorsunuz (Eğer herhangi bir
                                 birim üzerinden referansınız yoksa lütfen Holding Seçiniz) *</label>
                             <ng-select [items]="firmalar" bindLabel="unvani" bindValue="id" (change)="onSirket($event)"
@@ -58,7 +37,17 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <label for=""> T.C. Kimlik No *</label>
+                            <input type="text" class="form-control" formControlName="tckimlik"
+                                placeholder="T.C. Kimlik No"
+                                onkeypress="if (event.keyCode != 8 && event.keyCode != 0 && (event.keyCode < 48 || event.keyCode > 57)) return false;"
+                                maxlength="11" (keyup)="onTcKimlikKontrol($event)">
+                            <div *ngIf="submittedRequest && getControlRequest['tckimlik'].errors" class="text-danger">
+                                TC Kimlik Numaranızı girmediniz.
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
                             <label for=""> Adı Soyadı *</label>
                             <input type="text" class="form-control" formControlName="adisoyadi"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
@@ -68,7 +57,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
                             <label for=""> Baba Adı *</label>
                             <input type="text" class="form-control" formControlName="babaadi"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
@@ -86,7 +75,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
                             <label for=""> Doğum Yeri *</label>
                             <input type="text" class="form-control" formControlName="dogumyeri"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
@@ -96,9 +85,8 @@
                         </div>
                         <div class="col-lg-6">
                             <label for=""> Doğum Tarihi *</label>
-                            <my-date-picker #dogumTarihi [options]="myDatePickerOptions" [locale]="locale"
-                                placeholder="Doğum Tarihi" [selDate]="dogumtarihi"
-                                (dateChanged)="onDogumTarihi($event)">
+                            <my-date-picker [options]="myDatePickerOptions" [locale]="locale" placeholder="Doğum Tarihi"
+                                [selDate]="dogumtarihi" (dateChanged)="onDogumTarihi($event)">
                             </my-date-picker>
                             <div *ngIf="submittedRequest && getControlRequest['dogumtarihi'].errors"
                                 class="text-danger">
@@ -107,37 +95,37 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
                             <label for=""> Cinsiyet *</label>
                             <ng-select [items]="cinsiyetler" bindLabel="cinsiyeti" bindValue="id"
                                 (change)="onCinsiyet($event)" placeholder="Cinsiyet Seçiniz">
                             </ng-select>
-                            <div *ngIf="submittedRequest && getControlRequest['cinsiyet'].errors" class="text-danger">
+                            <div *ngIf="submittedRequest && getControlRequest['cinsiyetid'].errors" class="text-danger">
                                 Cinsiyet seçmediniz.
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
                             <label for=""> Medeni Durum *</label>
                             <ng-select [items]="medenidurumlar" bindLabel="durumu" bindValue="id"
                                 (change)="onMedeniDurum($event)" placeholder="Medeni Durum Seçiniz">
                             </ng-select>
-                            <div *ngIf="submittedRequest && getControlRequest['medenidurum'].errors"
+                            <div *ngIf="submittedRequest && getControlRequest['medenihalid'].errors"
                                 class="text-danger">
                                 Medeni Hali seçmediniz.
                             </div>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
                             <label for=""> Cep Telefonu *</label>
                             <input type="text" class="form-control" formControlName="ceptelefonu"
-                                mask='(0000) 000 00 00' [validation]="true" placeholder="Cep Telefonu">
+                                mask='(0000) 000 00 00' [validation]="true" [showMaskTyped]="true" placeholder="Cep Telefonu">
                             <div *ngIf="submittedRequest && getControlRequest['ceptelefonu'].errors"
                                 class="text-danger">
                                 Cep Telefonu girmediniz.
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
                             <label for=""> E-Mail Adresi *</label>
                             <input type="email" class="form-control" formControlName="email"
                                 placeholder="E-Mail Adresi Giriniz">
@@ -147,10 +135,10 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="text-right">
                                 <div class="btn-group">
-                                    <button type="submit" class="btn btn-outline btn-primary"><i class="fa fa-save"></i>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>
                                         Kaydet</button>
                                 </div>
                             </div>
@@ -160,13 +148,16 @@
             </div>
             <div class="ibox-content">
                 <div class="text-center">
-                    <h2 class="text-danger"><strong> Yıldızlı (*) alanlar zorunlu girilmesi gerekmektedir. Bu
-                            alanları doğru girmeye özen gösteriniz.</strong>
+                    <label class="text-danger">
+                        <span class="font-bold"> Yıldızlı (*) alanlar zorunlu girilmesi gerekmektedir. Bu
+                            alanları doğru girmeye özen gösteriniz.</span>
+                    </label>
                     <br>
-                    <br>
-                    FORM BİLGİLERİNİ DOLDURUKEN BİLGİ ALMAK VEYA SORUN BİLDİRMEK İÇİN 0544 592 75 63 NUMARADAN SİNAN
-                    ÖZTÜRK BEYLE İRTİBATA GEÇEBİLİRSİNİZ.
-                </h2>
+                    <label class="text-dark">
+                        Form Bilgilerini Doldururken Bilgi Almak veya Sorun Bildirmek İçin <span
+                            class="font-bold text-danger">0544 592 75 63</span> Numaradan
+                        <span class="font-bold text-dark">Sinan ÖZTÜRK</span> Beyle İrtibata Geçebilirsiniz.
+                    </label>
                 </div>
             </div>
         </div>
