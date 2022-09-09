@@ -1,175 +1,218 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
-import { OgrenciService } from 'src/app/services/ogrenci.service';
 import { ParametreService } from 'src/app/services/parametre.service';
+import { UniversiteService } from 'src/app/services/universite.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-ogrenci-universite',
   templateUrl: './ogrenci-universite.component.html'
 })
 
-export class OgrenciUniversiteComponent implements OnInit,OnDestroy {
+export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
 
-  public frmOkul: FormGroup;
-  public liseler: any[];
-  public lisetipleri: any[];
-  public universitler: any[];
-  public universitesinif: any[];
-  public universitetipleri: any[];
-  public universiteburslar: any[];
+  public frmUniversite: FormGroup;
+  submitted = false;
+  universitler: any[];
+  siniflar: any[];
+  fakulteler: any[];
+  turler: any = [];
+  burslar: any = [];
   private ngUnsubscribe$ = new Subject<void>();
 
+  @Input() ogrenciId: number;
+  @ViewChild('ngUniversite', { static: true }) ngUniversite: NgSelectComponent;
+  @ViewChild('ngFakulte', { static: true }) ngFakulte: NgSelectComponent;
+  @ViewChild('ngSinif', { static: true }) ngSinif: NgSelectComponent;
+  @ViewChild('ngTuru', { static: true }) ngTuru: NgSelectComponent;
+  @ViewChild('ngBurs', { static: true }) ngBurs: NgSelectComponent;
 
   constructor(
-    private route: ActivatedRoute,
     private fb: FormBuilder,
-    private parametreService: ParametreService,
-    private ogrenciService: OgrenciService,
+    private parameterService: ParametreService,
+    private universiteService: UniversiteService,
     private toastr: ToastrService
   ) {
-    this.frmOkul = this.fb.group({
-      id: [0, [Validators.required]],
+    this.frmUniversite = this.fb.group({
       ogrenciid: [0, [Validators.required]],
-      universiteid: [0, [Validators.required]],
-      fakulte: [null, [Validators.required]],
-      bolum: [null, [Validators.required]],
-      sinif: [null, [Validators.required]],
-      universitetipi: [null, [Validators.required]],
-      ucreti: [null, [Validators.required]],
-      bursluluk: [null, [Validators.required]],
-      liseadi: [null, [Validators.required]],
-      lisetipi: [null, [Validators.required]],
-      liseturu: [null, [Validators.required]]
+      universiteid: ['', [Validators.required]],
+      fakulteid: ['', [Validators.required]],
+      bolum: ['', [Validators.required]],
+      sinifid: ['', [Validators.required]],
+      turid: ['', [Validators.required]],
+      bursid: ['', [Validators.required]]
     });
   }
 
   ngOnInit(): void {
+    this.frmUniversite.get('ogrenciid').setValue(this.ogrenciId);
+    this.getViewUniversite();
+    this.getViewFakulte();
+    this.getViewSinif();
+    this.getViewTur();
+    this.getViewBurs();
+    this.ngBurs.setDisabledState(true);
   }
 
-  getUniversiteler(): void {
-    this.parametreService.getUniversiteler().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+  get getControlRequest() { return this.frmUniversite.controls; }
+
+  getViewUniversite(): void {
+    this.parameterService.getUniversite().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.universitler = data;
+        this.universitler = data.value;;
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
   }
 
-  getUniversiteSinif(): void {
-    this.parametreService.getUniversiteSinif().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+  getViewFakulte(): void {
+    this.parameterService.getFakulte().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.universitesinif = data;
+        this.fakulteler = data.value;
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
   }
 
-  getUniversiteBurslar(): void {
-    this.parametreService.getUniversiteBurslar().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+  getViewSinif(): void {
+    this.parameterService.getSinif().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.universiteburslar = data;
+        this.siniflar = data.value;
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
   }
 
-  getUniversiteTipleri(): void {
-    this.parametreService.getUniversiteTipleri().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-      next: (data: any) => {
-        this.universitetipleri = data;
-      },
-      error: (err) => this.toastr.error(err, 'Hata')
-    });
+  getViewTur(): void {
+    this.turler = [
+      { id: 1, turu: 'Devlet Üniversitesi' },
+      { id: 2, turu: 'Vakıf (Özel) Üniversitesi' }
+    ]
   }
 
-  getLiseler(): void {
-    this.parametreService.getLiseler().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-      next: (data: any) => {
-        this.liseler = data;
-      },
-      error: (err) => this.toastr.error(err, 'Hata')
-    });
-  }
-
-  getLiseTipleri(): void {
-    this.parametreService.getLiseTipleri().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-      next: (data: any) => {
-        this.lisetipleri = data;
-      },
-      error: (err) => this.toastr.error(err, 'Hata')
-    });
-  }
-
-  onLiseTipi(event): void {
-    if (event !== undefined) {
-      this.frmOkul.get('lisetipi').setValue(event.id);
-    } else {
-      this.frmOkul.get('lisetipi').setValue(null);
-    }
-  }
-
-  onLiseTuru(event): void {
-    if (event !== undefined) {
-      this.frmOkul.get('liseturu').setValue(event.id);
-    } else {
-      this.frmOkul.get('liseturu').setValue(null);
-    }
+  getViewBurs(): void {
+    this.burslar = [
+      { id: 1, burs: "%100 Burslu" },
+      { id: 2, burs: "%75 Burslu" },
+      { id: 3, burs: "%50 Burslu" },
+      { id: 4, burs: "%25 Burslu" },
+      { id: 5, burs: "%0 Ücretli Okuyorum" }
+    ]
   }
 
   onUniversite(event): void {
     if (event !== undefined) {
-      this.frmOkul.get('universiteid').setValue(event.id);
+      this.frmUniversite.get('universiteid').setValue(event.id);
     } else {
-      this.frmOkul.get('universiteid').setValue(null);
+      this.frmUniversite.get('universiteid').setValue(null);
     }
   }
 
-  onUniversiteSinif(event): void {
+  onFakulte(event): void {
     if (event !== undefined) {
-      this.frmOkul.get('sinif').setValue(event.id);
+      this.frmUniversite.get('fakulteid').setValue(event.id);
     } else {
-      this.frmOkul.get('sinif').setValue(null);
+      this.frmUniversite.get('fakulteid').setValue(null);
     }
   }
 
-  onUniversiteTipi(event): void {
+  onSinif(event): void {
     if (event !== undefined) {
-      this.frmOkul.get('universitetipi').setValue(event.id);
+      this.frmUniversite.get('sinifid').setValue(event.id);
     } else {
-      this.frmOkul.get('universitetipi').setValue(null);
+      this.frmUniversite.get('sinifid').setValue(null);
     }
   }
 
-  onUniversiteBursTuru(event): void {
+  onTuru(event): void {
     if (event !== undefined) {
-      this.frmOkul.get('bursluluk').setValue(event.id);
+      this.frmUniversite.get('turid').setValue(event.id);
     } else {
-      this.frmOkul.get('bursluluk').setValue(null);
+      this.frmUniversite.get('turid').setValue(null);
+    }
+    if (event.id === 1) {
+      this.ngBurs.setDisabledState(true);
+      this.frmUniversite.get('bursid').setValue(5);
+    } else {
+      this.ngBurs.setDisabledState(false);
     }
   }
 
+  onBurs(event): void {
+    if (event !== undefined) {
+      this.frmUniversite.get('bursid').setValue(event.id);
+    } else {
+      this.frmUniversite.get('bursid').setValue(null);
+    }
+  }
 
-  /*
-  this.ogrenciService.setOkulKayit(this.frmOkul.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-    next: (data: any) => {
-      if (data === 1) {
-        this.toastr.success('Okul Bilgisi Kaydı Başarılı.', 'Bilgilendirme');
-      } else {
-        this.toastr.error(data, 'Hata');
-      }
-    },
-    error: (err) => this.toastr.error(err, 'Hata')
-  });
-}
-*/
+  insertBilgi(): void {
+    this.submitted = true;
+    if (this.frmUniversite.invalid) {
+      return;
+    } else {
+      Swal.fire({
+        title: 'Üniversite Bilgi Kayıt',
+        text: 'Girmiş olduğunuz bilgiler kayıt edilecektir. Onaylıyor musunuz?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonText: 'Vazgeç',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Evet'
+      }).then((result) => {
+        if (result.value) {
+          this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+            next: (data: any) => {
+              if (data.statusCode === 201) {
+                this.toastr.success(data.message, 'Bilgilendirme');
+              } else {
+                this.toastr.error(data.message, 'Hata');
+              }
+            },
+            error: (err) => this.toastr.error(err, 'Hata')
+          });
+        }
+      });
+    }
+  }
 
-ngOnDestroy(): void {
-  this.ngUnsubscribe$.next();
-  this.ngUnsubscribe$.complete();
-}
+  updateBilgi(): void {
+    this.submitted = true;
+    if (this.frmUniversite.invalid) {
+      return;
+    } else {
+      Swal.fire({
+        title: 'Üniversite Bilgi Kayıt',
+        text: 'Girmiş olduğunuz bilgiler kayıt edilecektir. Onaylıyor musunuz?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonText: 'Vazgeç',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Evet'
+      }).then((result) => {
+        if (result.value) {
+          this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+            next: (data: any) => {
+              if (data.statusCode === 201) {
+                this.toastr.success(data.message, 'Bilgilendirme');
+              } else {
+                this.toastr.error(data.message, 'Hata');
+              }
+            },
+            error: (err) => this.toastr.error(err, 'Hata')
+          });
+        }
+      });
+    }
+  }
 
-
+  ngOnDestroy(): void {
+    this.ngUnsubscribe$.next();
+    this.ngUnsubscribe$.complete();
+  }
 }
