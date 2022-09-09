@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import localeTr from '@angular/common/locales/tr';
 import { registerLocaleData } from '@angular/common';
@@ -15,6 +15,8 @@ export class OgrenciKardesComponent implements OnInit {
   medenidurumlar: any = [];
   isdurumlari: any = [];
 
+  @Input() ogrenciId: number;
+  
   constructor(
     private fb: FormBuilder
   ) {

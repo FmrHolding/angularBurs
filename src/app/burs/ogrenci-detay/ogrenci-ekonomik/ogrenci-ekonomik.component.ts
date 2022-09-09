@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
@@ -24,6 +24,8 @@ export class OgrenciEkonomikComponent implements OnInit,OnDestroy {
   babaolu:boolean=false;
   private ngUnsubscribe$=new Subject<void>();
 
+  @Input() ogrenciId: number;
+  
   constructor(
     private parameterService:ParametreService,
     private fb:FormBuilder,
@@ -56,18 +58,18 @@ export class OgrenciEkonomikComponent implements OnInit,OnDestroy {
   }
 
   getIkametEdilecekYer(): void {
-    this.parameterService.getIkametEdilecekYer().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+    this.parameterService.getMulk().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.ikametedilecekyer = data;
+        this.ikametedilecekyer = data.value;
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
   }
 
   getOgrenimler(): void {
-    this.parameterService.getOgrenimler().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+    this.parameterService.getMezuniyet().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.ogrenimler = data;
+        this.ogrenimler = data.value;
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });

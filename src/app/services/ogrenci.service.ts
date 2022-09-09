@@ -18,7 +18,31 @@ export class OgrenciService {
     return this.httpClient.post<any>(environment.apiURL + 'ogrenci/ogrenci', ogrenci);
   }
 
-  public setOkulKayit(okul): Observable<any> {
-    return this.httpClient.post(environment.apiURL + 'detay/okulkayit', okul);
+  public setUniversiteKayit(universite: any): Observable<any> {
+    return this.httpClient.post(environment.apiURL + 'ogrenci/universite', universite);
+  }
+
+  public setBankaKayit(banka: any): Observable<any> {
+    return this.httpClient.post(environment.apiURL + 'ogrenci/banka', banka);
+  }
+
+  public setEkonomikKayit(ekonomik: any): Observable<any> {
+    return this.httpClient.post(environment.apiURL + 'ogrenci/ekonomik', ekonomik);
+  }
+
+  public setKardesKayit(kardes: any): Observable<any> {
+    return this.httpClient.post(environment.apiURL + 'ogrenci/kardes', kardes);
+  }
+
+  public setKisiselKayit(kisisel: any): Observable<any> {
+    return this.httpClient.post(environment.apiURL + 'ogrenci/kisisel', kisisel);
+  }
+
+  public setReferansKayit(referans: any): Observable<any> {
+    return this.httpClient.post(environment.apiURL + 'ogrenci/referans', referans);
+  }
+
+  public setEvrakKayit(evrak: any): Observable<any> {
+    return this.httpClient.post(environment.apiURL + 'ogrenci/evrak', evrak);
   }
 }

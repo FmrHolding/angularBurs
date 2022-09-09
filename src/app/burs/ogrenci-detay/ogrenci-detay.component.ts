@@ -7,12 +7,13 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class OgrenciDetayComponent implements OnInit {
 
+  ogrenciId:number;
   constructor(
     private route: ActivatedRoute
   ) {  }
 
   ngOnInit(): void {
-    const ogrenciNo = parseInt(this.route.snapshot.paramMap.get('id'));
+    this.ogrenciId = parseInt(this.route.snapshot.paramMap.get('id'));
   }
 
 }

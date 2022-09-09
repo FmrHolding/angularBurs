@@ -10,55 +10,43 @@ export class ParametreService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getFirmalar(): Observable<any[]> {
-    let reqheaders = new HttpHeaders();
-    reqheaders = reqheaders.append('Content-Type', 'application/json');
-    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/firma',
-      { headers: reqheaders });
+  public getFirma(): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/firma');
   }
 
-  public getUniversiteler(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/universiteler');
+  public getLiseTur(): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/lisetur');
   }
 
-  public getUniversiteSinif(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/universitesinif');
+  public getLise(turid: number): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/lise?turid=' + turid);
+  } 
+
+  public getSinif(): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/sinif');
   }
 
-  public getUniversiteBurslar(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/universiteburslar');
+  public getUniversite(): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/universite');
   }
 
-  public getUniversiteTipleri(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/universitetipleri');
+  public getFakulte(): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/fakulte');
   }
 
-  public getLiseler(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/liseler');
+  public getBanka(): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/banka');
   }
 
-  public getBankalar(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'Parameter/bankalar');
+  public getMezuniyet(): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/mezuniyet');
   }
 
-  public getOgrenimler(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/ogrenimler');
+  public getIkamet(): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/ikamet');
   }
 
-  public getLiseTipleri(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/lisetipleri');
-  }
-
-
-  public getIkametEdilecekYer(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/ikametedilecekyer');
-  }
-
-  public getKardesSayilari(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/kardessayilari');
-  }
-
-  public getOturduguEv(): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'detay/oturduguev');
+  public getMulk(): Observable<any[]> {
+    return this.httpClient.get<any[]>(environment.apiURL + 'parameter/mulk');
   }
 }

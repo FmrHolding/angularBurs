@@ -20,7 +20,7 @@ registerLocaleData(localeTr, 'tr');
 export class OgrenciEkleComponent implements OnInit, OnDestroy {
 
   frmOnBilgi: FormGroup;
-  submittedRequest = false;
+  submitted = false;
   firmalar = [];
   cinsiyetler = [];
   medenidurumlar = [];
@@ -87,7 +87,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   get getControlRequest() { return this.frmOnBilgi.controls; }
 
   getViewFirmalar(): void {
-    this.parametreService.getFirmalar().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+    this.parametreService.getFirma().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
         if (data.statusCode == 200) {
           this.firmalar = data.value;
@@ -191,7 +191,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   }
 
   sendOnBilgi(): void {
-    this.submittedRequest = true;
+    this.submitted = true;
     if (this.frmOnBilgi.invalid) {
       return;
     } else {

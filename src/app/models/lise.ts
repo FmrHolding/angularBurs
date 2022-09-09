@@ -1,7 +1,8 @@
 export class Lise {
-    id:number;
+    id?:number;
     ogrenciid:number;
     liseid:number;
     liseturuid:number;
-    sinifid:number
+    sinifid:number;
+    liseadi:string;
 }

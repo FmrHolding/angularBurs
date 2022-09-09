@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { takeUntil } from 'rxjs';
 import { Subject } from 'rxjs';
 import { CihazipService } from '../services/cihazip.service';
+declare var $: any;
 
 @Component({
   selector: 'app-kvkk',
@@ -13,7 +14,6 @@ import { CihazipService } from '../services/cihazip.service';
 })
 export class KvkkComponent implements OnInit {
 
-  public kvkkOnay: boolean;
   private ngUnsubscribe$ = new Subject<void>();
 
   constructor(
@@ -23,9 +23,13 @@ export class KvkkComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    $('#modalDuyuru').modal('show');
     localStorage.removeItem('kvkkOnay');
-    this.kvkkOnay = false;
     this.getIP();
+  }
+
+  onModalKapat(): void {
+    $('#modalDuyuru').modal('hide');
   }
 
   getIP(): void {
@@ -40,10 +44,8 @@ export class KvkkComponent implements OnInit {
 
   isChecked(event): void {
     if (event.target.checked) {
-      this.kvkkOnay = true;
       localStorage.setItem('kvkkOnay', 'true');
     } else {
-      this.kvkkOnay = false;
       localStorage.setItem('kvkkOnay', 'false');
     }
   }

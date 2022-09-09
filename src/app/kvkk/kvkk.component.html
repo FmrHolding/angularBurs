@@ -55,7 +55,7 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="text-right">
-                            <button type="button" class="btn btn-outline btn-default" [disabled]="!kvkkOnay"
+                            <button type="button" class="btn btn-outline btn-default" [disabled]="!isChecked"
                                 (click)="onOgrenciForm()">Sonraki Forma Geç</button>
                         </div>
                     </div>
@@ -63,10 +63,33 @@
                 <br>
                 <label class="text-dark">
                     Form Bilgilerini Doldururken Bilgi Almak veya Sorun Bildirmek İçin <span
-                        class="font-bold text-danger">0544 592 75 63</span> Numaradan 
-                       <span class="font-bold text-dark">Sinan ÖZTÜRK</span> Beyle İrtibata Geçebilirsiniz.
+                        class="font-bold text-danger">0358 223 0203</span> Numaradan
+                    <span class="font-bold text-dark">Sinan ÖZTÜRK</span> Beyle İrtibata Geçebilirsiniz.
                 </label>
-            </div>            
+            </div>
         </div>
     </div>
 </div>
+
+<div class="form-group row">
+    <div class="modal inmodal fade" id="modalDuyuru" data-backdrop="static" tabindex="-1" role="dialog"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1 class="text-center"><span class="text-danger font-bold">ÖNEMLİ UYARI</span> </h1>
+                    <p style="font-size:large ;">
+                        <br> Sevgili öğrenciler, burs kontenjanı sınırlı olduğu için başvurularınız
+                        <span class="font-bold text-dark">Burs Değerlendirme Komisyonu</span> tarafından
+                        değerlendirilecek
+                        olup belli değerlendirme kriterlerine göre sonuçlandırılacak ve başvurusu kabul edilen
+                        öğrencilere
+                        duyurulacaktır
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="onModalKapat()"> Okudum</button>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -5,7 +5,7 @@
                 <h5>BURS İSTEĞİNDE BULUNAN ÖĞRENCİNİN ÖN BİLGİ FORMU</h5>
             </div>
             <div class="ibox-content">
-                <form [formGroup]="frmOnBilgi" (ngSubmit)="sendOnBilgi()" autocomplete="off">
+                <form [formGroup]="frmOnBilgi" autocomplete="off">
                     <div class="form-group row">
                         <div class="col-lg-12">
                             <div class="profile-image">
@@ -17,7 +17,7 @@
                                 <input id="logo" type="file" class="custom-file-input" name="ogrenciresim"
                                     accept="image/*" (change)="secilenResim($event)">
                                 <label for="logo" class="custom-file-label">Fotoğraf Yükle...</label>
-                                <div *ngIf="submittedRequest && getControlRequest['resim'].errors" class="text-danger">
+                                <div *ngIf="submitted && getControlRequest['resim'].errors" class="text-danger">
                                     Resim eklemediniz.
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                             <ng-select [items]="firmalar" bindLabel="unvani" bindValue="id" (change)="onSirket($event)"
                                 placeholder="Firma Seçiniz">
                             </ng-select>
-                            <div *ngIf="submittedRequest && getControlRequest['firmaid'].errors" class="text-danger">
+                            <div *ngIf="submitted && getControlRequest['firmaid'].errors" class="text-danger">
                                 Herhangi bir firma seçmediniz.
                             </div>
                         </div>
@@ -43,7 +43,7 @@
                                 placeholder="T.C. Kimlik No"
                                 onkeypress="if (event.keyCode != 8 && event.keyCode != 0 && (event.keyCode < 48 || event.keyCode > 57)) return false;"
                                 maxlength="11" (keyup)="onTcKimlikKontrol($event)">
-                            <div *ngIf="submittedRequest && getControlRequest['tckimlik'].errors" class="text-danger">
+                            <div *ngIf="submitted && getControlRequest['tckimlik'].errors" class="text-danger">
                                 TC Kimlik Numaranızı girmediniz.
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                             <label for=""> Adı Soyadı *</label>
                             <input type="text" class="form-control" formControlName="adisoyadi"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
-                            <div *ngIf="submittedRequest && getControlRequest['adisoyadi'].errors" class="text-danger">
+                            <div *ngIf="submitted && getControlRequest['adisoyadi'].errors" class="text-danger">
                                 Ad Soyad bilginizi girmediniz.
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                             <label for=""> Baba Adı *</label>
                             <input type="text" class="form-control" formControlName="babaadi"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
-                            <div *ngIf="submittedRequest && getControlRequest['babaadi'].errors" class="text-danger">
+                            <div *ngIf="submitted && getControlRequest['babaadi'].errors" class="text-danger">
                                 Baba adı bilginizi girmediniz.
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                             <label for=""> Anne Adı *</label>
                             <input type="text" class="form-control" formControlName="anneadi"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
-                            <div *ngIf="submittedRequest && getControlRequest['anneadi'].errors" class="text-danger">
+                            <div *ngIf="submitted && getControlRequest['anneadi'].errors" class="text-danger">
                                 Anne adı bilginizi girmediniz.
                             </div>
                         </div>
@@ -79,7 +79,7 @@
                             <label for=""> Doğum Yeri *</label>
                             <input type="text" class="form-control" formControlName="dogumyeri"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
-                            <div *ngIf="submittedRequest && getControlRequest['dogumyeri'].errors" class="text-danger">
+                            <div *ngIf="submitted && getControlRequest['dogumyeri'].errors" class="text-danger">
                                 Doğum yeri bilginizi girmediniz.
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                             <my-date-picker [options]="myDatePickerOptions" [locale]="locale" placeholder="Doğum Tarihi"
                                 [selDate]="dogumtarihi" (dateChanged)="onDogumTarihi($event)">
                             </my-date-picker>
-                            <div *ngIf="submittedRequest && getControlRequest['dogumtarihi'].errors"
+                            <div *ngIf="submitted && getControlRequest['dogumtarihi'].errors"
                                 class="text-danger">
                                 Doğum Tarihi girmediniz.
                             </div>
@@ -100,7 +100,7 @@
                             <ng-select [items]="cinsiyetler" bindLabel="cinsiyeti" bindValue="id"
                                 (change)="onCinsiyet($event)" placeholder="Cinsiyet Seçiniz">
                             </ng-select>
-                            <div *ngIf="submittedRequest && getControlRequest['cinsiyetid'].errors" class="text-danger">
+                            <div *ngIf="submitted && getControlRequest['cinsiyetid'].errors" class="text-danger">
                                 Cinsiyet seçmediniz.
                             </div>
                         </div>
@@ -109,7 +109,7 @@
                             <ng-select [items]="medenidurumlar" bindLabel="durumu" bindValue="id"
                                 (change)="onMedeniDurum($event)" placeholder="Medeni Durum Seçiniz">
                             </ng-select>
-                            <div *ngIf="submittedRequest && getControlRequest['medenihalid'].errors"
+                            <div *ngIf="submitted && getControlRequest['medenihalid'].errors"
                                 class="text-danger">
                                 Medeni Hali seçmediniz.
                             </div>
@@ -120,7 +120,7 @@
                             <label for=""> Cep Telefonu *</label>
                             <input type="text" class="form-control" formControlName="ceptelefonu"
                                 mask='(0000) 000 00 00' [validation]="true" [showMaskTyped]="true" placeholder="Cep Telefonu">
-                            <div *ngIf="submittedRequest && getControlRequest['ceptelefonu'].errors"
+                            <div *ngIf="submitted && getControlRequest['ceptelefonu'].errors"
                                 class="text-danger">
                                 Cep Telefonu girmediniz.
                             </div>
@@ -129,7 +129,7 @@
                             <label for=""> E-Mail Adresi *</label>
                             <input type="email" class="form-control" formControlName="email"
                                 placeholder="E-Mail Adresi Giriniz">
-                            <div *ngIf="submittedRequest && getControlRequest['email'].errors" class="text-danger">
+                            <div *ngIf="submitted && getControlRequest['email'].errors" class="text-danger">
                                 Email adresini girmediniz.
                             </div>
                         </div>
@@ -138,7 +138,7 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="text-right">
                                 <div class="btn-group">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>
+                                    <button type="submit" class="btn btn-primary" (click)="sendOnBilgi()"><i class="fa fa-save"></i>
                                         Kaydet</button>
                                 </div>
                             </div>
@@ -155,7 +155,7 @@
                     <br>
                     <label class="text-dark">
                         Form Bilgilerini Doldururken Bilgi Almak veya Sorun Bildirmek İçin <span
-                            class="font-bold text-danger">0544 592 75 63</span> Numaradan
+                            class="font-bold text-danger">0358 223 0203</span> Numaradan
                         <span class="font-bold text-dark">Sinan ÖZTÜRK</span> Beyle İrtibata Geçebilirsiniz.
                     </label>
                 </div>
