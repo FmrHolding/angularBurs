@@ -10,7 +10,7 @@ export class UniversiteService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getUniversiteGetir(ogrenciid:number): Observable<any[]> {
+  public getUniversite(ogrenciid:number): Observable<any[]> {
     return this.httpClient.get<any[]>(environment.apiURL + 'universite/get?ogrenciid=' + ogrenciid);
   }
 

@@ -9,6 +9,8 @@ import Swal from 'sweetalert2';
 import localeTr from '@angular/common/locales/tr';
 import { registerLocaleData } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { environment } from 'src/environments/environment';
 registerLocaleData(localeTr, 'tr');
 
 @Component({
@@ -20,6 +22,8 @@ registerLocaleData(localeTr, 'tr');
 export class OgrenciEkleComponent implements OnInit, OnDestroy {
 
   frmOnBilgi: FormGroup;
+  EdittoUpdate: boolean = false;
+  resimyolu: string;
   submitted = false;
   firmalar = [];
   cinsiyetler = [];
@@ -42,6 +46,10 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
     dateFormat: 'dd.mm.yyyy'
   };
 
+  @ViewChild('ngFirma', { static: true }) ngFirma: NgSelectComponent;
+  @ViewChild('ngCinsiyet', { static: true }) ngCinsiyet: NgSelectComponent;
+  @ViewChild('ngMedeniHal', { static: true }) ngMedeniHal: NgSelectComponent;
+
   constructor(
     private router: Router,
     private toastr: ToastrService,
@@ -51,6 +59,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   ) {
 
     this.frmOnBilgi = this.formBuilder.group({
+      id: ['', [Validators.required]],
       basvurutarihi: ['', [Validators.required]],
       firmaid: ['', [Validators.required]],
       adisoyadi: ['', [Validators.required]],
@@ -73,9 +82,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
       if (localStorage.getItem('kvkkOnay') === 'true') {
         this.frmOnBilgi.get("basvurutarihi").setValue(new Date().toLocaleDateString());
         this.frmOnBilgi.get("kvkkonay").setValue(localStorage.getItem('kvkkOnay'));
-        this.getViewFirmalar();
-        this.getCinsiyet();
-        this.getMedeniDurum();
+        this.resimyolu = environment.apiFile;
       } else {
         this.router.navigate(['/kvkk']);
       }
@@ -85,6 +92,35 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   }
 
   get getControlRequest() { return this.frmOnBilgi.controls; }
+
+  getViewOgrenci(tckimlik: string): void {
+    this.ogrenciService.getOgrenci(tckimlik).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+      next: (data: any) => {
+        if (data.value != null) {
+          this.EdittoUpdate = true;
+          this.yuklenecekResim = this.resimyolu + data.value.resimyolu;
+          console.log(this.yuklenecekResim);
+          const dogumTarihi = new Date(data.value.dogumtarihi);
+          const basvuruTarihi = new Date(data.value.basvurutarihi);
+          this.dogumtarihi = { year: dogumTarihi.getFullYear(), month: dogumTarihi.getMonth() + 1, day: dogumTarihi.getDate() };
+          this.basvurutarihi = { year: basvuruTarihi.getFullYear(), month: basvuruTarihi.getMonth() + 1, day: basvuruTarihi.getDate() };
+          this.frmOnBilgi.patchValue(data.value);
+          this.getViewFirmalar();
+          this.getViewCinsiyet();
+          this.getViewMedeniDurum();
+        } else {
+          this.EdittoUpdate = false;
+          this.ngFirma.handleClearClick();
+          this.ngCinsiyet.handleClearClick();
+          this.ngMedeniHal.handleClearClick();
+          this.getViewFirmalar();
+          this.getViewCinsiyet();
+          this.getViewMedeniDurum();
+        }
+      },
+      error: (err) => this.toastr.error(err, 'Hata')
+    });
+  }
 
   getViewFirmalar(): void {
     this.parametreService.getFirma().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
@@ -99,14 +135,14 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
     });
   }
 
-  getCinsiyet(): void {
+  getViewCinsiyet(): void {
     this.cinsiyetler = [
       { id: 1, cinsiyeti: 'Erkek' },
       { id: 2, cinsiyeti: 'Kadın' }
     ];
   }
 
-  getMedeniDurum(): void {
+  getViewMedeniDurum(): void {
     this.medenidurumlar = [
       { id: 1, durumu: 'Bekar' },
       { id: 2, durumu: 'Evli' },
@@ -136,6 +172,8 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
     if (event.target.value.length === 11) {
       if (!this.getTcKimlikDogrula(event.target.value)) {
         this.toastr.error("TC Kimlik doğrulanmadı", 'Hata');
+      } else {
+        this.getViewOgrenci(event.target.value)
       }
     }
   }
@@ -190,7 +228,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
     }
   }
 
-  sendOnBilgi(): void {
+  insertBilgi(): void {
     this.submitted = true;
     if (this.frmOnBilgi.invalid) {
       return;
@@ -207,7 +245,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
       }).then((result) => {
         if (result.value) {
           const formData: FormData = new FormData();
-          formData.append('id','0');
+          formData.append('id', '0');
           formData.append('firmaid', this.frmOnBilgi.get('firmaid').value);
           formData.append('adisoyadi', this.frmOnBilgi.get('adisoyadi').value);
           formData.append('babaadi', this.frmOnBilgi.get('babaadi').value);
@@ -228,7 +266,57 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
                 localStorage.setItem('ogrenciId', data.value);
                 this.toastr.success(data.message, 'Bilgilendirme');
                 setTimeout(() => {
-                  this.router.navigate(['burs/detay/'+data.value]);
+                  this.router.navigate(['burs/detay/' + data.value]);
+                }, 1500);
+              } else {
+                this.toastr.error(data.message, 'Hata');
+              }
+            },
+            error: (err) => this.toastr.error(err, 'Hata')
+          });
+        }
+      });
+    }
+  }
+
+  updateBilgi(): void {
+    this.submitted = true;
+    if (this.frmOnBilgi.invalid) {
+      return;
+    } else {
+      Swal.fire({
+        title: 'Ön Bilgi Kayıt',
+        text: 'Girmiş olduğunuz bilgiler kayıt edilecektir. Onaylıyor musunuz?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonText: 'Vazgeç',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Evet'
+      }).then((result) => {
+        if (result.value) {
+          const formData: FormData = new FormData();
+          formData.append('id', this.frmOnBilgi.get('id').value);
+          formData.append('firmaid', this.frmOnBilgi.get('firmaid').value);
+          formData.append('adisoyadi', this.frmOnBilgi.get('adisoyadi').value);
+          formData.append('babaadi', this.frmOnBilgi.get('babaadi').value);
+          formData.append('anneadi', this.frmOnBilgi.get('anneadi').value);
+          formData.append('dogumyeri', this.frmOnBilgi.get('dogumyeri').value);
+          formData.append('dogumtarihi', this.frmOnBilgi.get('dogumtarihi').value);
+          formData.append('cinsiyetid', this.frmOnBilgi.get('cinsiyetid').value);
+          formData.append('medenihalid', this.frmOnBilgi.get('medenihalid').value);
+          formData.append('tckimlik', this.frmOnBilgi.get('tckimlik').value);
+          formData.append('ceptelefonu', this.frmOnBilgi.get('ceptelefonu').value);
+          formData.append('email', this.frmOnBilgi.get('email').value);
+          formData.append('ogrenciresim', this.file);
+          formData.append('basvurutarihi', this.frmOnBilgi.get('basvurutarihi').value);
+          formData.append('kvkkonay', this.frmOnBilgi.get('kvkkonay').value);
+          this.ogrenciService.setOgrenciUpdate(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+            next: (data: any) => {
+              if (data.statusCode === 200) {
+                this.toastr.success(data.message, 'Bilgilendirme');
+                setTimeout(() => {
+                  this.router.navigate(['burs/detay/' + this.frmOnBilgi.get('id').value]);
                 }, 1500);
               } else {
                 this.toastr.error(data.message, 'Hata');

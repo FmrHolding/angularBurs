@@ -1,51 +1,124 @@
 <br>
 <h4>(Bu bölümün doldurulması bursunuzun değerlendirilmesinde önem arz etmektedir.)</h4>
 <hr>
+<div class="form-group row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="text-right">
+            <button class="btn btn-success" (click)="onYeniReferans()"> Referans Ekle</button>
+        </div>
+    </div>
+</div>
 <form [formGroup]="frmReferans" autocomplete="off">
     <div class="form-group row">
-        <div class="col-lg-3">
-            <label for=""> Adı ve Soyadı</label>
-            <input type="text" class="form-control" placeholder="Adı ve Soyadı" formControlName="referans1adisoyadi">
-        </div>
-        <div class="col-lg-3">
-            <label for=""> Yakınlık Derecesi</label>
-            <input type="text" class="form-control" placeholder="Yakınlık Derecesi" formControlName="referans2yakinlik">
-        </div>
-        <div class="col-lg-4">
-            <label for=""> Mesleği/Görevi</label>
-            <input type="text" class="form-control" placeholder="Görevi" formControlName="referans1gorevi">
-        </div>
-        <div class="col-lg-2">
-            <label for="">Cep Telefonu</label>
-            <input type="number" class="form-control" placeholder="Telefonu" formControlName="referans1telefon">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <ngx-datatable class="bootstrap" [rows]="rows" [columnMode]="ColumnMode.flex" [limit]="30"
+                [headerHeight]="40" [footerHeight]="40" rowHeight="auto" [scrollbarH]="true">
+                <ngx-datatable-column name="Adı Soyadı" [flexGrow]="1.5">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.adisoyadi }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Yaşı" [flexGrow]="0.5">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.yas }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Medehi Hali" [flexGrow]="0.6">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <span *ngIf="row.medenihalid===1">Bekar</span>
+                        <span *ngIf="row.medenihalid===2">Evli</span>
+                        <span *ngIf="row.medenihalid===3">Boşanmış</span>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Okulu" [flexGrow]="2">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.okul }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Gelir/Burs" [flexGrow]="1">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.gelirburs | currency:"TRY":"symbol" }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="#" [flexGrow]="0.4">
+                    <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger" (click)="onDelete(rowIndex)"><i
+                                    class="fa fa-trash"></i></button>
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-3">
-            <input type="text" class="form-control" placeholder="Adı ve Soyadı" formControlName="referans2adisoyadi">
-        </div>
-        <div class="col-lg-3">
-            <input type="text" class="form-control" placeholder="Yakınlık Derecesi" formControlName="referans1yakinlik">
-        </div>
-        <div class="col-lg-4">
-            <input type="text" class="form-control" placeholder="Görevi" formControlName="referans2gorevi">
-        </div>
-        <div class="col-lg-2">
-            <input type="number" class="form-control" placeholder="Telefonu" formControlName="referans2telefon">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="text-right">
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" (click)="insertBilgi()" *ngIf="!EdittoUpdate"> Kaydet
+                        ve İlerle</button>
+                    <button type="submit" class="btn btn-primary" (click)="updateBilgi()" *ngIf="EdittoUpdate"> Güncelle
+                        ve İlerle</button>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <div class="col-lg-3">
-            <input type="text" class="form-control" placeholder="Adı ve Soyadı" formControlName="referans3adisoyadi">
-        </div>
-        <div class="col-lg-3">
-            <input type="text" class="form-control" placeholder="Yakınlık Derecesi" formControlName="referans3yakinlik">
-        </div>
-        <div class="col-lg-4">
-            <input type="text" class="form-control" placeholder="Görevi" formControlName="referans3gorevi">
-        </div>
-        <div class="col-lg-2">
-            <input type="number" class="form-control" placeholder="Telefonu" formControlName="referans3telefon">
+
+    <div class="row">
+        <div class="modal inmodal fade" id="modalReferans" data-backdrop="static" tabindex="-1" role="dialog"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Referans Kayıt Formu</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <div class="col-lg-7 col-md-7 col-sm-7">
+                                <label for=""> Adı ve Soyadı</label>
+                                <input type="text" class="form-control" formControlName="adisoyadi"
+                                    oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
+                                    placeholder="Adı ve Soyadı">
+                                <div *ngIf="submitted && getControlRequest['adisoyadi'].errors" class="text-danger">
+                                    Adı ve Soyadı Girmediniz.
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                <label for=""> Yakınlık Derecesi</label>
+                                <input type="text" class="form-control" formControlName="yakinlik"
+                                    oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
+                                    placeholder="Yakınlık Derecesi">
+                                <div *ngIf="submitted && getControlRequest['yakinlik'].errors" class="text-danger">
+                                    Yakınlık Derecesini Belirtmediniz.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-8 col-md-8 col-sm-8">
+                                <label for=""> Mesleği/Görevi</label>
+                                <input type="text" class="form-control" formControlName="gorevi"
+                                    oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
+                                    placeholder="Mesleği Görevi">
+                                <div *ngIf="submitted && getControlRequest['gorevi'].errors" class="text-danger">
+                                    Mesleği/Görevi Girmediniz.
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <label for="">Cep Telefonu</label>
+                                <input type="text" class="form-control" mask="(0000) 000 00 00" [showMaskTyped]="true"
+                                    [validation]="true" formControlName="ceptelefon" placeholder="Cep Telefonu">
+                                <div *ngIf="submitted && getControlRequest['ceptelefon'].errors" class="text-danger">
+                                    Cep Telefonunu Girmediniz.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" data-dismiss="modal">Kapat</button>
+                        <button class="btn btn-primary" (click)="onReferansEkle()"> Ekle</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </form>

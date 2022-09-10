@@ -10,7 +10,7 @@ export class LiseService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getLiseGetir(ogrenciid:number): Observable<any[]> {
+  public getLise(ogrenciid:number): Observable<any[]> {
     return this.httpClient.get<any[]>(environment.apiURL + 'lise/get?ogrenciid=' + ogrenciid);
   }
 

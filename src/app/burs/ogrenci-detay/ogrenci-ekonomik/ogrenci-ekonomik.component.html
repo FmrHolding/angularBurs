@@ -1,127 +1,186 @@
 <form [formGroup]="frmEkonomik" autocomplete="off">
     <div class="form-group row">
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-3 col-sm-3">
             <label for=""> Anne Baba Birlikteliği *</label>
-            <ng-select [items]="ailebirlikteligi" bindLabel="birliktelik" bindValue="id"
-                (change)="onAnneBabaBirliktelik($event)"
+            <ng-select #ngAnneBabaBirlikte [items]="ailebirliktelik" bindLabel="aciklama" bindValue="cevap"
+                formControlName="annebabaayri" (change)="onAnneBabaBirliktelik($event)"
                 placeholder="Anne Baba Birlikteliği">
             </ng-select>
+            <div *ngIf="submitted && getControlRequest['annebabaayri'].errors" class="text-danger">
+                Anne Baba Birlikteliği Belirtmediniz.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-3">
+        <div class="col-lg-4 col-md-4 col-sm-4">
+            <label for=""> Baba Hayatta mı? *</label>
+            <ng-select #ngHayat [items]="hayat" bindLabel="aciklama" bindValue="cevap" (change)="onBabaHayat($event)"
+                formControlName="babasag" placeholder="Babanız Hayatta mı?">
+            </ng-select>
+            <div *ngIf="submitted && getControlRequest['babasag'].errors" class="text-danger">
+                Babanız Hayatta mı Sorusunu Cevaplamadınız.
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4">
             <label for=""> Babanızın Öğrenim Durumu *</label>
-            <ng-select [items]="ogrenimler" bindLabel="ogrenim" bindValue="id"
-                (change)="onBabaOgrenim($event)" placeholder="Babanızın Öğrenim Durumu">
+            <ng-select #ngOgrenim [items]="ogrenimler" bindLabel="ogrenimdurumu" bindValue="id"
+                formControlName="babaogrenimid" (change)="onBabaOgrenim($event)" placeholder="Babanızın Öğrenim Durumu">
             </ng-select>
+            <div *ngIf="submitted && getControlRequest['babaogrenimid'].errors" class="text-danger">
+                Babanızın Mezuniyetini Belirtmediniz.
+            </div>
         </div>
-        <div class="col-lg-6">
-            <label for=""> Babanızın Mesleği *</label>
-            <input type="text" class="form-control" placeholder="Babanızın Mesleği"
-                formControlName="babameslek">
-        </div>
-        <div class="col-lg-3">
-            <label for=""> Babanızın Net Geliri *</label>
-            <input type="number" class="form-control" placeholder="Babanızın Net Geliri"
-                formControlName="babagelir">
-        </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-lg-9">
-            <label for=""> Babanızın İş Adresi *</label>
-            <input type="text" class="form-control" placeholder="Babanızın İş Adresi"
-                formControlName="babaisadresi">
-        </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4 col-md-4 col-sm-4">
             <label for=""> Babanızın Cep No *</label>
-            <input type="number" class="form-control"
-                placeholder="Babanızın Cep Telefonu" formControlName="babatelefon">
+            <input type="text" class="form-control" formControlName="babatelefon" mask='(0000) 000 00 00'
+                [validation]="true" [showMaskTyped]="true" placeholder="Babanızın Cep Telefonu">
+            <div *ngIf="submitted && getControlRequest['babatelefon'].errors" class="text-danger">
+                Babanızın Cep Telefonunu Belirtmediniz.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-3">
+        <div class="col-lg-9 col-md-9 col-sm-9">
+            <label for=""> Babanızın Mesleği *</label>
+            <input type="text" class="form-control" formControlName="babameslek"
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" placeholder="Babanızın Mesleği">
+            <div *ngIf="submitted && getControlRequest['babameslek'].errors" class="text-danger">
+                Babanızın Mesleğini Belirtmediniz.
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3">
+            <label for=""> Babanızın Aylık Geliri *</label>
+            <input type="text" class="form-control" formControlName="babamaas" mask="separator" thousandSeparator="."
+                placeholder="Babanızın Aylık Geliri">
+            <div *ngIf="submitted && getControlRequest['babamaas'].errors" class="text-danger">
+                Babanızın Aylık Gelirini Belirtmediniz.
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-4 col-md-4 col-sm-4">
+            <label for=""> Anne Hayatta mı? *</label>
+            <ng-select #ngHayat [items]="hayat" bindLabel="aciklama" bindValue="cevap" (change)="onAnneHayat($event)"
+                formControlName="annesag" placeholder="Anne Hayatta mı?">
+            </ng-select>
+            <div *ngIf="submitted && getControlRequest['annesag'].errors" class="text-danger">
+                Anne Hayatta mı Sorusunu Cevaplamadınız.
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4">
             <label for=""> Anneniz Öğrenim Durumu *</label>
-            <ng-select [items]="ogrenimler" bindLabel="ogrenim" bindValue="id"
-                (change)="onAnneOgrenim($event)" placeholder="Anneniz Öğrenim Durumu">
+            <ng-select #ngOgrenim [items]="ogrenimler" bindLabel="ogrenimdurumu" bindValue="id"
+                formControlName="anneogrenimid" (change)="onAnneOgrenim($event)" placeholder="Anneniz Öğrenim Durumu">
             </ng-select>
+            <div *ngIf="submitted && getControlRequest['anneogrenimid'].errors" class="text-danger">
+                Annenizin Mezuniyetini Belirtmediniz.
+            </div>
         </div>
-        <div class="col-lg-6">
-            <label for=""> Anneniz Mesleği *</label>
-            <input type="text" class="form-control" placeholder="Anneniz Mesleği"
-                formControlName="annemeslek">
-        </div>
-        <div class="col-lg-3">
-            <label for=""> Anneniz Net Geliri</label>
-            <input type="number" class="form-control" placeholder="Anneniz Net Geliri"
-                formControlName="annegelir">
-        </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-lg-9">
-            <label for=""> Anneniz İş Adresi *</label>
-            <input type="text" class="form-control" placeholder="Anneniz İş Adresi"
-                formControlName="anneisadresi">
-        </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4 col-md-4 col-sm-4">
             <label for=""> Anneniz Cep No *</label>
-            <input type="number" class="form-control" placeholder="Anneniz Cep Telefonu"
-                formControlName="annetelefon">
+            <input type="text" formControlName="annetelefon" class="form-control" mask='(0000) 000 00 00'
+                [validation]="true" [showMaskTyped]="true" placeholder="Anneniz Cep Telefonu">
+            <div *ngIf="submitted && getControlRequest['annetelefon'].errors" class="text-danger">
+                Annenizin Telefonunu Belirtmediniz.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-12">
+        <div class="col-lg-9 col-md-9 col-sm-9">
+            <label for=""> Anneniz Mesleği *</label>
+            <input type="text" class="form-control" formControlName="annemeslek"
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" placeholder="Anneniz Mesleği">
+            <div *ngIf="submitted && getControlRequest['annemeslek'].errors" class="text-danger">
+                Annenizin Mesleğini Belirtmediniz.
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3">
+            <label for=""> Anneniz Aylık Geliri</label>
+            <input type="text" class="form-control" formControlName="annemaas" mask="separator" thousandSeparator="."
+                placeholder="Anneniz Aylık Geliri">
+            <div *ngIf="submitted && getControlRequest['annemaas'].errors" class="text-danger">
+                Annenizin Aylık Gelirini Belirtmediniz.
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <label for=""> Varsa, Ailenin Toplam Gelirine Katkı Sağlayan Diğer Aylık Net
-                Gelirler
-                Toplamı *</label>
-            <input type="number" class="form-control" placeholder="Net Gelirler Toplamı"
-                formControlName="ailedigergelirtoplam">
+                Gelirler Toplamı *</label>
+            <input type="text" class="form-control" formControlName="digergelir" mask="separator" thousandSeparator="."
+                placeholder="Diğer Gelirler Toplamı">
+            <div *ngIf="submitted && getControlRequest['digergelir'].errors" class="text-danger">
+                Diğer Gelirleri Belirtmediniz.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <label for=""> Varsa, Ailenin Toplam Net Gelirine Katkı Sağlayan Diğer
-                Bireyler Hakkında
-                Verilebilecek Bilgiler*
+                Bireyler Hakkında Verilebilecek Bilgiler*
             </label>
-            <input type="text" class="form-control"
-                placeholder="Net Gelirler Muhteviyatı"
-                formControlName="ailedigergeliraciklama">
+            <input type="text" class="form-control" formControlName="geliraciklama"
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" placeholder="Net Gelirler Muhteviyatı">
+            <div *ngIf="submitted && getControlRequest['geliraciklama'].errors" class="text-danger">
+                Net Gelirler Muhteviyatını Belirtmediniz.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-12">
-            <label for=""> Aile üyelerinizde sürekli/ciddi bir sağlık sorunu varmı?
-                (Yoksa Yok
-                Yazınız) *</label>
-            <textarea cols="30" rows="3" class="form-control"
-                formControlName="ailesaglik"
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <label for=""> Aile üyelerinizde sürekli/ciddi bir sağlık sorunu varmı? *</label>
+            <textarea cols="30" rows="3" class="form-control" formControlName="ailesaglik"
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
                 placeholder="Sağlık Sorununuzu Yazınız"></textarea>
+            <div *ngIf="submitted && getControlRequest['ailesaglik'].errors" class="text-danger">
+                Sağlık Sorunları Hakkında Bilgi Vermediniz.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <label for=""> Ailenizin İkametgah Adresi *</label>
-            <input type="text" class="form-control"
-                placeholder="Ailenizin İkametgah Adresi"
-                formControlName="aileikametadresi">
+            <input type="text" class="form-control" formControlName="veliadres"
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" placeholder="Ailenizin İkametgah Adresi">
+            <div *ngIf="submitted && getControlRequest['veliadres'].errors" class="text-danger">
+                Ailenizin İkametgah Adresini Belirtmediniz.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-4">
-            <label for="">Ailenizin Sabit Telefonu *</label>
-            <input type="number" class="form-control" placeholder="Sabit Telefon"
-                formControlName="sabittelefon">
+        <div class="col-lg-4 col-md-4 col-sm-4">
+            <label for="">Ailenizin Sabit Telefonu</label>
+            <input type="text" class="form-control" formControlName="sabittelefon" mask="(0000) 000 00 00"
+                [showMaskTyped]="true" placeholder="Sabit Telefon">
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-4 col-md-4 col-sm-4">
             <label for="">Ailenin Oturduğu Ev *</label>
-            <ng-select [items]="oturduguev" bindLabel="evdurumu" bindValue="id"
-                (change)="onAileMulkDurum($event)" placeholder="Oturduğunuz Ev Durumu">
+            <ng-select #ngMulk [items]="mulk" bindLabel="durumu" bindValue="id" (change)="onMulkDurum($event)"
+                formControlName="mulkid" placeholder="Oturduğunuz Ev Durumu">
             </ng-select>
+            <div *ngIf="submitted && getControlRequest['mulkid'].errors" class="text-danger">
+                Oturduğunuz Ev Durumu Hakkında Bilgi Vermediniz.
+            </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-4 col-md-4 col-sm-4">
             <label for="">Aylık Kira *</label>
-            <input type="number" class="form-control" placeholder="Aylık Kira"
-                formControlName="ailekira">
+            <input type="text" class="form-control" formControlName="kira" mask="seperator" thousandSeparator="."
+                placeholder="Aylık Kira">
+            <div *ngIf="submitted && getControlRequest['kira'].errors" class="text-danger">
+                Ödediğiniz Aylık Kira Hakkında Bilgi Vermediniz.
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="text-right">
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" (click)="insertBilgi()" *ngIf="!EdittoUpdate"> Kaydet
+                        ve İlerle</button>
+                    <button type="submit" class="btn btn-primary" (click)="updateBilgi()" *ngIf="EdittoUpdate"> Güncelle
+                        ve İlerle</button>
+                </div>
+            </div>
         </div>
     </div>
 </form>

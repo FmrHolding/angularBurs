@@ -3,7 +3,8 @@
         <div class="col-lg-6">
             <label for="">Üniversiteniz *</label>
             <ng-select #ngUniversite [items]="universitler" bindLabel="universiteadi" bindValue="id"
-                (change)="onUniversite($event)" placeholder="Üniversite Seçiniz">
+                (change)="onUniversite($event)"
+                formControlName="universiteid" placeholder="Üniversite Seçiniz">
             </ng-select>
             <div *ngIf="submitted && getControlRequest['universiteid'].errors" class="text-danger">
                 Üniversite Seçmediniz.
@@ -12,7 +13,8 @@
         <div class="col-lg-6">
             <label for=""> Fakülteniz *</label>
             <ng-select #ngFakulte [items]="fakulteler" bindLabel="fakulteadi" bindValue="id"
-                (change)="onFakulte($event)" placeholder="Fakülte Seçiniz">
+                (change)="onFakulte($event)"
+                formControlName="fakulteid" placeholder="Fakülte Seçiniz">
             </ng-select>
             <div *ngIf="submitted && getControlRequest['fakulteid'].errors" class="text-danger">
                 Fakülte Seçmediniz.
@@ -31,7 +33,7 @@
         <div class="col-lg-6">
             <label for="">Sınıfınız *</label>
             <ng-select #ngSinif [items]="siniflar" bindLabel="sinif" bindValue="id" (change)="onSinif($event)"
-                placeholder="Sınıf Seçiniz">
+             formControlName="sinifid"   placeholder="Sınıf Seçiniz">
             </ng-select>
             <div *ngIf="submitted && getControlRequest['sinifid'].errors" class="text-danger">
                 Sınıf Seçmediniz.
@@ -42,7 +44,7 @@
         <div class="col-lg-6">
             <label for=""> Üniversite Tipi *</label>
             <ng-select #ngTuru [items]="turler" bindLabel="turu" bindValue="id" (change)="onTuru($event)"
-                placeholder="Üniversite Tipi Seçiniz">
+              formControlName="turid"  placeholder="Üniversite Tipi Seçiniz">
             </ng-select>
             <div *ngIf="submitted && getControlRequest['turid'].errors" class="text-danger">
                 Üniversite Tipi Seçmediniz.
@@ -51,7 +53,7 @@
         <div class="col-lg-6">
             <label for="">Vakıf (Özel) Üniversitesi Bursluluk Oranı*</label>
             <ng-select #ngBurs [items]="burslar" bindLabel="burs" bindValue="id" (change)="onBurs($event)"
-                placeholder="Burs Türü Seçiniz">
+           formControlName="bursid"  placeholder="Burs Türü Seçiniz">
             </ng-select>
             <div *ngIf="submitted && getControlRequest['bursid'].errors" class="text-danger">
                 Fakülte Seçmediniz.

@@ -2,3 +2,14 @@
 @import url("assets/css/style.css");
 @import "~@ng-select/ng-select/themes/default.theme.css";
 @import "~ngx-toastr/toastr.css";
+@import "~@swimlane/ngx-datatable/index.css";
+@import "~@swimlane/ngx-datatable/themes/bootstrap.css";
+@import "~@swimlane/ngx-datatable/assets/icons.css";
+
+.datatable-body-cell {
+  overflow: visible !important;
+}
+.datatable-header-cell,
+.datatable-header {
+  overflow: visible !important;
+}

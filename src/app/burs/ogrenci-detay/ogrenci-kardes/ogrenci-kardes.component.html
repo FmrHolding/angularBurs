@@ -1,25 +1,130 @@
+<div class="form-group row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="text-right">
+            <button class="btn btn-success" (click)="onYeniKardes()"> Kardeş Ekle</button>
+        </div>
+    </div>
+</div>
 <form [formGroup]="frmKardes" autocomplete="off">
     <div class="form-group row">
-        <div class="col-lg-3">
-            <label for=""> Adı ve Soyadı *</label>
-            <input type="text" class="form-control" placeholder="Adı ve Soyadı" formControlName="adisoyadi">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <ngx-datatable class="bootstrap" [rows]="rows" [columnMode]="ColumnMode.flex" [limit]="30"
+                [headerHeight]="40" [footerHeight]="40" rowHeight="auto" [scrollbarH]="true">
+                <ngx-datatable-column name="Adı Soyadı" [flexGrow]="1.5">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.adisoyadi }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Yaşı" [flexGrow]="0.5">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.yas }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Medehi Hali" [flexGrow]="0.6">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <span *ngIf="row.medenihalid===1">Bekar</span>
+                        <span *ngIf="row.medenihalid===2">Evli</span>
+                        <span *ngIf="row.medenihalid===3">Boşanmış</span>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Okulu" [flexGrow]="2">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.okul }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Gelir/Burs" [flexGrow]="1">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.gelirburs | currency:"TRY":"symbol" }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="#" [flexGrow]="0.4">
+                    <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger" (click)="onDelete(rowIndex)"><i
+                                    class="fa fa-trash"></i></button>
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
         </div>
-        <div class="col-lg-1">
-            <label for=""> Yaş *</label>
-            <input type="number" class="form-control" placeholder="Yaş" formControlName="yas">
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="text-right">
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" (click)="insertBilgi()" *ngIf="!EdittoUpdate"> Kaydet
+                        ve İlerle</button>
+                    <button type="submit" class="btn btn-primary" (click)="updateBilgi()" *ngIf="EdittoUpdate"> Güncelle
+                        ve İlerle</button>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-2">
-            <label for=""> Medeni Durum *</label>
-            <ng-select [items]="medenidurumlar" bindLabel="medenihal" bindValue="id" placeholder="Medeni Durumu">
-            </ng-select>
-        </div>
-        <div class="col-lg-2">
-            <label for=""> Okulu *</label>
-            <input type="text" class="form-control" placeholder="Okulu" formControlName="okul">
-        </div>
-        <div class="col-lg-2">
-            <label for=""> Aldığı Burs / Net Gelir *</label>
-            <input type="number" class="form-control" placeholder="Yoksa 0 sıfır yazınız" formControlName="burs">
+    </div>
+    <div class="row">
+        <div class="modal inmodal fade" id="modalKardes" data-backdrop="static" tabindex="-1" role="dialog"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Kardeş Kayıt Formu</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                <label for=""> Adı ve Soyadı *</label>
+                                <input type="text" class="form-control" formControlName="adisoyadi"
+                                    oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
+                                    placeholder="Kardeşin Adı ve Soyadı">
+                                <div *ngIf="submitted && getControlRequest['adisoyadi'].errors" class="text-danger">
+                                    Kardeşin Adı ve Soyadı Girmediniz.
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <label for=""> Yaş *</label>
+                                <input type="number" class="form-control" formControlName="yas"
+                                    placeholder="Kardeşin Yaşı">
+                                <div *ngIf="submitted && getControlRequest['yas'].errors" class="text-danger">
+                                    Kardeşin Yaşını Girmediniz.
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <label for=""> Medeni Durum *</label>
+                                <ng-select [items]="medenidurumlar" bindLabel="durumu" bindValue="id"
+                                    (change)="onMedeniDurum($event)" placeholder="Medeni Durumu">
+                                </ng-select>
+                                <div *ngIf="submitted && getControlRequest['medenihalid'].errors" class="text-danger">
+                                    Kardeşin Yaşı Medeni Durumunu Girmediniz.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <label for=""> Okulu *</label>
+                                <input type="text" class="form-control" formControlName="okul"
+                                    oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
+                                    placeholder="Okuduğu/Mezun Olduğu Okulu">
+                                <div *ngIf="submitted && getControlRequest['okul'].errors" class="text-danger">
+                                    Kardeşin Okuduğu/Mezun Olduğu Okulu Girmediniz.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <label for=""> Aldığı Burs / Net Gelir *</label>
+                                <input type="number" class="form-control" formControlName="gelirburs"
+                                    placeholder="Aldığınız Gelir/Burs">
+                                <div *ngIf="submitted && getControlRequest['gelirburs'].errors" class="text-danger">
+                                    Kardeşin Aldığınız Gelir/Burs Girmediniz.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" data-dismiss="modal">Kapat</button>
+                        <button class="btn btn-primary" (click)="onKardesEkle()"> Ekle</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </form>

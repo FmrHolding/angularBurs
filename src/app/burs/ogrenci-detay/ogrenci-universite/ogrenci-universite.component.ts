@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
 
   public frmUniversite: FormGroup;
+  EdittoUpdate: boolean = false;
   submitted = false;
   universitler: any[];
   siniflar: any[];
@@ -48,18 +49,43 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.getViewUniversite(this.ogrenciId)
     this.frmUniversite.get('ogrenciid').setValue(this.ogrenciId);
-    this.getViewUniversite();
+    this.getViewUniversiteler();
     this.getViewFakulte();
     this.getViewSinif();
     this.getViewTur();
     this.getViewBurs();
-    this.ngBurs.setDisabledState(true);
   }
 
   get getControlRequest() { return this.frmUniversite.controls; }
 
-  getViewUniversite(): void {
+  getViewUniversite(ogrenciid: number): void {
+    this.universiteService.getUniversite(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+      next: (data: any) => {
+        if (data.value != null) {
+          this.EdittoUpdate = true;
+          this.frmUniversite.patchValue(data.value);
+          if (parseInt(data.value.turid) === 1) {
+            this.ngBurs.setDisabledState(true);
+          }else{
+            this.ngBurs.setDisabledState(false);
+          }
+        } else {
+          this.ngUniversite.handleClearClick();
+          this.ngFakulte.handleClearClick();
+          this.ngSinif.handleClearClick();
+          this.ngTuru.handleClearClick();
+          this.ngBurs.handleClearClick();
+          this.ngBurs.setDisabledState(true);
+          this.EdittoUpdate = false;
+        }
+      },
+      error: (err) => this.toastr.error(err, 'Hata')
+    });
+  }
+
+  getViewUniversiteler(): void {
     this.parameterService.getUniversite().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
         this.universitler = data.value;;
@@ -168,6 +194,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
           this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                this.EdittoUpdate=true;
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');
@@ -198,7 +225,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
         if (result.value) {
           this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              if (data.statusCode === 201) {
+              if (data.statusCode === 200) {
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');

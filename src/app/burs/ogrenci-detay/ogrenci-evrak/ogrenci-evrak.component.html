@@ -1,56 +1,93 @@
+<div class="form-group row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="text-right">
+            <button class="btn btn-success" (click)="onYeniEvrak()"> Evrak Ekle</button>
+        </div>
+    </div>
+</div>
 <form [formGroup]="frmEvrak" autocomplete="off">
     <div class="form-group row">
-        <div class="col-lg-3">
-            <label for=""> Referans Mektubu</label>
-            <div class="form-group">
-                <input type="file" name="referansmektubu"
-                    (change)="referansMektubu($event)" accept="application/pdf" />
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <label for=""> İkametgâh *</label>
-            <div class="form-group">
-                <input type="file" name="ikametgah" (change)="ikametgah($event)"
-                    accept="application/pdf" />
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <label for=""> Sabıka Kaydı *</label>
-            <div class="form-group">
-                <input type="file" name="sabikakaydi" (change)="sabikaKaydi($event)"
-                    accept="application/pdf" />
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <label for=""> Öğrenci Belgesi *</label>
-            <div class="form-group">
-                <input type="file" name="ogrencibelgesi"
-                    (change)="ogrenciBelgesi($event)" accept="application/pdf" />
-            </div>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <ngx-datatable class="bootstrap" [rows]="rows" [columnMode]="ColumnMode.flex" [limit]="30"
+                [headerHeight]="40" [footerHeight]="40" rowHeight="auto" [scrollbarH]="true">
+                <ngx-datatable-column name="Belge Adı" [flexGrow]="1.5">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.belgeadi }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Belge Boyutu" [flexGrow]="0.5">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.belgeboyutu/ 1024 }} Mb
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Belge Türü" [flexGrow]="0.6">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <span *ngIf="row.belgeuzanti==='.pdf'">Pdf</span>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Link" [flexGrow]="2">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <a routerLink={{evrakAdresi + row.dosyalu}} target="_blank">İndir</a>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="#" [flexGrow]="0.4">
+                    <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-danger" (click)="onDelete(rowIndex)"><i
+                                    class="fa fa-trash"></i></button>
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-3">
-            <label for=""> Transkript *</label>
-            <div class="form-group">
-                <input type="file" name="transkript" (change)="transkrip($event)"
-                    accept="application/pdf" />
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="text-right">
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" (click)="insertBilgi()" *ngIf="!EdittoUpdate"> Kaydet
+                        ve İlerle</button>
+                    <button type="submit" class="btn btn-primary" (click)="updateBilgi()" *ngIf="EdittoUpdate"> Güncelle
+                        ve İlerle</button>
+                </div>
             </div>
         </div>
-        <div class="col-lg-3">
-            <label for=""> Nüfus Cüzdanı Fotokopisi *</label>
-            <div class="form-group">
-                <input type="file" name="nufuscuzdani" (change)="nufusCuzdani($event)"
-                    accept="application/pdf" />
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <label for=""> Burs Yatırılacak Hesap Cüzdanı Fotokopisi (Hesap bilgilerinin
-                olduğu kısım
-                olacak) *</label>
-            <div class="form-group">
-                <input type="file" name="hesapcuzdani" (change)="hesapCuzdani($event)"
-                    accept="application/pdf" />
+    </div>
+
+    <div class="row">
+        <div class="modal inmodal fade" id="modalEvrak" data-backdrop="static" tabindex="-1" role="dialog"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Referans Kayıt Formu</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="form-group row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <ng-select #ngEvrakAdi [items]="evraktur" bindLabel="aciklama" bindValue="id"
+                                    (change)="onEvrakTuru($event)" placeholder="Evrak Türü">
+                                </ng-select>
+                                <div *ngIf="submitted && getControlRequest['evrakadi'].errors" class="text-danger">
+                                    Evrak Türünü Seçmediniz.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <input id="evrak" type="file" accept="application/pdf" (change)="onEvrak($event)">
+                                <div *ngIf="submitted && getControlRequest['evrak'].errors" class="text-danger">
+                                    Evrak eklemediniz.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" data-dismiss="modal">Kapat</button>
+                        <button class="btn btn-primary" (click)="onEvrakEkle()"> Ekle</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

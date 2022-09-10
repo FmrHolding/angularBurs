@@ -53,7 +53,7 @@ export class OgrenciLiseComponent implements OnInit {
   get getControlRequest() { return this.frmBursLise.controls; }
 
   getViewLise(ogrenciid: number): void {
-    this.liseService.getLiseGetir(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+    this.liseService.getLise(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
         if (data.value != null) {
           this.EdittoUpdate = true;
@@ -61,6 +61,9 @@ export class OgrenciLiseComponent implements OnInit {
           this.getViewLiseler(data.value.liseturid);
         } else {
           this.EdittoUpdate = false;
+          this.ngLise.handleClearClick();
+          this.ngLiseTur.handleClearClick();
+          this.ngSinif.handleClearClick();
         }
       },
       error: (err) => this.toastr.error(err, 'Hata')
@@ -139,6 +142,7 @@ export class OgrenciLiseComponent implements OnInit {
           this.liseService.setLiseKayit(this.frmBursLise.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                this.EdittoUpdate=true;
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');
@@ -169,7 +173,7 @@ export class OgrenciLiseComponent implements OnInit {
         if (result.value) {
           this.liseService.setLiseGuncelle(this.frmBursLise.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              if (data.statusCode === 201) {
+              if (data.statusCode === 200) {
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');

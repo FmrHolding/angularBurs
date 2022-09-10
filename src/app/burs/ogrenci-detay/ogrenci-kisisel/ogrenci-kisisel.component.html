@@ -1,121 +1,176 @@
 <form [formGroup]="frmKisisel" autocomplete="off">
     <div class="form-group row">
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-3 col-sm-3">
             <label for=""> Ailemle Birlikte İkamet Edeceğim *</label>
-            <ng-select [items]="aileberaber" bindLabel="beraber" bindValue="id"
-                (change)="onAileileBeraber($event)" placeholder="Aile İkamet Durumu">
+            <ng-select #ngAileBeraber [items]="aileberaber" bindLabel="aciklama" bindValue="cevap"
+                formControlName="aileberaberid" (change)="onAileileBeraber($event)" placeholder="Aile İkamet Durumu">
             </ng-select>
+            <div *ngIf="submitted && getControlRequest['aileberaberid'].errors" class="text-danger">
+                Aile İkamet Durumu SEçmediniz.
+            </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-3 col-sm-3">
             <label for=""> Ayrı Bir Şehirde İkamet Edeceğim *</label>
-            <ng-select [items]="ailedenberaber" bindLabel="beraber" bindValue="id"
-                (change)="onAiledenAyri($event)"
+            <ng-select #ngFarkliSehir [items]="farlkliikamet" bindLabel="aciklama" bindValue="beraber"
+                formControlName="farklikametid" (change)="onAiledenAyri($event)"
                 placeholder="Aileden Ayrı İkamet Durumu">
             </ng-select>
+            <div *ngIf="submitted && getControlRequest['farklikametid'].errors" class="text-danger">
+                Ayrı Bir Şehirde İkamet Durumu Seçmedniz .
+            </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-3 col-sm-3">
             <label for=""> İkamet Edeceğim Yer *</label>
-            <ng-select [items]="ikametedilecekyer" bindLabel="ikametyeri" bindValue="id"
-                (change)="onIkametYeri($event)" placeholder="İkamet Edilecek Yer">
+            <ng-select #IkametYer [items]="ikameteyeri" bindLabel="aciklama" bindValue="id"
+                formControlName="ikametyeriid" (change)="onIkametYeri($event)" placeholder="İkamet Edilecek Yer">
             </ng-select>
-        </div>
-        <div class="col-lg-3">
-            <label for=""> Yurt Adı *</label>
-            <input type="text" class="form-control" placeholder="Yurt Adı"
-                formControlName="yurtadi">
+            <div *ngIf="submitted && getControlRequest['ikametyeriid'].errors" class="text-danger">
+                İkamet Edeceğim Yeri Seçmediniz.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <label for=""> Yurt Adı *</label>
+            <input type="text" class="form-control" oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
+                placeholder="Yurt Adı" formControlName="yurtadi">
+            <div *ngIf="submitted && getControlRequest['yurtadi'].errors" class="text-danger">
+                Kalacağınız Yurt Bilgisiniz Yazmadınız.
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <label for=""> Sürekli bir sağlık sorunuz var mı? Varsa Nedir *</label>
             <input type="text" class="form-control" placeholder="Sağlık Sorunu"
-                formControlName="sagliksorunu">
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" formControlName="saglikdurumu">
+            <div *ngIf="submitted && getControlRequest['saglikdurumu'].errors" class="text-danger">
+                Sağlık Durumunuz Hakkında Bilgi Veriniz.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <label for=""> Öğrenimdeki Devamlı Adresim *</label>
-            <input type="text" class="form-control"
-                placeholder="Öğrenimdeki Devamlı Adresi"
-                formControlName="ogrenimdekiadres">
+            <input type="text" class="form-control" placeholder="Öğrenimdeki Devamlı Adresi"
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" formControlName="adres">
+            <div *ngIf="submitted && getControlRequest['adres'].errors" class="text-danger">
+                Öğrenimdeki Devamlı Adresinizi Yazmadınız.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-3 col-sm-3">
             <label for=""> Kirasını Giriniz. *</label>
             <input type="text" class="form-control" placeholder="Kira"
-                formControlName="evyurtkirasi">
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" formControlName="kira">
+            <div *ngIf="submitted && getControlRequest['kira'].errors" class="text-danger">
+                Kira bilgisini Yazmadınız.
+            </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 col-md-6 col-sm-6">
             <label for=""> Diğer Bilgiler *</label>
             <input type="text" class="form-control" placeholder="Diğer Bilgiler"
-                formControlName="evyurtdiger">
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" formControlName="diger">
+            <div *ngIf="submitted && getControlRequest['diger'].errors" class="text-danger">
+                Diğer Bilgiler Alanı Boş Bıraktınız.
+            </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-3 col-sm-3">
             <label for=""> Sigara Kullanıyor musunuz? *</label>
-            <ng-select [items]="sigaradurumu" bindLabel="sigara" bindValue="id"
-                (change)="onSigara($event)" placeholder="Sigara Kullanımı">
+            <ng-select #ngSigara [items]="sigarakullanim" bindLabel="aciklama" bindValue="cevap"
+                formControlName="sigaraid" (change)="onSigara($event)" placeholder="Sigara Kullanımı">
             </ng-select>
+            <div *ngIf="submitted && getControlRequest['sigaraid'].errors" class="text-danger">
+                Sigara Kullanımına Cevap Vermediniz.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <label for=""> Üyesi Olduğunuz Herhangi Bir Kuruluş, Vakıf, Dernek v.b. Var
-                mı? Varsa
-                nedir bilgi veriniz. *</label>
-            <input type="text" class="form-control"
-                placeholder="Kuruluş, Vakıf, Dernek vb Varsa" formControlName="dernek">
+                mı? Varsa nedir bilgi veriniz. *</label>
+            <input type="text" class="form-control" placeholder="Kuruluş, Vakıf, Dernek vb Varsa"
+                formControlName="uyekurum" oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
+            <div *ngIf="submitted && getControlRequest['uyekurum'].errors" class="text-danger">
+                Üyesi Olduğunuz Herhangi Bir Kuruluş, Vakıf, Dernek v.b. Hakkında Bilgi Yazmadınız.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-9">
-            <label for=""> Başka Kurumlardan Burs Alıyorsanız, Bu Kurumların Adları
-                *</label>
-            <input type="text" class="form-control"
-                placeholder="Burs Aldığınız Kurum Adı" formControlName="bursveren">
+        <div class="col-lg-9 col-md-9 col-sm-9">
+            <label for=""> Başka Kurumlardan Burs Alıyorsanız,
+                Bu Kurumların Adları *</label>
+            <input type="text" class="form-control" placeholder="Burs Aldığınız Kurum Adı" formControlName="kurumburs">
+            <div *ngIf="submitted && getControlRequest['kurumburs'].errors" class="text-danger">
+                Kurumlardan Burs Alıp Almadığınız Hakkında Yazmadınız.
+            </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-3 col-sm-3">
             <label for=""> Burs Miktarı *</label>
-            <input type="number" class="form-control" placeholder="Burs Miktarı"
-                formControlName="bursmiktari">
+            <input type="number" class="form-control" placeholder="Burs Miktarı" formControlName="burs">
+            <div *ngIf="submitted && getControlRequest['burs'].errors" class="text-danger">
+                Burs Miktarını Yazmadınız.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-9">
-            <label for=""> Başka Kurumlardan Kredi Alıyorsanız, Bu Kurumların Adları
-                *</label>
-            <input type="text" class="form-control"
-                placeholder="Kredi Aldığınız Kurum Adı" formControlName="krediveren">
+        <div class="col-lg-9 col-md-9 col-sm-9">
+            <label for=""> Başka Kurumlardan Kredi Alıyorsanız,
+                Bu Kurumların Adları *</label>
+            <input type="text" class="form-control" placeholder="Kredi Aldığınız Kurum Adı"
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" formControlName="kurumburs">
+            <div *ngIf="submitted && getControlRequest['kurumkredi'].errors" class="text-danger">
+                Kurumlardan Kredi Alıp Almadığınız Hakkında Yazmadınız.
+            </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-3 col-sm-3">
             <label for=""> Kredi Miktarı *</label>
-            <input type="number" class="form-control" placeholder="Kredi Miktarı"
-                formControlName="kredimiktari">
+            <input type="number" class="form-control" placeholder="Kredi Miktarı" formControlName="burs">
+            <div *ngIf="submitted && getControlRequest['kredi'].errors" class="text-danger">
+                Kredi Miktarını Yazmadınız.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-9">
-            <label for=""> Herhangi Bir İşletmede Çalışıp Gelir Elde Ediyor musunuz?
-                *</label>
-            <ng-select [items]="medenidurumlar" bindLabel="medenihal" bindValue="id">
-                <ng-option>Hayır</ng-option>
-                <ng-option>Evet</ng-option>
+        <div class="col-lg-9 col-md-9 col-sm-9">
+            <label for=""> Herhangi Bir İşletmede Çalışıp Gelir Elde
+                Ediyor musunuz? *</label>
+            <ng-select #ngIsletme [items]="calismadurumu" bindLabel="aciklama" bindValue="cevap"
+                formControlName="calisiyor" (change)="onCalisma($event)"
+                placeholder="Herhangi Bir İşletmede Çalışıyor Musunuz">
             </ng-select>
+            <div *ngIf="submitted && getControlRequest['calisiyor'].errors" class="text-danger">
+                Bir İşletmede Çalışma Durumunuza Dair Seçim Yapmadınız.
+            </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-3 col-sm-3">
             <label for="">Aylık Kazanç Miktarı *</label>
-            <input type="number" class="form-control" placeholder="Aylık Kazanç Miktarı"
-                formControlName="kazancmiktari">
+            <input type="text" class="form-control" placeholder="Aylık Kazanç Miktarı" formControlName="ekgelir">
+            <div *ngIf="submitted && getControlRequest['ekgelir'].errors" class="text-danger">
+                Aylık Kazanç Miktarı Yazmadınız.
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-lg-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <label for=""> Kısaca kendinizden, hedeflerinizden ve diğer eklemek
-                istediğiniz
-                düşüncelerinizden bahsedermisiniz. (Bu alan zorunlu değildir) *</label>
-            <textarea cols="30" rows="3" class="form-control"
-                formControlName="fikirdusunce"
+                istediğiniz düşüncelerinizden bahsedermisiniz. (Bu alan zorunlu değildir) *</label>
+            <textarea cols="30" rows="3" class="form-control" formControlName="hakkinda"
+                oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
                 placeholder="Kısaca kendinizden, hedeflerinizden ve diğer eklemek istediğiniz düşüncelerinizden bahsedermisiniz"></textarea>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="text-right">
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" (click)="insertBilgi()" *ngIf="!EdittoUpdate"> Kaydet
+                        ve İlerle</button>
+                    <button type="submit" class="btn btn-primary" (click)="updateBilgi()" *ngIf="EdittoUpdate"> Güncelle
+                        ve İlerle</button>
+                </div>
+            </div>
         </div>
     </div>
 </form>
