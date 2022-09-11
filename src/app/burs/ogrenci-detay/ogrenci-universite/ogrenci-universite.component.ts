@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
@@ -25,6 +25,8 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
   private ngUnsubscribe$ = new Subject<void>();
 
   @Input() ogrenciId: number;
+  @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
+  
   @ViewChild('ngUniversite', { static: true }) ngUniversite: NgSelectComponent;
   @ViewChild('ngFakulte', { static: true }) ngFakulte: NgSelectComponent;
   @ViewChild('ngSinif', { static: true }) ngSinif: NgSelectComponent;
@@ -194,6 +196,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
           this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                this.tabToUpdate.emit({ tabName: "Banka" });
                 this.EdittoUpdate=true;
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
@@ -226,6 +229,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
           this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
+                this.tabToUpdate.emit({ tabName: "Banka" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');

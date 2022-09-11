@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
@@ -20,6 +20,7 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
   private ngUnsubscribe$ = new Subject<void>();
 
   @Input() ogrenciId: number;
+  @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
   @ViewChild('ngBanka', { static: true }) ngBanka: NgSelectComponent;
 
   constructor(
@@ -152,6 +153,7 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
           this.bankaService.setBankaKayit(this.frmBanka.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                this.tabToUpdate.emit({ tabName: "Ekonomik" });
                 this.EdittoUpdate=true;
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
@@ -184,6 +186,7 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
           this.bankaService.setBankaGuncelle(this.frmBanka.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
+                this.tabToUpdate.emit({ tabName: "Ekonomik" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');

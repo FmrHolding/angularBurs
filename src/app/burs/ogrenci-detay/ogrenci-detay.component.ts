@@ -1,4 +1,4 @@
-import { Component,  OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -7,13 +7,19 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class OgrenciDetayComponent implements OnInit {
 
-  ogrenciId:number;
+  ogrenciId: number;
+  tabName: string = null;
   constructor(
     private route: ActivatedRoute
-  ) {  }
+  ) { }
 
   ngOnInit(): void {
     this.ogrenciId = parseInt(this.route.snapshot.paramMap.get('id'));
+    this.tabName='Lise'
   }
 
+  onTapUpdate(event): void {
+    this.tabName = event.tabName;
+    console.log(this.tabName);
+  }
 }

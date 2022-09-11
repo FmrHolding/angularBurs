@@ -36,10 +36,6 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   private ngUnsubscribe$ = new Subject<void>();
 
   dogumtarihi: any = { year: new Date().getFullYear(), month: 1, day: 1 };
-  basvurutarihi: any = {
-    year: new Date().getFullYear(), month: new Date().getMonth() + 1,
-    day: new Date().getDate()
-  };
 
   public myDatePickerOptions: IMyDpOptions = {
     todayBtnTxt: 'Today',
@@ -60,7 +56,6 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
 
     this.frmOnBilgi = this.formBuilder.group({
       id: ['', [Validators.required]],
-      basvurutarihi: ['', [Validators.required]],
       firmaid: ['', [Validators.required]],
       adisoyadi: ['', [Validators.required]],
       babaadi: ['', [Validators.required]],
@@ -72,16 +67,15 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
       tckimlik: ['', [Validators.required, Validators.minLength(11)]],
       ceptelefonu: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.pattern(/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)]],
-      resim: ['', [Validators.required]],
-      kvkkonay: ['', [Validators.required]]
+      resimyolu: ['', [Validators.required]],
+      resimuzanti: [''],
+      resimboyutu: ['']
     });
   }
 
   ngOnInit(): void {
     if (localStorage.getItem('kvkkOnay') !== null) {
       if (localStorage.getItem('kvkkOnay') === 'true') {
-        this.frmOnBilgi.get("basvurutarihi").setValue(new Date().toLocaleDateString());
-        this.frmOnBilgi.get("kvkkonay").setValue(localStorage.getItem('kvkkOnay'));
         this.resimyolu = environment.apiFile;
       } else {
         this.router.navigate(['/kvkk']);
@@ -96,18 +90,30 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   getViewOgrenci(tckimlik: string): void {
     this.ogrenciService.getOgrenci(tckimlik).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        if (data.value != null) {
+        if (data.statusCode === 404) {
+          Swal.fire({
+            icon: 'error',
+            title: 'UYARI',
+            text: 'Daha önce başuru yaptınız. Eğer başvurunuzda değişiklik yapmak istiyorsanız lütfen' +
+              ' firmamızı arayıp başvurunuzun değişik yapmaya açılmasını isteyiniz.',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Tamam'
+          }).then((result) => {
+            if (result.value) {
+              this.router.navigate(['/kvkk']);
+            }
+          });
+        }
+        else if (data.statusCode === 200 && data.value != null) {
           this.EdittoUpdate = true;
           this.yuklenecekResim = this.resimyolu + data.value.resimyolu;
-          console.log(this.yuklenecekResim);
           const dogumTarihi = new Date(data.value.dogumtarihi);
-          const basvuruTarihi = new Date(data.value.basvurutarihi);
           this.dogumtarihi = { year: dogumTarihi.getFullYear(), month: dogumTarihi.getMonth() + 1, day: dogumTarihi.getDate() };
-          this.basvurutarihi = { year: basvuruTarihi.getFullYear(), month: basvuruTarihi.getMonth() + 1, day: basvuruTarihi.getDate() };
           this.frmOnBilgi.patchValue(data.value);
           this.getViewFirmalar();
           this.getViewCinsiyet();
           this.getViewMedeniDurum();
+          this.frmOnBilgi.get('resimyolu').clearValidators();
         } else {
           this.EdittoUpdate = false;
           this.ngFirma.handleClearClick();
@@ -160,7 +166,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
 
   secilenResim(fileInput: any): any {
     this.file = fileInput.target.files[0];
-    this.frmOnBilgi.get('resim').setValue(fileInput.target.files[0].name);
+    this.frmOnBilgi.get('resimyolu').setValue(fileInput.target.files[0].name);
     const reader = new FileReader();
     reader.onload = () => {
       this.yuklenecekResim = reader.result as string;
@@ -258,7 +264,6 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
           formData.append('ceptelefonu', this.frmOnBilgi.get('ceptelefonu').value);
           formData.append('email', this.frmOnBilgi.get('email').value);
           formData.append('ogrenciresim', this.file);
-          formData.append('basvurutarihi', this.frmOnBilgi.get('basvurutarihi').value);
           formData.append('kvkkonay', this.frmOnBilgi.get('kvkkonay').value);
           this.ogrenciService.setOgrenciKayit(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
@@ -309,8 +314,9 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
           formData.append('ceptelefonu', this.frmOnBilgi.get('ceptelefonu').value);
           formData.append('email', this.frmOnBilgi.get('email').value);
           formData.append('ogrenciresim', this.file);
-          formData.append('basvurutarihi', this.frmOnBilgi.get('basvurutarihi').value);
-          formData.append('kvkkonay', this.frmOnBilgi.get('kvkkonay').value);
+          formData.append('resimyolu', this.frmOnBilgi.get('resimyolu').value);
+          formData.append('resimuzanti', this.frmOnBilgi.get('resimuzanti').value);
+          formData.append('resimboyutu', this.frmOnBilgi.get('resimboyutu').value);
           this.ogrenciService.setOgrenciUpdate(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {

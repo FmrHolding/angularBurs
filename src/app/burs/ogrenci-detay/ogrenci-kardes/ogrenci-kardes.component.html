@@ -10,34 +10,34 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
             <ngx-datatable class="bootstrap" [rows]="rows" [columnMode]="ColumnMode.flex" [limit]="30"
                 [headerHeight]="40" [footerHeight]="40" rowHeight="auto" [scrollbarH]="true">
-                <ngx-datatable-column name="Adı Soyadı" [flexGrow]="1.5">
+                <ngx-datatable-column name="Adı Soyadı" [sortable]="false" [flexGrow]="1.5">
                     <ng-template let-row="row" ngx-datatable-cell-template>
                         {{ row.adisoyadi }}
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Yaşı" [flexGrow]="0.5">
+                <ngx-datatable-column name="Yaşı" [sortable]="false" [flexGrow]="0.5">
                     <ng-template let-row="row" ngx-datatable-cell-template>
                         {{ row.yas }}
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Medehi Hali" [flexGrow]="0.6">
+                <ngx-datatable-column name="Medehi Hali" [sortable]="false" [flexGrow]="0.6">
                     <ng-template let-row="row" ngx-datatable-cell-template>
                         <span *ngIf="row.medenihalid===1">Bekar</span>
                         <span *ngIf="row.medenihalid===2">Evli</span>
                         <span *ngIf="row.medenihalid===3">Boşanmış</span>
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Okulu" [flexGrow]="2">
+                <ngx-datatable-column name="Okulu" [sortable]="false" [flexGrow]="2">
                     <ng-template let-row="row" ngx-datatable-cell-template>
                         {{ row.okul }}
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Gelir/Burs" [flexGrow]="1">
+                <ngx-datatable-column name="Gelir/Burs" [sortable]="false" [flexGrow]="1">
                     <ng-template let-row="row" ngx-datatable-cell-template>
                         {{ row.gelirburs | currency:"TRY":"symbol" }}
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="#" [flexGrow]="0.4">
+                <ngx-datatable-column name="#" [sortable]="false" [flexGrow]="0.4">
                     <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
                         <div class="btn-group">
                             <button type="button" class="btn btn-danger" (click)="onDelete(rowIndex)"><i

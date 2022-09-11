@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
@@ -21,8 +21,9 @@ export class OgrenciLiseComponent implements OnInit {
   siniflar: any = [];
   private ngUnsubscribe$ = new Subject<void>();
 
-
   @Input() ogrenciId: number;
+  @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
+
   @ViewChild('ngLise', { static: true }) ngLise: NgSelectComponent;
   @ViewChild('ngLiseTur', { static: true }) ngLiseTur: NgSelectComponent;
   @ViewChild('ngSinif', { static: true }) ngSinif: NgSelectComponent;
@@ -143,6 +144,7 @@ export class OgrenciLiseComponent implements OnInit {
             next: (data: any) => {
               if (data.statusCode === 201) {
                 this.EdittoUpdate=true;
+                this.tabToUpdate.emit({ tabName: "Universite" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');
@@ -175,6 +177,7 @@ export class OgrenciLiseComponent implements OnInit {
             next: (data: any) => {
               if (data.statusCode === 200) {
                 this.toastr.success(data.message, 'Bilgilendirme');
+                this.tabToUpdate.emit({ tabName: "Universite" });
               } else {
                 this.toastr.error(data.message, 'Hata');
               }

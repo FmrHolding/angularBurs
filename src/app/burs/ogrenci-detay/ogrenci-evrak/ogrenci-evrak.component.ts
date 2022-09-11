@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgSelectComponent } from '@ng-select/ng-select';
+import { Router } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { EvrakService } from 'src/app/services/evrak.service';
+import { OgrenciService } from 'src/app/services/ogrenci.service';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 declare var $: any;
@@ -12,8 +13,7 @@ declare var $: any;
 @Component({
   selector: 'app-ogrenci-evrak',
   templateUrl: './ogrenci-evrak.component.html',
-  styles: [
-  ]
+  styleUrls: ['./ogrenci-evrak.component.css']
 })
 export class OgrenciEvrakComponent implements OnInit {
 
@@ -28,12 +28,14 @@ export class OgrenciEvrakComponent implements OnInit {
   private ngUnsubscribe$ = new Subject<void>();
 
   @Input() ogrenciId: number;
-  @ViewChild('ngEvrakAdi', { static: true }) ngEvrakAdi: NgSelectComponent;
+  @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private evrakService: EvrakService,
+    private ogranciService: OgrenciService,
     private fb: FormBuilder,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {
     this.frmEvrak = this.fb.group({
       ogrenciid: [0, [Validators.required]],
@@ -56,11 +58,9 @@ export class OgrenciEvrakComponent implements OnInit {
       next: (data: any) => {
         if (data.value != null) {
           this.EdittoUpdate = true;
-          this.frmEvrak.patchValue(data.value);
           this.rows = data.value;
         } else {
           this.EdittoUpdate = false;
-          this.ngEvrakAdi.handleClearClick();
         }
       },
       error: (err) => this.toastr.error(err, 'Hata')
@@ -69,19 +69,19 @@ export class OgrenciEvrakComponent implements OnInit {
 
   getViewEvrakTur(): void {
     this.evraktur = [
-      { id: 1, aciklama: 'Referans Mektubu' },
-      { id: 2, aciklama: 'İkametgâh' },
-      { id: 3, aciklama: 'Sabıka Kaydı' },
-      { id: 4, aciklama: 'Öğrenci Belgesi ' },
-      { id: 5, aciklama: 'Transkript' },
-      { id: 6, aciklama: 'Nüfus Cüzdanı Fotokopisi' },
-      { id: 7, aciklama: 'Hesap Cüzdanı Fotokopisi' }
+      { id: 1, tur: "ReferansMektubu", aciklama: 'Referans Mektubu' },
+      { id: 2, tur: "Ikametgah", aciklama: 'İkametgâh' },
+      { id: 3, tur: "SabikaKaydi", aciklama: 'Sabıka Kaydı' },
+      { id: 4, tur: "OgrenciBelgesi", aciklama: 'Öğrenci Belgesi ' },
+      { id: 5, tur: "Transkript", aciklama: 'Transkript' },
+      { id: 6, tur: "NufusCuzdani", aciklama: 'Nüfus Cüzdanı Fotokopisi' },
+      { id: 7, tur: "HesapCuzdani", aciklama: 'Hesap Cüzdanı Fotokopisi' }
     ]
   }
 
   onEvrakTuru(event): void {
     if (event !== undefined) {
-      this.frmEvrak.get('evrakadi').setValue(event.aciklama);
+      this.frmEvrak.get('evrakadi').setValue(event.tur);
     } else {
       this.frmEvrak.get('evrakadi').setValue(null);
     }
@@ -101,13 +101,36 @@ export class OgrenciEvrakComponent implements OnInit {
     if (this.frmEvrak.invalid) {
       return;
     }
-    this.rows.push(this.frmEvrak.value);
-    this.rows = [...this.rows];
+    this.insertBilgi();
   }
 
-  onDelete(index): void {
-    this.rows.splice(index, 1);
-    this.rows = [...this.rows];
+  onDelete(index: number, row: any): void {
+    Swal.fire({
+      title: 'Evrak Silme',
+      text: 'Seçtiğiniz Evrak: ' + row.belgeadi + ' Silinicektir. Onaylıyor musunuz?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonText: 'Vazgeç',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Evet'
+    }).then((result) => {
+      if (result.value) {
+        this.evrakService.setEvrakCikar(row.id).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+          next: (data: any) => {
+            if (data.statusCode === 200) {
+              this.rows.splice(index, 1);
+              this.rows = [...this.rows];
+              this.EdittoUpdate = true;
+              this.toastr.success(data.message, 'Bilgilendirme');
+            } else {
+              this.toastr.error(data.message, 'Hata');
+            }
+          },
+          error: (err) => this.toastr.error(err, 'Hata')
+        });
+      }
+    });
   }
 
   insertBilgi(): void {
@@ -116,7 +139,7 @@ export class OgrenciEvrakComponent implements OnInit {
       return;
     } else {
       Swal.fire({
-        title: 'Referans Kayıt',
+        title: 'Evrak Kayıt',
         text: 'Girmiş olduğunuz bilgiler kayıt edilecektir. Onaylıyor musunuz?',
         icon: 'warning',
         showCancelButton: true,
@@ -126,18 +149,21 @@ export class OgrenciEvrakComponent implements OnInit {
         confirmButtonText: 'Evet'
       }).then((result) => {
         if (result.value) {
-          this.rows.forEach(element => {
-            this.evrakService.setEvrakKayit(element).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-              next: (data: any) => {
-                if (data.statusCode === 201) {
-                  this.EdittoUpdate = true;
-                  this.toastr.success(data.message, 'Bilgilendirme');
-                } else {
-                  this.toastr.error(data.message, 'Hata');
-                }
-              },
-              error: (err) => this.toastr.error(err, 'Hata')
-            });
+          const formDataEvrak: FormData = new FormData();
+          formDataEvrak.append('ogrenciid', this.frmEvrak.get('ogrenciid').value);
+          formDataEvrak.append('evrakadi', this.frmEvrak.get('evrakadi').value);
+          formDataEvrak.append('evrak', this.evrak);
+          this.evrakService.setEvrakKayit(formDataEvrak).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+            next: (data: any) => {
+              if (data.statusCode === 200) {
+                this.rows.push(data.value);
+                this.rows = [...this.rows];
+                this.toastr.success("Kayıt başarıyla eklendi", 'Bilgilendirme');
+              } else {
+                this.toastr.error(data.message, 'Hata');
+              }
+            },
+            error: (err) => this.toastr.error(err, 'Hata')
           });
         }
       });
@@ -150,7 +176,7 @@ export class OgrenciEvrakComponent implements OnInit {
       return;
     } else {
       Swal.fire({
-        title: 'Referans Kayıt',
+        title: 'Evrak Kayıt',
         text: 'Girmiş olduğunuz bilgiler kayıt edilecektir. Onaylıyor musunuz?',
         icon: 'warning',
         showCancelButton: true,
@@ -175,9 +201,40 @@ export class OgrenciEvrakComponent implements OnInit {
     }
   }
 
+  endToBurs(): void {
+    console.log(this.ogrenciId);
+    Swal.fire({
+      title: 'Başvuru Tamamlam',
+      text: 'Başvurunuz Kaydedilip Kapatılacaktır. Onaylıyor musunuz?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonText: 'Vazgeç',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Evet'
+    }).then((result) => {
+      if (result.value) {
+        this.ogranciService.setOgrenciEndtoBurs(this.ogrenciId).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+          next: (data: any) => {
+            if (data.statusCode === 200) {
+              this.toastr.success(data.message, 'Bilgilendirme');
+              setTimeout(() => {
+                this.router.navigate(['/kvkk']);
+              }, 1000);
+            } else {
+              this.toastr.error(data.message, 'Hata');
+            }
+          },
+          error: (err) => this.toastr.error(err, 'Hata')
+        });
+      }
+    });
+  }
+
   ngOnDestroy(): void {
     this.ngUnsubscribe$.next();
     this.ngUnsubscribe$.complete();
     $('#modalEvrak').modal('hide');
   }
 }
+

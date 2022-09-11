@@ -4,55 +4,65 @@
             <div class="ibox-content">
                 <div class="tabs-container">
                     <ul class="nav nav-tabs" role="tablist">
-                        <li><a class="nav-link active show" data-toggle="tab" href="#lise">LİSE</a></li>
-                        <li><a class="nav-link" data-toggle="tab" href="#universite">ÜNİVERSİTE</a></li>
-                        <li><a class="nav-link" data-toggle="tab" href="#banka">BANKA</a></li>
-                        <li><a class="nav-link" data-toggle="tab" href="#ekonomik">SOSYO-EKONOMİK</a></li>
-                        <li><a class="nav-link" data-toggle="tab" href="#kardes">KARDEŞ</a></li>
-                        <li><a class="nav-link" data-toggle="tab" href="#kisisel">KİŞİSEL</a></li>
-                        <li><a class="nav-link" data-toggle="tab" href="#referans">REFERANS</a></li>
-                        <li><a class="nav-link" data-toggle="tab" href="#evrak">EVRAK</a></li>
+                        <li><a ngClass="{{tabName=='Lise' ?'nav-link active show':'nav-link disabled'}}" data-toggle="tab"
+                                href="#lise">LİSE</a></li>
+                        <li><a ngClass="{{tabName=='Universite' ?'nav-link active show':'nav-link disabled'}}"
+                                data-toggle="tab" href="#universite">ÜNİVERSİTE</a></li>
+                        <li><a ngClass="{{tabName=='Banka' ?'nav-link active show':'nav-link disabled'}}" data-toggle="tab"
+                                href="#banka">BANKA</a></li>
+                        <li><a ngClass="{{tabName=='Ekonomik' ?'nav-link active show':'nav-link disabled'}}" data-toggle="tab"
+                                href="#ekonomik">SOSYO-EKONOMİK</a></li>
+                        <li><a ngClass="{{tabName=='Kardes' ?'nav-link active show':'nav-link disabled'}}" data-toggle="tab"
+                                href="#kardes">KARDEŞ</a></li>
+                        <li><a ngClass="{{tabName=='Kisisel' ?'nav-link active show':'nav-link disabled'}}" data-toggle="tab"
+                                href="#kisisel">KİŞİSEL</a></li>
+                        <li><a ngClass="{{tabName=='Referans'?'nav-link active show':'nav-link disabled'}}" data-toggle="tab"
+                                href="#referans">REFERANS</a></li>
+                        <li><a ngClass="{{tabName=='Evrak' ?'nav-link active show':'nav-link disabled'}}" data-toggle="tab"
+                                href="#evrak">EVRAK</a></li>
                     </ul>
                 </div>
                 <div class="tab-content">
-                    <div role="tabpanel" id="lise" class="tab-pane active show">
+                    <div role="tabpanel" id="lise" ngClass="{{tabName=='Lise' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
-                            <app-ogrenci-lise [ogrenciId]="ogrenciId"></app-ogrenci-lise>
+                            <app-ogrenci-lise [ogrenciId]="ogrenciId" (tabToUpdate)="onTapUpdate($event)">
+                            </app-ogrenci-lise>
                         </div>
                     </div>
-                    <div role="tabpanel" id="universite" class="tab-pane">
+                    <div role="tabpanel" id="universite"
+                        ngClass="{{tabName=='Universite' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
                             <app-ogrenci-universite [ogrenciId]="ogrenciId"></app-ogrenci-universite>
                         </div>
                     </div>
-                    <div role="tabpanel" id="banka" class="tab-pane">
+                    <div role="tabpanel" id="banka" ngClass="{{tabName=='Banka' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
                             <app-ogrenci-banka [ogrenciId]="ogrenciId"></app-ogrenci-banka>
                         </div>
                     </div>
-                    <div role="tabpanel" id="ekonomik" class="tab-pane">
+                    <div role="tabpanel" id="ekonomik" ngClass="{{tabName=='Ekonomik' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
                             <app-ogrenci-ekonomik [ogrenciId]="ogrenciId"></app-ogrenci-ekonomik>
                         </div>
                     </div>
-                    <div role="tabpanel" id="kardes" class="tab-pane">
+                    <div role="tabpanel" id="kardes" ngClass="{{tabName=='Kardes' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <app-ogrenci-kardes [ogrenciId]="ogrenciId"></app-ogrenci-kardes>
                             </div>
                         </div>
                     </div>
-                    <div role="tabpanel" id="kisisel" class="tab-pane">
+                    <div role="tabpanel" id="kisisel" ngClass="{{tabName=='Kisisel' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
                             <app-ogrenci-kisisel [ogrenciId]="ogrenciId"></app-ogrenci-kisisel>
                         </div>
                     </div>
-                    <div role="tabpanel" id="referans" class="tab-pane">
+                    <div role="tabpanel" id="referans" ngClass="{{tabName=='Referans'?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
                             <app-ogrenci-referans [ogrenciId]="ogrenciId"></app-ogrenci-referans>
                         </div>
                     </div>
-                    <div role="tabpanel" id="evrak" class="tab-pane">
+                    <div role="tabpanel" id="evrak" ngClass="{{tabName=='Evrak' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
                             <app-ogrenci-evrak [ogrenciId]="ogrenciId"></app-ogrenci-evrak>
                         </div>

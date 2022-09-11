@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import localeTr from '@angular/common/locales/tr';
 import { registerLocaleData } from '@angular/common';
@@ -26,6 +26,7 @@ export class OgrenciKardesComponent implements OnInit {
   private ngUnsubscribe$ = new Subject<void>();
 
   @Input() ogrenciId: number;
+  @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private kardesService: KardesService,
@@ -119,6 +120,7 @@ export class OgrenciKardesComponent implements OnInit {
             this.kardesService.setKardesKayit(element).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
               next: (data: any) => {
                 if (data.statusCode === 201) {
+                  this.tabToUpdate.emit({ tabName: "Kisisel" });
                   this.EdittoUpdate = true;
                   this.toastr.success(data.message, 'Bilgilendirme');
                 } else {
@@ -152,6 +154,7 @@ export class OgrenciKardesComponent implements OnInit {
           this.kardesService.setKardesGuncelle(this.rows).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
+                this.tabToUpdate.emit({ tabName: "Kisisel" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');

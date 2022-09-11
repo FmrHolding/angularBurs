@@ -10,7 +10,7 @@ export class OgrenciService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getOgrenci(tckimlik:string): Observable<any[]> {
+  public getOgrenci(tckimlik: string): Observable<any[]> {
     return this.httpClient.get<any[]>(environment.apiURL + 'ogrenci/get?tckimlik=' + tckimlik);
   }
 
@@ -20,5 +20,9 @@ export class OgrenciService {
 
   public setOgrenciUpdate(ogrenci: any): Observable<any> {
     return this.httpClient.put<any>(environment.apiURL + 'ogrenci/update', ogrenci);
+  }
+
+  public setOgrenciEndtoBurs(ogrenciid: number): Observable<any> {
+    return this.httpClient.get<any>(environment.apiURL + 'ogrenci/closed?id=' + ogrenciid);
   }
 }

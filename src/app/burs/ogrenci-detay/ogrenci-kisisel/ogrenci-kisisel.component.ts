@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import localeTr from '@angular/common/locales/tr';
 import { registerLocaleData } from '@angular/common';
@@ -18,6 +18,7 @@ export class OgrenciKisiselComponent implements OnInit {
   frmKisisel: FormGroup;
   EdittoUpdate: boolean = false;
   submitted = false;
+  yurtDisable: boolean = false;
   aileberaber: any = [];
   farlkliikamet: any = [];
   ikameteyeri: any = [];
@@ -27,6 +28,8 @@ export class OgrenciKisiselComponent implements OnInit {
   private ngUnsubscribe$ = new Subject<void>();
 
   @Input() ogrenciId: number;
+  @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
+
   @ViewChild('ngAileBeraber', { static: true }) ngAileBeraber: NgSelectComponent;
   @ViewChild('ngFarkliSehir', { static: true }) ngFarkliSehir: NgSelectComponent;
   @ViewChild('IkametYer', { static: true }) IkametYer: NgSelectComponent;
@@ -43,7 +46,7 @@ export class OgrenciKisiselComponent implements OnInit {
       aileberaberid: ['', [Validators.required]],
       farklikametid: [''],
       ikametyeriid: ['', [Validators.required]],
-      yurtadi: [''],
+      yurtadi: ['', [Validators.required]],
       saglikdurumu: ['', [Validators.required]],
       adres: ['', [Validators.required]],
       kira: ['', [Validators.required]],
@@ -161,10 +164,11 @@ export class OgrenciKisiselComponent implements OnInit {
     if (event !== undefined) {
       this.frmKisisel.get('ikametyeriid').setValue(event.id);
       if (event.id === 1) {
-        this.frmKisisel.get('yurtadi').setValidators(Validators.required);
-      } else {
+        this.yurtDisable = false;
         this.frmKisisel.get('yurtadi').setValue(null);
-        this.frmKisisel.get('yurtadi').clearValidators();
+      } else {
+        this.yurtDisable = true;
+        this.frmKisisel.get('yurtadi').setValue('YOK');
       }
     } else {
       this.frmKisisel.get('ikametyeriid').setValue(null);
@@ -206,6 +210,7 @@ export class OgrenciKisiselComponent implements OnInit {
           this.kisiselService.setKisiselKayit(this.frmKisisel.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                this.tabToUpdate.emit({ tabName: "Universite" });
                 this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
@@ -237,6 +242,7 @@ export class OgrenciKisiselComponent implements OnInit {
         if (result.value) {
           this.kisiselService.setKisiselGuncelle(this.frmKisisel.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
+              this.tabToUpdate.emit({ tabName: "Universite" });
               if (data.statusCode === 200) {
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {

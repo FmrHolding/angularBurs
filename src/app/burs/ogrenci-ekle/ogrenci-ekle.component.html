@@ -17,7 +17,7 @@
                                 <input id="logo" type="file" class="custom-file-input" name="ogrenciresim"
                                     accept="image/*" (change)="secilenResim($event)">
                                 <label for="logo" class="custom-file-label">Fotoğraf Yükle...</label>
-                                <div *ngIf="submitted && getControlRequest['resim'].errors" class="text-danger">
+                                <div *ngIf="submitted && getControlRequest['resimyolu'].errors" class="text-danger">
                                     Resim eklemediniz.
                                 </div>
                             </div>

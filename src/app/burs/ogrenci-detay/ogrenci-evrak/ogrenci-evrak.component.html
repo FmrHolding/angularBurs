@@ -10,30 +10,30 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
             <ngx-datatable class="bootstrap" [rows]="rows" [columnMode]="ColumnMode.flex" [limit]="30"
                 [headerHeight]="40" [footerHeight]="40" rowHeight="auto" [scrollbarH]="true">
-                <ngx-datatable-column name="Belge Adı" [flexGrow]="1.5">
+                <ngx-datatable-column name="Belge Adı" [sortable]="false" [flexGrow]="2.5">
                     <ng-template let-row="row" ngx-datatable-cell-template>
                         {{ row.belgeadi }}
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Belge Boyutu" [flexGrow]="0.5">
+                <ngx-datatable-column name="Belge Boyutu" [sortable]="false" [flexGrow]="0.5">
                     <ng-template let-row="row" ngx-datatable-cell-template>
-                        {{ row.belgeboyutu/ 1024 }} Mb
+                        {{ row.belgeboyut / 1048576 | number }} Mb
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Belge Türü" [flexGrow]="0.6">
+                <ngx-datatable-column name="Belge Türü" [sortable]="false" [flexGrow]="0.6">
                     <ng-template let-row="row" ngx-datatable-cell-template>
                         <span *ngIf="row.belgeuzanti==='.pdf'">Pdf</span>
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Link" [flexGrow]="2">
+                <ngx-datatable-column name="Link" [sortable]="false" [flexGrow]="0.5">
                     <ng-template let-row="row" ngx-datatable-cell-template>
-                        <a routerLink={{evrakAdresi + row.dosyalu}} target="_blank">İndir</a>
+                        <a href="{{evrakAdresi + row.belgeyolu}}" target="_blank">İndir</a>
                     </ng-template>
                 </ngx-datatable-column>
-                <ngx-datatable-column name="#" [flexGrow]="0.4">
+                <ngx-datatable-column name="#" [sortable]="false" [flexGrow]="0.4">
                     <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-danger" (click)="onDelete(rowIndex)"><i
+                            <button type="button" class="btn btn-danger" (click)="onDelete(rowIndex,row)"><i
                                     class="fa fa-trash"></i></button>
                         </div>
                     </ng-template>
@@ -45,10 +45,8 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="text-right">
                 <div class="btn-group">
-                    <button type="submit" class="btn btn-primary" (click)="insertBilgi()" *ngIf="!EdittoUpdate"> Kaydet
-                        ve İlerle</button>
-                    <button type="submit" class="btn btn-primary" (click)="updateBilgi()" *ngIf="EdittoUpdate"> Güncelle
-                        ve İlerle</button>
+                    <button type="submit" class="btn btn-warning" (click)="endToBurs()" *ngIf="EdittoUpdate"> Sonlandır
+                    </button>
                 </div>
             </div>
         </div>
@@ -66,7 +64,7 @@
 
                         <div class="form-group row">
                             <div class="col-lg-12 col-md-12 col-sm-12">
-                                <ng-select #ngEvrakAdi [items]="evraktur" bindLabel="aciklama" bindValue="id"
+                                <ng-select [items]="evraktur" bindLabel="aciklama" bindValue="id"
                                     (change)="onEvrakTuru($event)" placeholder="Evrak Türü">
                                 </ng-select>
                                 <div *ngIf="submitted && getControlRequest['evrakadi'].errors" class="text-danger">
