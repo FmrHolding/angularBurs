@@ -141,7 +141,7 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
     if (event !== undefined) {
       this.frmEkonomik.get('babasag').setValue(event.cevap);
     } else {
-      this.frmEkonomik.get('babasag').setValue(event.cevap);
+      this.frmEkonomik.get('babasag').setValue(null);
     }
   }
 
@@ -149,7 +149,7 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
     if (event !== undefined) {
       this.frmEkonomik.get('annesag').setValue(event.cevap);
     } else {
-      this.frmEkonomik.get('annesag').setValue(event.cevap);
+      this.frmEkonomik.get('annesag').setValue(null);
     }
   }
 
@@ -157,7 +157,7 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
     if (event !== undefined) {
       this.frmEkonomik.get('annebabaayri').setValue(event.cevap);
     } else {
-      this.frmEkonomik.get('annebabaayri').setValue(event.cevap);
+      this.frmEkonomik.get('annebabaayri').setValue(null);
     }
   }
 
@@ -217,6 +217,11 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
           this.ekonomikService.setEkonomikKayit(this.frmEkonomik.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                this.frmEkonomik.disable();
+                this.ngAnneBabaBirlikte.setDisabledState(true);
+                this.ngHayat.setDisabledState(true);
+                this.ngOgrenim.setDisabledState(true);
+                this.ngMulk.setDisabledState(true);
                 this.tabToUpdate.emit({ tabName: "Kardes" });
                 this.EdittoUpdate=true;
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -250,6 +255,11 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
           this.ekonomikService.setEkonomikGuncelle(this.frmEkonomik.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
+                this.frmEkonomik.disable();
+                this.ngAnneBabaBirlikte.setDisabledState(true);
+                this.ngHayat.setDisabledState(true);
+                this.ngOgrenim.setDisabledState(true);
+                this.ngMulk.setDisabledState(true);
                 this.tabToUpdate.emit({ tabName: "Kardes" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
@@ -261,6 +271,10 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  backBilgi(): void { 
+    this.tabToUpdate.emit({ tabName: "Banka" });
   }
 
   ngOnDestroy(): void {

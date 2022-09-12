@@ -88,8 +88,13 @@ export class OgrenciEvrakComponent implements OnInit {
   }
 
   onEvrak(evrak: any): any {
-    this.evrak = evrak.target.files[0];
-    this.frmEvrak.get('evrak').setValue(evrak.target.files[0].name);
+    let fileSize: number = evrak.target.files[0].size
+    if ((fileSize / 1024) < 3000) {
+      this.evrak = evrak.target.files[0];
+      this.frmEvrak.get('evrak').setValue(evrak.target.files[0].name);
+    } else {
+      this.toastr.warning("Eklenecek Evrak boyutu 3MB az olmalı", 'UYARI');
+    }
   }
 
   onYeniEvrak(): void {
@@ -170,37 +175,6 @@ export class OgrenciEvrakComponent implements OnInit {
     }
   }
 
-  updateBilgi(): void {
-    this.submitted = true;
-    if (this.frmEvrak.invalid) {
-      return;
-    } else {
-      Swal.fire({
-        title: 'Evrak Kayıt',
-        text: 'Girmiş olduğunuz bilgiler kayıt edilecektir. Onaylıyor musunuz?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonText: 'Vazgeç',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Evet'
-      }).then((result) => {
-        if (result.value) {
-          this.evrakService.setEvrakGuncelle(this.rows).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-            next: (data: any) => {
-              if (data.statusCode === 200) {
-                this.toastr.success(data.message, 'Bilgilendirme');
-              } else {
-                this.toastr.error(data.message, 'Hata');
-              }
-            },
-            error: (err) => this.toastr.error(err, 'Hata')
-          });
-        }
-      });
-    }
-  }
-
   endToBurs(): void {
     console.log(this.ogrenciId);
     Swal.fire({
@@ -229,6 +203,10 @@ export class OgrenciEvrakComponent implements OnInit {
         });
       }
     });
+  }
+
+  backBilgi(): void { 
+    this.tabToUpdate.emit({ tabName: "Referans" });
   }
 
   ngOnDestroy(): void {

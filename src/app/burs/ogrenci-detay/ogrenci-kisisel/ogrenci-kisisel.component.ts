@@ -42,9 +42,10 @@ export class OgrenciKisiselComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.frmKisisel = this.fb.group({
+      id:[0,[Validators.required]],
       ogrenciid: [0, [Validators.required]],
-      aileberaberid: ['', [Validators.required]],
-      farklikametid: [''],
+      aileileikametid: ['', [Validators.required]],
+      farkliikametid: [''],
       ikametyeriid: ['', [Validators.required]],
       yurtadi: ['', [Validators.required]],
       saglikdurumu: ['', [Validators.required]],
@@ -132,31 +133,31 @@ export class OgrenciKisiselComponent implements OnInit {
 
   onAileileBeraber(event): void {
     if (event !== undefined) {
-      this.frmKisisel.get('aileberaberid').setValue(event.cevap);
+      this.frmKisisel.get('aileileikametid').setValue(event.cevap);
       if (event.cevap === true) {
         this.ngFarkliSehir.setDisabledState(true);
-        this.frmKisisel.get('farklikametid').setValue(false);
-        this.frmKisisel.get('farklikametid').clearValidators();
+        this.frmKisisel.get('farkliikametid').setValue(false);
+        this.frmKisisel.get('farkliikametid').clearValidators();
       } else {
         this.ngFarkliSehir.setDisabledState(false);
-        this.frmKisisel.get('farklikametid').setValue(null);
+        this.frmKisisel.get('farkliikametid').setValue(null);
         this.ngFarkliSehir.handleClearClick();
-        this.frmKisisel.get('farklikametid').setValidators(Validators.required);
+        this.frmKisisel.get('farkliikametid').setValidators(Validators.required);
       }
     } else {
-      this.frmKisisel.get('aileberaberid').setValue(null);
+      this.frmKisisel.get('aileileikametid').setValue(null);
       this.ngFarkliSehir.setDisabledState(false);
-      this.frmKisisel.get('farklikametid').setValue(null);
+      this.frmKisisel.get('farkliikametid').setValue(null);
       this.ngFarkliSehir.handleClearClick();
-      this.frmKisisel.get('farklikametid').setValidators(Validators.required);
+      this.frmKisisel.get('farkliikametid').setValidators(Validators.required);
     }
   }
 
   onAiledenAyri(event): void {
     if (event !== undefined) {
-      this.frmKisisel.get('farklikametid').setValue(event.cevap);
+      this.frmKisisel.get('farkliikametid').setValue(event.cevap);
     } else {
-      this.frmKisisel.get('farklikametid').setValue(null);
+      this.frmKisisel.get('farkliikametid').setValue(null);
     }
   }
 
@@ -186,6 +187,11 @@ export class OgrenciKisiselComponent implements OnInit {
   onCalisma(event): void {
     if (event !== undefined) {
       this.frmKisisel.get('calisiyor').setValue(event.cevap);
+      if(event.cevap===true){
+        this.frmKisisel.get('ekgelir').setValue(null);
+      }else{        
+        this.frmKisisel.get('ekgelir').setValue(0);
+      }
     } else {
       this.frmKisisel.get('calisiyor').setValue(null);
     }
@@ -210,7 +216,13 @@ export class OgrenciKisiselComponent implements OnInit {
           this.kisiselService.setKisiselKayit(this.frmKisisel.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                this.tabToUpdate.emit({ tabName: "Universite" });
+                this.frmKisisel.disable;
+                this.ngAileBeraber.setDisabledState(true);
+                this.ngFarkliSehir.setDisabledState(true);
+                this.IkametYer.setDisabledState(true);
+                this.ngSigara.setDisabledState(true);
+                this.ngIsletme.setDisabledState(true);
+                this.tabToUpdate.emit({ tabName: "Referans" });
                 this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
@@ -242,7 +254,13 @@ export class OgrenciKisiselComponent implements OnInit {
         if (result.value) {
           this.kisiselService.setKisiselGuncelle(this.frmKisisel.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              this.tabToUpdate.emit({ tabName: "Universite" });
+              this.frmKisisel.disable;
+              this.ngAileBeraber.setDisabledState(true);
+              this.ngFarkliSehir.setDisabledState(true);
+              this.IkametYer.setDisabledState(true);
+              this.ngSigara.setDisabledState(true);
+              this.ngIsletme.setDisabledState(true);
+              this.tabToUpdate.emit({ tabName: "Referans" });
               if (data.statusCode === 200) {
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
@@ -254,6 +272,10 @@ export class OgrenciKisiselComponent implements OnInit {
         }
       });
     }
+  }
+
+  backBilgi(): void { 
+    this.tabToUpdate.emit({ tabName: "Kardes" });
   }
 
   ngOnDestroy(): void {

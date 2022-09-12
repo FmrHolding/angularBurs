@@ -32,6 +32,7 @@ export class OgrenciReferansComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.frmReferans = this.fb.group({
+      id:[0],
       ogrenciid: [0, [Validators.required]],
       adisoyadi: ['', [Validators.required]],
       yakinlik: ['', [Validators.required]],
@@ -48,7 +49,7 @@ export class OgrenciReferansComponent implements OnInit {
   get getControlRequest() { return this.frmReferans.controls; }
 
   getViewRerefrans(ogrenciid: number): void {
-    this.referansService.getReferans(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+    this.referansService.getReferanslar(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
         if (data.value != null) {
           this.EdittoUpdate = true;
@@ -71,8 +72,7 @@ export class OgrenciReferansComponent implements OnInit {
     if (this.frmReferans.invalid) {
       return;
     }
-    this.rows.push(this.frmReferans.value);
-    this.rows = [...this.rows];
+    this.insertBilgi();
   }
 
   onDelete(index): void {
@@ -96,45 +96,12 @@ export class OgrenciReferansComponent implements OnInit {
         confirmButtonText: 'Evet'
       }).then((result) => {
         if (result.value) {
-          this.rows.forEach(element => {
-            this.referansService.setReferansKayit(element).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-              next: (data: any) => {
-                if (data.statusCode === 201) {
-                  this.tabToUpdate.emit({ tabName: "Evrak" });
-                  this.EdittoUpdate = true;
-                  this.toastr.success(data.message, 'Bilgilendirme');
-                } else {
-                  this.toastr.error(data.message, 'Hata');
-                }
-              },
-              error: (err) => this.toastr.error(err, 'Hata')
-            });
-          });
-        }
-      });
-    }
-  }
-
-  updateBilgi(): void {
-    this.submitted = true;
-    if (this.frmReferans.invalid) {
-      return;
-    } else {
-      Swal.fire({
-        title: 'Referans Kayıt',
-        text: 'Girmiş olduğunuz bilgiler kayıt edilecektir. Onaylıyor musunuz?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonText: 'Vazgeç',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Evet'
-      }).then((result) => {
-        if (result.value) {
-          this.referansService.setReferansGuncelle(this.rows).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+          this.referansService.setReferansKayit(this.frmReferans.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              if (data.statusCode === 200) {
-                this.tabToUpdate.emit({ tabName: "Evrak" });
+              if (data.statusCode === 201) {
+                this.rows.push(data.value);
+                this.rows = [...this.rows];
+                this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');
@@ -148,7 +115,11 @@ export class OgrenciReferansComponent implements OnInit {
   }
 
   nextBilgi(): void {
+    this.tabToUpdate.emit({ tabName: "Evrak" });
+  }
 
+  backBilgi(): void {
+    this.tabToUpdate.emit({ tabName: "Kisisel" });
   }
 
   ngOnDestroy(): void {

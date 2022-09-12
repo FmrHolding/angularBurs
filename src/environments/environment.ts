@@ -4,8 +4,13 @@
 
 export const environment = {
   production: false,
-  apiURL: 'http://localhost:41112/api/',
-  apiFile: 'http://localhost:41112',
+  //apiURL: 'http://localhost:41112/api/',
+  //apiFile: 'http://localhost:41112',
+  //apiURL: 'https://bursservice.fimar.com.tr/api/',
+  //apiFile: 'https://bursservice.fimar.com.tr',
+
+  apiURL: 'https://bursservice.syfyazilim.com/api/',
+  apiFile: 'https://bursservice.syfyazilim.com',
 };
 
 /*

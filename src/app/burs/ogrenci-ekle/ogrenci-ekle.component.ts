@@ -55,7 +55,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   ) {
 
     this.frmOnBilgi = this.formBuilder.group({
-      id: ['', [Validators.required]],
+      id: [0],
       firmaid: ['', [Validators.required]],
       adisoyadi: ['', [Validators.required]],
       babaadi: ['', [Validators.required]],
@@ -165,13 +165,19 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   }
 
   secilenResim(fileInput: any): any {
-    this.file = fileInput.target.files[0];
-    this.frmOnBilgi.get('resimyolu').setValue(fileInput.target.files[0].name);
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.yuklenecekResim = reader.result as string;
-    };
-    reader.readAsDataURL(this.file);
+    this.yuklenecekResim = 'assets/images/null.png';
+    let fileSize: number = fileInput.target.files[0].size
+    if ((fileSize / 1024) < 3000) {
+      this.file = fileInput.target.files[0];
+      this.frmOnBilgi.get('resimyolu').setValue(fileInput.target.files[0].name);
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.yuklenecekResim = reader.result as string;
+      };
+      reader.readAsDataURL(this.file);
+    } else {
+      this.toastr.warning("Resim boyutu 3MB az olmalı", 'UYARI');
+    }
   }
 
   onTcKimlikKontrol(event): void {
@@ -264,7 +270,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
           formData.append('ceptelefonu', this.frmOnBilgi.get('ceptelefonu').value);
           formData.append('email', this.frmOnBilgi.get('email').value);
           formData.append('ogrenciresim', this.file);
-          formData.append('kvkkonay', this.frmOnBilgi.get('kvkkonay').value);
+          formData.append('kvkkonay', 'true');
           this.ogrenciService.setOgrenciKayit(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {

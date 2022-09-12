@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiURL: 'https://bursservice.fimar.com.tr/api/',
-  apiFile: 'https://bursservice.fimar.com.tr',
+  apiURL: 'https://bursservice.syfyazilim.com/api/',
+  apiFile: 'https://bursservice.syfyazilim.com',
 };

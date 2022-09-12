@@ -26,7 +26,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
 
   @Input() ogrenciId: number;
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
-  
+
   @ViewChild('ngUniversite', { static: true }) ngUniversite: NgSelectComponent;
   @ViewChild('ngFakulte', { static: true }) ngFakulte: NgSelectComponent;
   @ViewChild('ngSinif', { static: true }) ngSinif: NgSelectComponent;
@@ -40,6 +40,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
     private toastr: ToastrService
   ) {
     this.frmUniversite = this.fb.group({
+      id: [0],
       ogrenciid: [0, [Validators.required]],
       universiteid: ['', [Validators.required]],
       fakulteid: ['', [Validators.required]],
@@ -70,7 +71,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
           this.frmUniversite.patchValue(data.value);
           if (parseInt(data.value.turid) === 1) {
             this.ngBurs.setDisabledState(true);
-          }else{
+          } else {
             this.ngBurs.setDisabledState(false);
           }
         } else {
@@ -158,14 +159,14 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
   onTuru(event): void {
     if (event !== undefined) {
       this.frmUniversite.get('turid').setValue(event.id);
+      if (event.id === 1) {
+        this.ngBurs.setDisabledState(true);
+        this.frmUniversite.get('bursid').setValue(5);
+      } else {
+        this.ngBurs.setDisabledState(false);
+      }
     } else {
       this.frmUniversite.get('turid').setValue(null);
-    }
-    if (event.id === 1) {
-      this.ngBurs.setDisabledState(true);
-      this.frmUniversite.get('bursid').setValue(5);
-    } else {
-      this.ngBurs.setDisabledState(false);
     }
   }
 
@@ -196,8 +197,14 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
           this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                this.frmUniversite.disable;
+                this.ngUniversite.setDisabledState(true);
+                this.ngFakulte.setDisabledState(true);
+                this.ngSinif.setDisabledState(true);
+                this.ngTuru.setDisabledState(true);
+                this.ngBurs.setDisabledState(true);
                 this.tabToUpdate.emit({ tabName: "Banka" });
-                this.EdittoUpdate=true;
+                this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');
@@ -226,9 +233,15 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
         confirmButtonText: 'Evet'
       }).then((result) => {
         if (result.value) {
-          this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+          this.universiteService.setUniversiteGuncelle(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
+                this.frmUniversite.disable;
+                this.ngUniversite.setDisabledState(true);
+                this.ngFakulte.setDisabledState(true);
+                this.ngSinif.setDisabledState(true);
+                this.ngTuru.setDisabledState(true);
+                this.ngBurs.setDisabledState(true);
                 this.tabToUpdate.emit({ tabName: "Banka" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
@@ -240,6 +253,10 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  backBilgi(): void {
+    this.tabToUpdate.emit({ tabName: "Lise" });
   }
 
   ngOnDestroy(): void {

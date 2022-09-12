@@ -15,11 +15,11 @@ export class OgrenciDetayComponent implements OnInit {
 
   ngOnInit(): void {
     this.ogrenciId = parseInt(this.route.snapshot.paramMap.get('id'));
-    this.tabName='Lise'
+    this.tabName='Evrak'
   }
 
   onTapUpdate(event): void {
+    this.tabName=null;
     this.tabName = event.tabName;
-    console.log(this.tabName);
   }
 }

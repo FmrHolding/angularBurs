@@ -18,7 +18,6 @@ declare var $: any;
 export class OgrenciKardesComponent implements OnInit {
 
   frmKardes: FormGroup;
-  EdittoUpdate: boolean = false;
   submitted = false;
   ColumnMode = ColumnMode;
   rows: any = [];
@@ -34,6 +33,7 @@ export class OgrenciKardesComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.frmKardes = this.fb.group({
+      id: [0],
       ogrenciid: [0, [Validators.required]],
       adisoyadi: ['', [Validators.required]],
       yas: ['', [Validators.required]],
@@ -54,11 +54,8 @@ export class OgrenciKardesComponent implements OnInit {
     this.kardesService.getKardesler(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
         if (data.value != null) {
-          this.EdittoUpdate = true;
           this.frmKardes.patchValue(data.value);
-          this.rows=data.value;
-        } else {
-          this.EdittoUpdate = false;
+          this.rows = data.value;
         }
       },
       error: (err) => this.toastr.error(err, 'Hata')
@@ -91,8 +88,7 @@ export class OgrenciKardesComponent implements OnInit {
     if (this.frmKardes.invalid) {
       return;
     }
-    this.rows.push(this.frmKardes.value);
-    this.rows = [...this.rows];
+    this.insertBilgi();
   }
 
   onDelete(index): void {
@@ -116,46 +112,12 @@ export class OgrenciKardesComponent implements OnInit {
         confirmButtonText: 'Evet'
       }).then((result) => {
         if (result.value) {
-          this.rows.forEach(element => {
-            this.kardesService.setKardesKayit(element).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-              next: (data: any) => {
-                if (data.statusCode === 201) {
-                  this.tabToUpdate.emit({ tabName: "Kisisel" });
-                  this.EdittoUpdate = true;
-                  this.toastr.success(data.message, 'Bilgilendirme');
-                } else {
-                  this.toastr.error(data.message, 'Hata');
-                }
-              },
-              error: (err) => this.toastr.error(err, 'Hata')
-            });
-          });          
-        }
-      });
-    }
-  }
-
-  updateBilgi(): void {
-    this.submitted = true;
-    if (this.frmKardes.invalid) {
-      return;
-    } else {
-      Swal.fire({
-        title: 'Kardeş Kayıt',
-        text: 'Girmiş olduğunuz bilgiler kayıt edilecektir. Onaylıyor musunuz?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonText: 'Vazgeç',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Evet'
-      }).then((result) => {
-        if (result.value) {
-          this.kardesService.setKardesGuncelle(this.rows).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+          this.kardesService.setKardesKayit(this.frmKardes.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
-                this.tabToUpdate.emit({ tabName: "Kisisel" });
-                this.toastr.success(data.message, 'Bilgilendirme');
+                this.toastr.success('Kayıt başarıyla eklendi.', 'Bilgilendirme');
+                this.rows.push(data.value);
+                this.rows = [...this.rows];
               } else {
                 this.toastr.error(data.message, 'Hata');
               }
@@ -165,6 +127,14 @@ export class OgrenciKardesComponent implements OnInit {
         }
       });
     }
+  }
+
+  nextBilgi(): void {
+    this.tabToUpdate.emit({ tabName: "Kisisel" });
+  }
+
+  backBilgi(): void {
+    this.tabToUpdate.emit({ tabName: "Ekonomik" });
   }
 
   ngOnDestroy(): void {
