@@ -1,17 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { LiseService } from 'src/app/services/lise.service';
 import { ParametreService } from 'src/app/services/parametre.service';
+import { StoreService } from 'src/app/services/store.service';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-ogrenci-lise',
   templateUrl: './ogrenci-lise.component.html'
 })
-export class OgrenciLiseComponent implements OnInit {
+export class OgrenciLiseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public frmBursLise: FormGroup;
   EdittoUpdate: boolean = false;
@@ -21,7 +23,7 @@ export class OgrenciLiseComponent implements OnInit {
   siniflar: any = [];
   private ngUnsubscribe$ = new Subject<void>();
 
-  @Input() ogrenciId: number;
+  @Input() data: any = [];
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('ngLise', { static: true }) ngLise: NgSelectComponent;
@@ -29,6 +31,8 @@ export class OgrenciLiseComponent implements OnInit {
   @ViewChild('ngSinif', { static: true }) ngSinif: NgSelectComponent;
 
   constructor(
+    private router: Router,
+    private localStore: StoreService,
     private parameterService: ParametreService,
     private liseService: LiseService,
     private fb: FormBuilder,
@@ -45,10 +49,21 @@ export class OgrenciLiseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getViewLise(this.ogrenciId)
-    this.frmBursLise.get('ogrenciid').setValue(this.ogrenciId);
-    this.getViewLiseTur();
-    this.getViewSinif();
+    if (this.localStore.getData('kvkkOnay') === 'true') {
+      if (this.data[0].islemId === 2) {
+        this.getViewLise(this.data[0].ogrenciId);
+      }
+      this.frmBursLise.get('ogrenciid').setValue(this.data[0].ogrenciId);
+      this.getViewLiseTur();
+    } else {
+      this.router.navigate(['/kvkk']);
+    }
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.getViewSinif();
+    }, 0);
   }
 
   get getControlRequest() { return this.frmBursLise.controls; }
@@ -56,7 +71,7 @@ export class OgrenciLiseComponent implements OnInit {
   getViewLise(ogrenciid: number): void {
     this.liseService.getLise(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        if (data.value != null) {
+        if (data.statusCode === 200 && data.value != null) {
           this.EdittoUpdate = true;
           this.frmBursLise.patchValue(data.value);
           this.getViewLiseler(data.value.liseturid);
@@ -74,7 +89,11 @@ export class OgrenciLiseComponent implements OnInit {
   getViewLiseTur(): void {
     this.parameterService.getLiseTur().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.liseturler = data.value;
+        if (data.statusCode === 200) {
+          this.liseler = data.value;
+        } else {
+          this.toastr.error(data.message, 'Hata')
+        }
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
@@ -83,7 +102,11 @@ export class OgrenciLiseComponent implements OnInit {
   getViewLiseler(turid: number): void {
     this.parameterService.getLise(turid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.liseler = data.value;
+        if (data.statusCode === 200) {
+          this.liseler = data.value;
+        } else {
+          this.toastr.error(data.message, 'Hata')
+        }
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
@@ -143,11 +166,7 @@ export class OgrenciLiseComponent implements OnInit {
           this.liseService.setLiseKayit(this.frmBursLise.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                //this.frmBursLise.disable;
-                //this.ngLise.setDisabledState(true);
-                //this.ngLiseTur.setDisabledState(true);
-                //this.ngSinif.setDisabledState(true);
-                this.EdittoUpdate=true;
+                this.EdittoUpdate = true;
                 this.tabToUpdate.emit({ tabName: "Universite" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
@@ -180,10 +199,6 @@ export class OgrenciLiseComponent implements OnInit {
           this.liseService.setLiseGuncelle(this.frmBursLise.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
-                //this.frmBursLise.disable;
-                //this.ngLise.setDisabledState(true);
-                //this.ngLiseTur.setDisabledState(true);
-                //this.ngSinif.setDisabledState(true);
                 this.toastr.success(data.message, 'Bilgilendirme');
                 this.tabToUpdate.emit({ tabName: "Universite" });
               } else {

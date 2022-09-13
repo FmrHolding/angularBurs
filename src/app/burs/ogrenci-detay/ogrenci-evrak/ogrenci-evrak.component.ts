@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { EvrakService } from 'src/app/services/evrak.service';
 import { OgrenciService } from 'src/app/services/ogrenci.service';
+import { StoreService } from 'src/app/services/store.service';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 declare var $: any;
@@ -15,7 +16,7 @@ declare var $: any;
   templateUrl: './ogrenci-evrak.component.html',
   styleUrls: ['./ogrenci-evrak.component.css']
 })
-export class OgrenciEvrakComponent implements OnInit {
+export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
 
   frmEvrak: FormGroup;
   EdittoUpdate: boolean = false;
@@ -27,15 +28,16 @@ export class OgrenciEvrakComponent implements OnInit {
   evrak: File = null;
   private ngUnsubscribe$ = new Subject<void>();
 
-  @Input() ogrenciId: number;
+  @Input() data: any = [];
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
 
   constructor(
+    private router: Router,
+    private localStore: StoreService,
     private evrakService: EvrakService,
     private ogranciService: OgrenciService,
     private fb: FormBuilder,
-    private toastr: ToastrService,
-    private router: Router
+    private toastr: ToastrService
   ) {
     this.frmEvrak = this.fb.group({
       ogrenciid: [0, [Validators.required]],
@@ -45,13 +47,24 @@ export class OgrenciEvrakComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getViewEvrak(this.ogrenciId);
-    this.evrakAdresi = environment.apiFile;
-    this.frmEvrak.get('ogrenciid').setValue(this.ogrenciId);
-    this.getViewEvrakTur();
+    if (this.localStore.getData('kvkkOnay') === 'true') {
+      if (this.data[0].islemId === 2) {
+        this.getViewEvrak(this.data[0].ogrenciId);
+      }
+      this.evrakAdresi = environment.apiFile;
+      this.frmEvrak.get('ogrenciid').setValue(this.data[0].ogrenciId);
+    } else {
+      this.router.navigate(['/kvkk']);
+    }
   }
 
   get getControlRequest() { return this.frmEvrak.controls; }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.getViewEvrakTur();
+    }, 0);
+  }
 
   getViewEvrak(ogrenciid: number): void {
     this.evrakService.getEvraklar(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
@@ -187,7 +200,7 @@ export class OgrenciEvrakComponent implements OnInit {
       confirmButtonText: 'Evet'
     }).then((result) => {
       if (result.value) {
-        this.ogranciService.setOgrenciEndtoBurs(this.ogrenciId).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+        this.ogranciService.setOgrenciEndtoBurs(this.data[0].ogrenciId).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
           next: (data: any) => {
             if (data.statusCode === 200) {
               this.toastr.success(data.message, 'Bilgilendirme');
@@ -204,7 +217,7 @@ export class OgrenciEvrakComponent implements OnInit {
     });
   }
 
-  backBilgi(): void { 
+  backBilgi(): void {
     this.tabToUpdate.emit({ tabName: "Referans" });
   }
 

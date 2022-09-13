@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { mergeMap, Observable, retry } from 'rxjs';
+import { map, mergeMap, Observable, retry } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -20,9 +20,14 @@ export class KardesService {
 
   public setKardesKayit(kardes: any): Observable<any> {
     return this.httpClient.post<any>(environment.apiURL + 'kardes/insert', kardes)
-      .pipe(retry(1),
-        mergeMap(
-          data => this.httpClient.get<any[]>(environment.apiURL + "kardes/get?id=" + data.value)));
+      .pipe(map((data: any) => {
+        if (data.statusCode === 201) {
+          return this.httpClient.get<any[]>(environment.apiURL + "kardes/get?id=" + data.value);
+        } else {
+          return data;
+        }
+      })
+      );
   }
 
   public setKardesGuncelle(kardes: any): Observable<any> {

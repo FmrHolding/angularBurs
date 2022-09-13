@@ -1,19 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { ReferansService } from 'src/app/services/referans.service';
+import { StoreService } from 'src/app/services/store.service';
 import Swal from 'sweetalert2';
 declare var $: any;
 
 @Component({
   selector: 'app-ogrenci-referans',
-  templateUrl: './ogrenci-referans.component.html',
-  styles: [
-  ]
+  templateUrl: './ogrenci-referans.component.html'
 })
-export class OgrenciReferansComponent implements OnInit {
+export class OgrenciReferansComponent implements OnInit, OnDestroy {
 
   frmReferans: FormGroup;
   EdittoUpdate: boolean = false;
@@ -23,16 +23,18 @@ export class OgrenciReferansComponent implements OnInit {
   medenidurumlar: any = [];
   private ngUnsubscribe$ = new Subject<void>();
 
-  @Input() ogrenciId: number;
+  @Input() data: any = [];
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
 
   constructor(
+    private router: Router,
+    private localStore: StoreService,
     private referansService: ReferansService,
     private fb: FormBuilder,
     private toastr: ToastrService
   ) {
     this.frmReferans = this.fb.group({
-      id:[0],
+      id: [0],
       ogrenciid: [0, [Validators.required]],
       adisoyadi: ['', [Validators.required]],
       yakinlik: ['', [Validators.required]],
@@ -42,8 +44,14 @@ export class OgrenciReferansComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getViewRerefrans(this.ogrenciId)
-    this.frmReferans.get('ogrenciid').setValue(this.ogrenciId);
+    if (this.localStore.getData('kvkkOnay') === 'true') {
+      if (this.data[0].islemId === 2) {
+        this.getViewRerefrans(this.data[0].ogrenciId);
+      }
+      this.frmReferans.get('ogrenciid').setValue(this.data[0].ogrenciId);
+    } else {
+      this.router.navigate(['/kvkk']);
+    }
   }
 
   get getControlRequest() { return this.frmReferans.controls; }
@@ -98,7 +106,7 @@ export class OgrenciReferansComponent implements OnInit {
         if (result.value) {
           this.referansService.setReferansKayit(this.frmReferans.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              if (data.statusCode === 201) {
+              if (data.statusCode === 200) {
                 this.rows.push(data.value);
                 this.rows = [...this.rows];
                 this.EdittoUpdate = true;

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import localeTr from '@angular/common/locales/tr';
 import { registerLocaleData } from '@angular/common';
@@ -7,13 +7,15 @@ import { Subject, takeUntil } from 'rxjs';
 import { KisiselService } from 'src/app/services/kisisel.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { StoreService } from 'src/app/services/store.service';
 registerLocaleData(localeTr, 'tr');
 
 @Component({
   selector: 'app-ogrenci-kisisel',
   templateUrl: './ogrenci-kisisel.component.html'
 })
-export class OgrenciKisiselComponent implements OnInit {
+export class OgrenciKisiselComponent implements OnInit, OnDestroy {
 
   frmKisisel: FormGroup;
   EdittoUpdate: boolean = false;
@@ -27,7 +29,7 @@ export class OgrenciKisiselComponent implements OnInit {
   calismadurumu: any = [];
   private ngUnsubscribe$ = new Subject<void>();
 
-  @Input() ogrenciId: number;
+  @Input() data: any = [];
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('ngAileBeraber', { static: true }) ngAileBeraber: NgSelectComponent;
@@ -37,12 +39,14 @@ export class OgrenciKisiselComponent implements OnInit {
   @ViewChild('ngIsletme', { static: true }) ngIsletme: NgSelectComponent;
 
   constructor(
+    private router: Router,
+    private localStore: StoreService,
     private kisiselService: KisiselService,
     private fb: FormBuilder,
     private toastr: ToastrService
   ) {
     this.frmKisisel = this.fb.group({
-      id:[0,[Validators.required]],
+      id: [0, [Validators.required]],
       ogrenciid: [0, [Validators.required]],
       aileileikametid: ['', [Validators.required]],
       farkliikametid: [''],
@@ -65,13 +69,19 @@ export class OgrenciKisiselComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getViewKisisel(this.ogrenciId)
-    this.frmKisisel.get('ogrenciid').setValue(this.ogrenciId);
-    this.getViewAileileIkamet();
-    this.getViewFarklIkamet();
-    this.getViewIkametYeri();
-    this.getViewSigara();
-    this.getViewCalismaDurumu();
+    if (this.localStore.getData('kvkkOnay') === 'true') {
+      if (this.data[0].islemId === 2) {
+        this.getViewKisisel(this.data[0].ogrenciId);
+      }
+      this.frmKisisel.get('ogrenciid').setValue(this.data[0].ogrenciId);
+      this.getViewAileileIkamet();
+      this.getViewFarklIkamet();
+      this.getViewIkametYeri();
+      this.getViewSigara();
+      this.getViewCalismaDurumu();      
+    } else {
+      this.router.navigate(['/kvkk']);
+    }
   }
 
   get getControlRequest() { return this.frmKisisel.controls; }
@@ -187,9 +197,9 @@ export class OgrenciKisiselComponent implements OnInit {
   onCalisma(event): void {
     if (event !== undefined) {
       this.frmKisisel.get('calisiyor').setValue(event.cevap);
-      if(event.cevap===true){
+      if (event.cevap === true) {
         this.frmKisisel.get('ekgelir').setValue(null);
-      }else{        
+      } else {
         this.frmKisisel.get('ekgelir').setValue(0);
       }
     } else {
@@ -216,14 +226,6 @@ export class OgrenciKisiselComponent implements OnInit {
           this.kisiselService.setKisiselKayit(this.frmKisisel.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                /*
-                this.frmKisisel.disable;
-                this.ngAileBeraber.setDisabledState(true);
-                this.ngFarkliSehir.setDisabledState(true);
-                this.IkametYer.setDisabledState(true);
-                this.ngSigara.setDisabledState(true);
-                this.ngIsletme.setDisabledState(true);
-                */
                 this.tabToUpdate.emit({ tabName: "Referans" });
                 this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -256,14 +258,6 @@ export class OgrenciKisiselComponent implements OnInit {
         if (result.value) {
           this.kisiselService.setKisiselGuncelle(this.frmKisisel.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              /*
-              this.frmKisisel.disable;
-              this.ngAileBeraber.setDisabledState(true);
-              this.ngFarkliSehir.setDisabledState(true);
-              this.IkametYer.setDisabledState(true);
-              this.ngSigara.setDisabledState(true);
-              this.ngIsletme.setDisabledState(true);
-              */
               this.tabToUpdate.emit({ tabName: "Referans" });
               if (data.statusCode === 200) {
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -278,7 +272,7 @@ export class OgrenciKisiselComponent implements OnInit {
     }
   }
 
-  backBilgi(): void { 
+  backBilgi(): void {
     this.tabToUpdate.emit({ tabName: "Kardes" });
   }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { StoreService } from 'src/app/services/store.service';
 
 @Component({
   selector: 'app-ogrenci-detay',
@@ -7,19 +8,30 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class OgrenciDetayComponent implements OnInit {
 
-  ogrenciId: number;
+  data: any = [];
   tabName: string = null;
   constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
+    private localStore: StoreService
   ) { }
 
   ngOnInit(): void {
-    this.ogrenciId = parseInt(this.route.snapshot.paramMap.get('id'));
-    this.tabName='Lise'
+    if (this.localStore.getData('kvkkOnay') === 'true') {
+      const ogrenciId = parseInt(this.route.snapshot.paramMap.get('id'));
+      const islemId = parseInt(this.route.snapshot.paramMap.get('islem'));
+      this.data = ({
+        ogrenciId: ogrenciId,
+        islemId: islemId
+      })
+      this.tabName = 'Lise'
+    } else {
+      this.router.navigate(['/kvkk']);
+    }
   }
 
   onTapUpdate(event): void {
-    this.tabName=null;
+    this.tabName = null;
     this.tabName = event.tabName;
   }
 }

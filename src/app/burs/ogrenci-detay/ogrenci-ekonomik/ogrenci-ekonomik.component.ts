@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
@@ -8,13 +8,15 @@ import { registerLocaleData } from '@angular/common';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import Swal from 'sweetalert2';
 import { SosyoekonomikService } from 'src/app/services/sosyoekonomik.service';
+import { Router } from '@angular/router';
+import { StoreService } from 'src/app/services/store.service';
 registerLocaleData(localeTr, 'tr');
 
 @Component({
   selector: 'app-ogrenci-ekonomik',
   templateUrl: './ogrenci-ekonomik.component.html'
 })
-export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
+export class OgrenciEkonomikComponent implements OnInit, OnDestroy, AfterViewInit {
 
   frmEkonomik: FormGroup;
   EdittoUpdate: boolean = false;
@@ -30,7 +32,7 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
   babaolu: boolean = false;
   private ngUnsubscribe$ = new Subject<void>();
 
-  @Input() ogrenciId: number;
+  @Input() data: any = [];
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('ngAnneBabaBirlikte', { static: true }) ngAnneBabaBirlikte: NgSelectComponent;
@@ -39,6 +41,8 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
   @ViewChild('ngMulk', { static: true }) ngMulk: NgSelectComponent;
 
   constructor(
+    private router: Router,
+    private localStore: StoreService,
     private ekonomikService: SosyoekonomikService,
     private parameterService: ParametreService,
     private fb: FormBuilder,
@@ -69,15 +73,26 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getViewSosyoEkonomik(this.ogrenciId);
-    this.frmEkonomik.get('ogrenciid').setValue(this.ogrenciId);
-    this.getViewAnneBabaBirlikte();
-    this.getViewHayat();
-    this.getViewOgrenimler();
-    this.getViewMulk();
+    if (this.localStore.getData('kvkkOnay') === 'true') {
+      if (this.data[0].islemId === 2) {
+        this.getViewSosyoEkonomik(this.data.ogrenciId);
+      }
+      this.frmEkonomik.get('ogrenciid').setValue(this.data[0].ogrenciId);
+      this.getViewOgrenimler();
+    } else {
+      this.router.navigate(['/kvkk']);
+    }
   }
 
   get getControlRequest() { return this.frmEkonomik.controls; }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.getViewAnneBabaBirlikte();
+      this.getViewHayat();
+      this.getViewMulk();
+    }, 0);
+  }
 
   getViewSosyoEkonomik(ogrenciid: number): void {
     this.ekonomikService.getEkonomik(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
@@ -185,7 +200,7 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
       } else {
         this.frmEkonomik.get('kira').setValue(null);
       }
-    } else {      
+    } else {
       this.frmEkonomik.get('kira').setValue(null)
       this.frmEkonomik.get('kira').setValue(null);
     }
@@ -220,13 +235,6 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
           this.ekonomikService.setEkonomikKayit(this.frmEkonomik.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                /*
-                this.frmEkonomik.disable();
-                this.ngAnneBabaBirlikte.setDisabledState(true);
-                this.ngHayat.setDisabledState(true);
-                this.ngOgrenim.setDisabledState(true);
-                this.ngMulk.setDisabledState(true);
-                */
                 this.tabToUpdate.emit({ tabName: "Kardes" });
                 this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -260,13 +268,6 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
           this.ekonomikService.setEkonomikGuncelle(this.frmEkonomik.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
-                /*
-                this.frmEkonomik.disable();
-                this.ngAnneBabaBirlikte.setDisabledState(true);
-                this.ngHayat.setDisabledState(true);
-                this.ngOgrenim.setDisabledState(true);
-                this.ngMulk.setDisabledState(true);
-                */
                 this.tabToUpdate.emit({ tabName: "Kardes" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {

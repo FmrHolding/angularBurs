@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { ParametreService } from 'src/app/services/parametre.service';
+import { StoreService } from 'src/app/services/store.service';
 import { UniversiteService } from 'src/app/services/universite.service';
 import Swal from 'sweetalert2';
 
@@ -12,7 +14,7 @@ import Swal from 'sweetalert2';
   templateUrl: './ogrenci-universite.component.html'
 })
 
-export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
+export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public frmUniversite: FormGroup;
   EdittoUpdate: boolean = false;
@@ -24,7 +26,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
   burslar: any = [];
   private ngUnsubscribe$ = new Subject<void>();
 
-  @Input() ogrenciId: number;
+  @Input() data: any = [];
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('ngUniversite', { static: true }) ngUniversite: NgSelectComponent;
@@ -34,6 +36,8 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
   @ViewChild('ngBurs', { static: true }) ngBurs: NgSelectComponent;
 
   constructor(
+    private router: Router,
+    private localStore: StoreService,
     private fb: FormBuilder,
     private parameterService: ParametreService,
     private universiteService: UniversiteService,
@@ -52,16 +56,27 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getViewUniversite(this.ogrenciId)
-    this.frmUniversite.get('ogrenciid').setValue(this.ogrenciId);
-    this.getViewUniversiteler();
-    this.getViewFakulte();
-    this.getViewSinif();
-    this.getViewTur();
-    this.getViewBurs();
+    if (this.localStore.getData('kvkkOnay') === 'true') {
+      if (this.data[0].islemId === 2) {
+        this.getViewUniversite(this.data[0].ogrenciId);
+      }
+      this.frmUniversite.get('ogrenciid').setValue(this.data[0].ogrenciId);
+      setTimeout(() => {
+        this.getViewTur();
+        this.getViewBurs();
+      }, 0);
+    } else {
+      this.router.navigate(['/kvkk']);
+    }
   }
 
   get getControlRequest() { return this.frmUniversite.controls; }
+
+  ngAfterViewInit(): void {
+    this.getViewUniversiteler();
+    this.getViewFakulte();
+    this.getViewSinif();
+  }
 
   getViewUniversite(ogrenciid: number): void {
     this.universiteService.getUniversite(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
@@ -91,7 +106,9 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
   getViewUniversiteler(): void {
     this.parameterService.getUniversite().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.universitler = data.value;;
+        if (data.statusCode === 200 && data.value != null) {
+          this.universitler = data.value;;
+        }
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
@@ -100,7 +117,9 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
   getViewFakulte(): void {
     this.parameterService.getFakulte().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.fakulteler = data.value;
+        if (data.statusCode === 200 && data.value != null) {
+          this.fakulteler = data.value;
+        }
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
@@ -109,7 +128,9 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
   getViewSinif(): void {
     this.parameterService.getSinif().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        this.siniflar = data.value;
+        if (data.statusCode === 200 && data.value != null) {
+          this.siniflar = data.value;
+        }
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
@@ -200,14 +221,6 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
           this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                /*
-                this.frmUniversite.disable;
-                this.ngUniversite.setDisabledState(true);
-                this.ngFakulte.setDisabledState(true);
-                this.ngSinif.setDisabledState(true);
-                this.ngTuru.setDisabledState(true);
-                this.ngBurs.setDisabledState(true);
-                */
                 this.tabToUpdate.emit({ tabName: "Banka" });
                 this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -241,14 +254,6 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
           this.universiteService.setUniversiteGuncelle(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
-                /*
-                this.frmUniversite.disable;
-                this.ngUniversite.setDisabledState(true);
-                this.ngFakulte.setDisabledState(true);
-                this.ngSinif.setDisabledState(true);
-                this.ngTuru.setDisabledState(true);
-                this.ngBurs.setDisabledState(true);
-                */
                 this.tabToUpdate.emit({ tabName: "Banka" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {

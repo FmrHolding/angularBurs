@@ -25,34 +25,34 @@
                 <div class="tab-content">
                     <div role="tabpanel" id="lise" ngClass="{{tabName=='Lise' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
-                            <app-ogrenci-lise [ogrenciId]="ogrenciId" (tabToUpdate)="onTapUpdate($event)">
+                            <app-ogrenci-lise [data]="[data]" (tabToUpdate)="onTapUpdate($event)">
                             </app-ogrenci-lise>
                         </div>
                     </div>
                     <div role="tabpanel" id="universite"
                         ngClass="{{tabName=='Universite' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
-                            <app-ogrenci-universite [ogrenciId]="ogrenciId" (tabToUpdate)="onTapUpdate($event)">
+                            <app-ogrenci-universite [data]="[data]" (tabToUpdate)="onTapUpdate($event)">
                             </app-ogrenci-universite>
                         </div>
                     </div>
                     <div role="tabpanel" id="banka" ngClass="{{tabName=='Banka' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
-                            <app-ogrenci-banka [ogrenciId]="ogrenciId" (tabToUpdate)="onTapUpdate($event)">
+                            <app-ogrenci-banka [data]="[data]" (tabToUpdate)="onTapUpdate($event)">
                             </app-ogrenci-banka>
                         </div>
                     </div>
                     <div role="tabpanel" id="ekonomik"
                         ngClass="{{tabName=='Ekonomik' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
-                            <app-ogrenci-ekonomik [ogrenciId]="ogrenciId" (tabToUpdate)="onTapUpdate($event)">
+                            <app-ogrenci-ekonomik [data]="[data]" (tabToUpdate)="onTapUpdate($event)">
                             </app-ogrenci-ekonomik>
                         </div>
                     </div>
                     <div role="tabpanel" id="kardes" ngClass="{{tabName=='Kardes' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
                             <div class="col-lg-12 col-md-12 col-sm-12">
-                                <app-ogrenci-kardes [ogrenciId]="ogrenciId" (tabToUpdate)="onTapUpdate($event)">
+                                <app-ogrenci-kardes [data]="[data]" (tabToUpdate)="onTapUpdate($event)">
                                 </app-ogrenci-kardes>
                             </div>
                         </div>
@@ -60,20 +60,20 @@
                     <div role="tabpanel" id="kisisel"
                         ngClass="{{tabName=='Kisisel' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
-                            <app-ogrenci-kisisel [ogrenciId]="ogrenciId" (tabToUpdate)="onTapUpdate($event)">
+                            <app-ogrenci-kisisel [data]="[data]" (tabToUpdate)="onTapUpdate($event)">
                             </app-ogrenci-kisisel>
                         </div>
                     </div>
                     <div role="tabpanel" id="referans"
                         ngClass="{{tabName=='Referans'?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
-                            <app-ogrenci-referans [ogrenciId]="ogrenciId" (tabToUpdate)="onTapUpdate($event)">
+                            <app-ogrenci-referans [data]="[data]" (tabToUpdate)="onTapUpdate($event)">
                             </app-ogrenci-referans>
                         </div>
                     </div>
                     <div role="tabpanel" id="evrak" ngClass="{{tabName=='Evrak' ?'tab-pane active show':'tab-pane'}}">
                         <div class="panel-body">
-                            <app-ogrenci-evrak [ogrenciId]="ogrenciId" (tabToUpdate)="onTapUpdate($event)">
+                            <app-ogrenci-evrak [data]="[data]" (tabToUpdate)="onTapUpdate($event)">
                             </app-ogrenci-evrak>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
+import { formatDate } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { mergeMap, Observable, retry } from 'rxjs';
+import { filter, from, iif, map, mergeMap, Observable, of, retry, take, tap, toArray } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -20,9 +21,15 @@ export class ReferansService {
 
   public setReferansKayit(referans: any): Observable<any> {
     return this.httpClient.post<any>(environment.apiURL + 'referans/insert', referans)
-      .pipe(retry(1),
-        mergeMap(
-          data => this.httpClient.get<any[]>(environment.apiURL + "referans/get?id=" + data.value)));
+      .pipe(
+        map((data: any) => {
+          if (data.statusCode===201) {
+            return this.httpClient.get<any[]>(environment.apiURL + "referans/get?id=" + data.value);
+          } else {
+            return data;
+          }
+        })
+      );
   }
 
   public setReferansGuncelle(referans: any): Observable<any> {

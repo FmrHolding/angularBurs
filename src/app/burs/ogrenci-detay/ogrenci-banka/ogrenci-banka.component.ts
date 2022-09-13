@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { BankaService } from 'src/app/services/banka.service';
 import { ParametreService } from 'src/app/services/parametre.service';
+import { StoreService } from 'src/app/services/store.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -19,11 +21,13 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
   bankalar: any = [];
   private ngUnsubscribe$ = new Subject<void>();
 
-  @Input() ogrenciId: number;
+  @Input() data: any = [];
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
   @ViewChild('ngBanka', { static: true }) ngBanka: NgSelectComponent;
 
   constructor(
+    private router: Router,
+    private localStore: StoreService,
     private parameterService: ParametreService,
     private bankaService: BankaService,
     private fb: FormBuilder,
@@ -43,9 +47,15 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getViewBanka(this.ogrenciId)
-    this.frmBanka.get('ogrenciid').setValue(this.ogrenciId);
-    this.getViewBankalar();
+    if (this.localStore.getData('kvkkOnay') === 'true') {
+      if (this.data[0].islemId === 2) {
+        this.getViewBanka(this.data[0].ogrenciId);
+      }
+      this.frmBanka.get('ogrenciid').setValue(this.data[0].ogrenciId);
+      this.getViewBankalar();
+    } else {
+      this.router.navigate(['/kvkk']);
+    }
   }
 
   get getControlRequest() { return this.frmBanka.controls; }
@@ -152,10 +162,8 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
           this.bankaService.setBankaKayit(this.frmBanka.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                //this.frmBanka.disable;
-                //this.ngBanka.setDisabledState(true);
                 this.tabToUpdate.emit({ tabName: "Ekonomik" });
-                this.EdittoUpdate=true;
+                this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');
@@ -187,8 +195,6 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
           this.bankaService.setBankaGuncelle(this.frmBanka.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
-                //this.frmBanka.disable;
-                //this.ngBanka.setDisabledState(true);
                 this.tabToUpdate.emit({ tabName: "Ekonomik" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
@@ -202,7 +208,7 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
     }
   }
 
-  backBilgi(): void { 
+  backBilgi(): void {
     this.tabToUpdate.emit({ tabName: "Universite" });
   }
 

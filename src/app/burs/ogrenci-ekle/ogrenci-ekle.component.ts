@@ -11,13 +11,13 @@ import { registerLocaleData } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { environment } from 'src/environments/environment';
+import { StoreService } from 'src/app/services/store.service';
 registerLocaleData(localeTr, 'tr');
 
 @Component({
   selector: 'app-ogrenci-ekle',
-  templateUrl: './ogrenci-ekle.component.html',
-  styles: [
-  ]
+  templateUrl: './ogrenci-ekle.component.html'
+
 })
 export class OgrenciEkleComponent implements OnInit, OnDestroy {
 
@@ -48,10 +48,11 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
+    private parametreService: ParametreService,
+    private ogrenciService: OgrenciService,
     private toastr: ToastrService,
     private formBuilder: FormBuilder,
-    private parametreService: ParametreService,
-    private ogrenciService: OgrenciService
+    private localStore: StoreService
   ) {
 
     this.frmOnBilgi = this.formBuilder.group({
@@ -74,12 +75,8 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (localStorage.getItem('kvkkOnay') !== null) {
-      if (localStorage.getItem('kvkkOnay') === 'true') {
-        this.resimyolu = environment.apiFile;
-      } else {
-        this.router.navigate(['/kvkk']);
-      }
+    if (this.localStore.getData('kvkkOnay') === 'true') {
+      this.resimyolu = environment.apiFile;
     } else {
       this.router.navigate(['/kvkk']);
     }
@@ -270,14 +267,13 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
           formData.append('ceptelefonu', this.frmOnBilgi.get('ceptelefonu').value);
           formData.append('email', this.frmOnBilgi.get('email').value);
           formData.append('ogrenciresim', this.file);
-          formData.append('kvkkonay', 'true');
           this.ogrenciService.setOgrenciKayit(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
                 localStorage.setItem('ogrenciId', data.value);
                 this.toastr.success(data.message, 'Bilgilendirme');
                 setTimeout(() => {
-                  this.router.navigate(['burs/detay/' + data.value]);
+                  this.router.navigate(['burs/detay/' + data.value + '/1']);
                 }, 1500);
               } else {
                 this.toastr.error(data.message, 'Hata');
@@ -328,7 +324,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
               if (data.statusCode === 200) {
                 this.toastr.success(data.message, 'Bilgilendirme');
                 setTimeout(() => {
-                  this.router.navigate(['burs/detay/' + this.frmOnBilgi.get('id').value]);
+                  this.router.navigate(['burs/detay/' + this.frmOnBilgi.get('id').value + '/2']);
                 }, 1500);
               } else {
                 this.toastr.error(data.message, 'Hata');

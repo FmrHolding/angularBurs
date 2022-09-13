@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
+import { StoreService } from '../services/store.service';
 declare var $: any;
 
 @Component({
@@ -16,12 +16,12 @@ export class KvkkComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private toastr: ToastrService
+    private localStore:StoreService
   ) { }
 
   ngOnInit(): void {
     $('#modalDuyuru').modal('show');
-    localStorage.removeItem('kvkkOnay');
+    this.localStore.clearData();
   }
 
   onModalKapat(): void {
@@ -30,9 +30,9 @@ export class KvkkComponent implements OnInit {
 
   isChecked(event): void {
     if (event.target.checked) {
-      localStorage.setItem('kvkkOnay', 'true');
+      this.localStore.saveData('kvkkOnay','true');
     } else {
-      localStorage.setItem('kvkkOnay', 'false');
+      this.localStore.saveData('kvkkOnay','false');
     }
   }
 

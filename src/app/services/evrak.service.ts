@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { mergeMap, Observable, retry } from 'rxjs';
+import { map, mergeMap, Observable, retry } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -20,9 +20,15 @@ export class EvrakService {
 
 
   public setEvrakKayit(evrak: any): Observable<any> {
-    return this.httpClient.post<any>(environment.apiURL + 'evrak/insert', evrak).pipe(retry(1),
-      mergeMap(
-        data => this.httpClient.get<any[]>(environment.apiURL + "evrak/get?id=" + data.value)));;
+    return this.httpClient.post<any>(environment.apiURL + 'evrak/insert', evrak)
+      .pipe(map((data: any) => {
+        if (data.statusCode === 201) {
+          return this.httpClient.get<any[]>(environment.apiURL + "evrak/get?id=" + data.value);
+        } else {
+          return data;
+        }
+      })
+      );
   }
 
   public setEvrakGuncelle(evrak: any): Observable<any> {

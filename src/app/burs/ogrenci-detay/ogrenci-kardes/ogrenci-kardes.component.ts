@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import localeTr from '@angular/common/locales/tr';
 import { registerLocaleData } from '@angular/common';
@@ -7,6 +7,8 @@ import Swal from 'sweetalert2';
 import { KardesService } from 'src/app/services/kardes.service';
 import { ToastrService } from 'ngx-toastr';
 import { ColumnMode } from '@swimlane/ngx-datatable';
+import { Router } from '@angular/router';
+import { StoreService } from 'src/app/services/store.service';
 registerLocaleData(localeTr, 'tr');
 declare var $: any;
 
@@ -15,7 +17,7 @@ declare var $: any;
   templateUrl: './ogrenci-kardes.component.html'
 
 })
-export class OgrenciKardesComponent implements OnInit {
+export class OgrenciKardesComponent implements OnInit, OnDestroy {
 
   frmKardes: FormGroup;
   submitted = false;
@@ -24,10 +26,12 @@ export class OgrenciKardesComponent implements OnInit {
   medenidurumlar: any = [];
   private ngUnsubscribe$ = new Subject<void>();
 
-  @Input() ogrenciId: number;
+  @Input() data: any = [];
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
 
   constructor(
+    private router: Router,
+    private localStore: StoreService,
     private kardesService: KardesService,
     private fb: FormBuilder,
     private toastr: ToastrService
@@ -44,8 +48,14 @@ export class OgrenciKardesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getViewKardes(this.ogrenciId)
-    this.frmKardes.get('ogrenciid').setValue(this.ogrenciId);
+    if (this.localStore.getData('kvkkOnay') === 'true') {
+      if (this.data[0].islemId === 2) {
+        this.getViewKardes(this.data.ogrenciId);
+      }
+      this.frmKardes.get('ogrenciid').setValue(this.data[0].ogrenciId);
+    } else {
+      this.router.navigate(['/kvkk']);
+    }
   }
 
   get getControlRequest() { return this.frmKardes.controls; }
