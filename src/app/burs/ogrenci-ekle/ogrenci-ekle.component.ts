@@ -107,7 +107,6 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
         else if (data.statusCode === 200 && data.value != null) {
           this.EdittoUpdate = true;
           this.yuklenecekResim = this.resimyolu + data.value.resimyolu;
-          console.log(this.yuklenecekResim);
           const dogumTarihi = new Date(data.value.dogumtarihi);
           this.dogumtarihi = { year: dogumTarihi.getFullYear(), month: dogumTarihi.getMonth() + 1, day: dogumTarihi.getDate() };
           this.frmOnBilgi.patchValue(data.value);

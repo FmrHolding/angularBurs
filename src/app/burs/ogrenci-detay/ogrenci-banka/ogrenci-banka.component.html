@@ -48,7 +48,7 @@
         </div>
         <div class="col-lg-6">
             <label for=""> T.C. Kimlik No (Hesap Sahibinin) *</label>
-            <input type="number" class="form-control" formControlName="hesaptc" mask="00000000000"
+            <input type="text" class="form-control" formControlName="hesaptc" mask="00000000000"
                 (keyup)="onTcKimlikKontrol($event)" placeholder="Hesap Sahibini T.C. Kimlik No">
             <div *ngIf="submitted && getControlRequest['hesaptc'].errors" class="text-danger">
                 Hesap Sahibini T.C. Kimlik Numarasını Yazmadınız.

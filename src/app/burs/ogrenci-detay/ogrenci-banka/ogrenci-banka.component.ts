@@ -85,7 +85,6 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
   }
 
   onIbanKontrol(event): void {
-    console.log(event.target.value.length);
     if (event.target.value.length === 32) {
       if (!this.getIbanDogrula(event.target.value)) {
         this.toastr.error("IBAN no doğrulanmadı", 'Hata');

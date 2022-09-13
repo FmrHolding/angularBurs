@@ -176,7 +176,6 @@ export class OgrenciEvrakComponent implements OnInit {
   }
 
   endToBurs(): void {
-    console.log(this.ogrenciId);
     Swal.fire({
       title: 'Başvuru Tamamlam',
       text: 'Başvurunuz Kaydedilip Kapatılacaktır. Onaylıyor musunuz?',

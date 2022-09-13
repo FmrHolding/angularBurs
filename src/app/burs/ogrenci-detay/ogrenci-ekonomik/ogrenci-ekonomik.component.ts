@@ -193,7 +193,6 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy {
 
   setKiraValidators() {
     this.frmEkonomik.get('mulkid').valueChanges.subscribe(mulk => {
-      console.log(mulk);
       if (mulk === 1) {
         this.frmEkonomik.get('kira').setValidators(Validators.required)
       } else {
