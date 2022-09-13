@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { ReferansService } from 'src/app/services/referans.service';
-import { StoreService } from 'src/app/services/store.service';
 import Swal from 'sweetalert2';
 declare var $: any;
 
@@ -27,8 +25,6 @@ export class OgrenciReferansComponent implements OnInit, OnDestroy {
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
 
   constructor(
-    private router: Router,
-    private localStore: StoreService,
     private referansService: ReferansService,
     private fb: FormBuilder,
     private toastr: ToastrService
@@ -44,14 +40,10 @@ export class OgrenciReferansComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.localStore.getData('kvkkOnay') === 'true') {
-      if (this.data[0].islemId === 2) {
-        this.getViewRerefrans(this.data[0].ogrenciId);
-      }
-      this.frmReferans.get('ogrenciid').setValue(this.data[0].ogrenciId);
-    } else {
-      this.router.navigate(['/kvkk']);
+    if (this.data[0].islemId === 2) {
+      this.getViewRerefrans(this.data[0].ogrenciId);
     }
+    this.frmReferans.get('ogrenciid').setValue(this.data[0].ogrenciId);
   }
 
   get getControlRequest() { return this.frmReferans.controls; }
@@ -83,9 +75,34 @@ export class OgrenciReferansComponent implements OnInit, OnDestroy {
     this.insertBilgi();
   }
 
-  onDelete(index): void {
-    this.rows.splice(index, 1);
-    this.rows = [...this.rows];
+  onDelete(index, row): void {
+    Swal.fire({
+      title: 'Referans Silme',
+      html: row.adisoyadi + ' referansınız silinicektir. <br> Onaylıyor musunuz?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonText: 'Vazgeç',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Evet'
+    }).then((result) => {
+      if (result.value) {
+        this.referansService.setReferansCikar(row.id).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+          next: (data: any) => {
+            if (data.statusCode === 200) {
+              this.rows.splice(index, 1);
+              this.rows = [...this.rows];
+              this.EdittoUpdate = true;
+              this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
+              this.frmReferans.reset();
+            } else {
+              this.toastr.error(data.message, 'Hata');
+            }
+          },
+          error: (err) => this.toastr.error(err, 'Hata')
+        });
+      }
+    });
   }
 
   insertBilgi(): void {
@@ -106,11 +123,20 @@ export class OgrenciReferansComponent implements OnInit, OnDestroy {
         if (result.value) {
           this.referansService.setReferansKayit(this.frmReferans.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              if (data.statusCode === 200) {
-                this.rows.push(data.value);
-                this.rows = [...this.rows];
-                this.EdittoUpdate = true;
-                this.toastr.success(data.message, 'Bilgilendirme');
+              if (data.statusCode === 201) {
+                this.referansService.getReferans(data.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+                  next: (data: any) => {
+                    if (data.statusCode === 200 && data.value != null) {
+                      this.rows.push(data.value);
+                      this.rows = [...this.rows];
+                      this.EdittoUpdate = true;
+                      this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
+                    } else {
+                      this.toastr.error(data.message, 'Hata')
+                    }
+                  },
+                  error: (err) => this.toastr.error(err, 'Hata')
+                });
               } else {
                 this.toastr.error(data.message, 'Hata');
               }

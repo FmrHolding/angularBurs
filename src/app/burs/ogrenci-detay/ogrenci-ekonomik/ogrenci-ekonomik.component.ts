@@ -8,8 +8,6 @@ import { registerLocaleData } from '@angular/common';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import Swal from 'sweetalert2';
 import { SosyoekonomikService } from 'src/app/services/sosyoekonomik.service';
-import { Router } from '@angular/router';
-import { StoreService } from 'src/app/services/store.service';
 registerLocaleData(localeTr, 'tr');
 
 @Component({
@@ -41,8 +39,6 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy, AfterViewIni
   @ViewChild('ngMulk', { static: true }) ngMulk: NgSelectComponent;
 
   constructor(
-    private router: Router,
-    private localStore: StoreService,
     private ekonomikService: SosyoekonomikService,
     private parameterService: ParametreService,
     private fb: FormBuilder,
@@ -73,15 +69,11 @@ export class OgrenciEkonomikComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   ngOnInit(): void {
-    if (this.localStore.getData('kvkkOnay') === 'true') {
-      if (this.data[0].islemId === 2) {
-        this.getViewSosyoEkonomik(this.data.ogrenciId);
-      }
-      this.frmEkonomik.get('ogrenciid').setValue(this.data[0].ogrenciId);
-      this.getViewOgrenimler();
-    } else {
-      this.router.navigate(['/kvkk']);
+    if (this.data[0].islemId === 2) {
+      this.getViewSosyoEkonomik(this.data[0].ogrenciId);
     }
+    this.frmEkonomik.get('ogrenciid').setValue(this.data[0].ogrenciId);
+    this.getViewOgrenimler();
   }
 
   get getControlRequest() { return this.frmEkonomik.controls; }

@@ -102,6 +102,8 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
           });
         }
         else if (data.statusCode === 200 && data.value != null) {
+          this.localStore.saveData('ogrenciId',data.value.id.toString());
+          this.localStore.saveData('IslemId','2');
           this.EdittoUpdate = true;
           this.yuklenecekResim = this.resimyolu + data.value.resimyolu;
           const dogumTarihi = new Date(data.value.dogumtarihi);
@@ -270,10 +272,11 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
           this.ogrenciService.setOgrenciKayit(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                localStorage.setItem('ogrenciId', data.value);
                 this.toastr.success(data.message, 'Bilgilendirme');
+                this.localStore.saveData('ogrenciId',data.value);
+                this.localStore.saveData('IslemId','1')
                 setTimeout(() => {
-                  this.router.navigate(['burs/detay/' + data.value + '/1']);
+                  this.router.navigate(['burs/detay']);
                 }, 1500);
               } else {
                 this.toastr.error(data.message, 'Hata');
@@ -322,9 +325,9 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy {
           this.ogrenciService.setOgrenciUpdate(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
-                this.toastr.success(data.message, 'Bilgilendirme');
+                this.toastr.success(data.message, 'Bilgilendirme');              
                 setTimeout(() => {
-                  this.router.navigate(['burs/detay/' + this.frmOnBilgi.get('id').value + '/2']);
+                  this.router.navigate(['burs/detay']);
                 }, 1500);
               } else {
                 this.toastr.error(data.message, 'Hata');

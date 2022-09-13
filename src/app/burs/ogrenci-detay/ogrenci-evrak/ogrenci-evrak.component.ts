@@ -6,7 +6,6 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { EvrakService } from 'src/app/services/evrak.service';
 import { OgrenciService } from 'src/app/services/ogrenci.service';
-import { StoreService } from 'src/app/services/store.service';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 declare var $: any;
@@ -19,7 +18,6 @@ declare var $: any;
 export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
 
   frmEvrak: FormGroup;
-  EdittoUpdate: boolean = false;
   submitted = false;
   ColumnMode = ColumnMode;
   rows: any = [];
@@ -33,7 +31,6 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private router: Router,
-    private localStore: StoreService,
     private evrakService: EvrakService,
     private ogranciService: OgrenciService,
     private fb: FormBuilder,
@@ -47,15 +44,11 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    if (this.localStore.getData('kvkkOnay') === 'true') {
-      if (this.data[0].islemId === 2) {
-        this.getViewEvrak(this.data[0].ogrenciId);
-      }
-      this.evrakAdresi = environment.apiFile;
-      this.frmEvrak.get('ogrenciid').setValue(this.data[0].ogrenciId);
-    } else {
-      this.router.navigate(['/kvkk']);
+    if (this.data[0].islemId === 2) {
+      this.getViewEvrak(this.data[0].ogrenciId);
     }
+    this.evrakAdresi = environment.apiFile;
+    this.frmEvrak.get('ogrenciid').setValue(this.data[0].ogrenciId);
   }
 
   get getControlRequest() { return this.frmEvrak.controls; }
@@ -70,11 +63,8 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
     this.evrakService.getEvraklar(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
         if (data.value != null) {
-          this.EdittoUpdate = true;
           this.rows = data.value;
-        } else {
-          this.EdittoUpdate = false;
-        }
+        } 
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
@@ -125,7 +115,7 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
   onDelete(index: number, row: any): void {
     Swal.fire({
       title: 'Evrak Silme',
-      text: 'Seçtiğiniz Evrak: ' + row.belgeadi + ' Silinicektir. Onaylıyor musunuz?',
+      html: row.belgeadi + ' belgesi silinecektir. <br> Onaylıyor musunuz?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -139,7 +129,6 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
             if (data.statusCode === 200) {
               this.rows.splice(index, 1);
               this.rows = [...this.rows];
-              this.EdittoUpdate = true;
               this.toastr.success(data.message, 'Bilgilendirme');
             } else {
               this.toastr.error(data.message, 'Hata');
@@ -173,10 +162,19 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
           formDataEvrak.append('evrak', this.evrak);
           this.evrakService.setEvrakKayit(formDataEvrak).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              if (data.statusCode === 200) {
-                this.rows.push(data.value);
-                this.rows = [...this.rows];
-                this.toastr.success("Kayıt başarıyla eklendi", 'Bilgilendirme');
+              if (data.statusCode === 201) {
+                this.evrakService.getEvrak(data.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+                  next: (data: any) => {
+                    if (data.statusCode === 200 && data.value != null) {
+                      this.rows.push(data.value);
+                      this.rows = [...this.rows];
+                      this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
+                    } else {
+                      this.toastr.error(data.message, 'Hata')
+                    }
+                  },
+                  error: (err) => this.toastr.error(err, 'Hata')
+                });
               } else {
                 this.toastr.error(data.message, 'Hata');
               }

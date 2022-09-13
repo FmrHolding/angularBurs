@@ -1,11 +1,9 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { ParametreService } from 'src/app/services/parametre.service';
-import { StoreService } from 'src/app/services/store.service';
 import { UniversiteService } from 'src/app/services/universite.service';
 import Swal from 'sweetalert2';
 
@@ -36,8 +34,6 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
   @ViewChild('ngBurs', { static: true }) ngBurs: NgSelectComponent;
 
   constructor(
-    private router: Router,
-    private localStore: StoreService,
     private fb: FormBuilder,
     private parameterService: ParametreService,
     private universiteService: UniversiteService,
@@ -56,18 +52,14 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   ngOnInit(): void {
-    if (this.localStore.getData('kvkkOnay') === 'true') {
-      if (this.data[0].islemId === 2) {
-        this.getViewUniversite(this.data[0].ogrenciId);
-      }
-      this.frmUniversite.get('ogrenciid').setValue(this.data[0].ogrenciId);
-      setTimeout(() => {
-        this.getViewTur();
-        this.getViewBurs();
-      }, 0);
-    } else {
-      this.router.navigate(['/kvkk']);
+    if (this.data[0].islemId === 2) {
+      this.getViewUniversite(this.data[0].ogrenciId);
     }
+    this.frmUniversite.get('ogrenciid').setValue(this.data[0].ogrenciId);
+    setTimeout(() => {
+      this.getViewTur();
+      this.getViewBurs();
+    }, 0);
   }
 
   get getControlRequest() { return this.frmUniversite.controls; }

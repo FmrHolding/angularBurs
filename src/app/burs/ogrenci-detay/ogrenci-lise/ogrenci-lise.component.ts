@@ -1,12 +1,10 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import {  Subject, takeUntil } from 'rxjs';
 import { LiseService } from 'src/app/services/lise.service';
 import { ParametreService } from 'src/app/services/parametre.service';
-import { StoreService } from 'src/app/services/store.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -31,8 +29,6 @@ export class OgrenciLiseComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('ngSinif', { static: true }) ngSinif: NgSelectComponent;
 
   constructor(
-    private router: Router,
-    private localStore: StoreService,
     private parameterService: ParametreService,
     private liseService: LiseService,
     private fb: FormBuilder,
@@ -49,15 +45,11 @@ export class OgrenciLiseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    if (this.localStore.getData('kvkkOnay') === 'true') {
-      if (this.data[0].islemId === 2) {
-        this.getViewLise(this.data[0].ogrenciId);
-      }
-      this.frmBursLise.get('ogrenciid').setValue(this.data[0].ogrenciId);
-      this.getViewLiseTur();
-    } else {
-      this.router.navigate(['/kvkk']);
+    if (this.data[0].islemId === 2) {
+      this.getViewLise(this.data[0].ogrenciId);
     }
+    this.frmBursLise.get('ogrenciid').setValue(this.data[0].ogrenciId);
+    this.getViewLiseTur();
   }
 
   ngAfterViewInit(): void {
@@ -90,7 +82,7 @@ export class OgrenciLiseComponent implements OnInit, OnDestroy, AfterViewInit {
     this.parameterService.getLiseTur().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
         if (data.statusCode === 200) {
-          this.liseler = data.value;
+          this.liseturler = data.value;
         } else {
           this.toastr.error(data.message, 'Hata')
         }
@@ -130,7 +122,6 @@ export class OgrenciLiseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onLiseTuru(event): void {
-    this.ngLise.handleClearClick();
     if (event !== undefined) {
       this.frmBursLise.get('liseturid').setValue(event.id);
       this.getViewLiseler(event.id);

@@ -20,15 +20,7 @@ export class EvrakService {
 
 
   public setEvrakKayit(evrak: any): Observable<any> {
-    return this.httpClient.post<any>(environment.apiURL + 'evrak/insert', evrak)
-      .pipe(map((data: any) => {
-        if (data.statusCode === 201) {
-          return this.httpClient.get<any[]>(environment.apiURL + "evrak/get?id=" + data.value);
-        } else {
-          return data;
-        }
-      })
-      );
+    return this.httpClient.post<any>(environment.apiURL + 'evrak/insert', evrak);
   }
 
   public setEvrakGuncelle(evrak: any): Observable<any> {

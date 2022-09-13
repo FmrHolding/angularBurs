@@ -50,7 +50,7 @@ export class OgrenciKardesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.localStore.getData('kvkkOnay') === 'true') {
       if (this.data[0].islemId === 2) {
-        this.getViewKardes(this.data.ogrenciId);
+        this.getViewKardes(this.data[0].ogrenciId);
       }
       this.frmKardes.get('ogrenciid').setValue(this.data[0].ogrenciId);
     } else {
@@ -101,9 +101,32 @@ export class OgrenciKardesComponent implements OnInit, OnDestroy {
     this.insertBilgi();
   }
 
-  onDelete(index): void {
-    this.rows.splice(index, 1);
-    this.rows = [...this.rows];
+  onDelete(index, row): void {
+    Swal.fire({
+      title: 'Kardeş Silme',
+      html:row.adisoyadi + ' silinecektir. <br> Onaylıyor musunuz?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonText: 'Vazgeç',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Evet'
+    }).then((result) => {
+      if (result.value) {
+        this.kardesService.setKardesCikar(row.id).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+          next: (data: any) => {
+            if (data.statusCode === 200) {
+              this.rows.splice(index, 1);
+              this.rows = [...this.rows];
+              this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
+            } else {
+              this.toastr.error(data.message, 'Hata');
+            }
+          },
+          error: (err) => this.toastr.error(err, 'Hata')
+        });
+      }
+    });
   }
 
   insertBilgi(): void {
@@ -124,10 +147,20 @@ export class OgrenciKardesComponent implements OnInit, OnDestroy {
         if (result.value) {
           this.kardesService.setKardesKayit(this.frmKardes.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              if (data.statusCode === 200) {
-                this.toastr.success('Kayıt başarıyla eklendi.', 'Bilgilendirme');
-                this.rows.push(data.value);
-                this.rows = [...this.rows];
+              if (data.statusCode === 201) {
+                this.kardesService.getKardes(data.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+                  next: (data: any) => {
+                    if (data.statusCode === 200 && data.value != null) {
+                      this.rows.push(data.value);
+                      this.rows = [...this.rows];
+                      this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
+                      this.frmKardes.reset();
+                    } else {
+                      this.toastr.error(data.message, 'Hata')
+                    }
+                  },
+                  error: (err) => this.toastr.error(err, 'Hata')
+                });
               } else {
                 this.toastr.error(data.message, 'Hata');
               }

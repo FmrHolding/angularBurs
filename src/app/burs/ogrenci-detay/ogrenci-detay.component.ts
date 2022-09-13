@@ -18,13 +18,13 @@ export class OgrenciDetayComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.localStore.getData('kvkkOnay') === 'true') {
-      const ogrenciId = parseInt(this.route.snapshot.paramMap.get('id'));
-      const islemId = parseInt(this.route.snapshot.paramMap.get('islem'));
+      const ogrenciId = parseInt(this.localStore.getData('ogrenciId'));
+      const islemId = parseInt(this.localStore.getData('IslemId'));
       this.data = ({
         ogrenciId: ogrenciId,
         islemId: islemId
       })
-      this.tabName = 'Lise'
+      this.tabName = 'Kardes'
     } else {
       this.router.navigate(['/kvkk']);
     }

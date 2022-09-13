@@ -1,12 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { BankaService } from 'src/app/services/banka.service';
 import { ParametreService } from 'src/app/services/parametre.service';
-import { StoreService } from 'src/app/services/store.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -26,8 +24,6 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
   @ViewChild('ngBanka', { static: true }) ngBanka: NgSelectComponent;
 
   constructor(
-    private router: Router,
-    private localStore: StoreService,
     private parameterService: ParametreService,
     private bankaService: BankaService,
     private fb: FormBuilder,
@@ -47,15 +43,11 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.localStore.getData('kvkkOnay') === 'true') {
-      if (this.data[0].islemId === 2) {
-        this.getViewBanka(this.data[0].ogrenciId);
-      }
-      this.frmBanka.get('ogrenciid').setValue(this.data[0].ogrenciId);
-      this.getViewBankalar();
-    } else {
-      this.router.navigate(['/kvkk']);
+    if (this.data[0].islemId === 2) {
+      this.getViewBanka(this.data[0].ogrenciId);
     }
+    this.frmBanka.get('ogrenciid').setValue(this.data[0].ogrenciId);
+    this.getViewBankalar();
   }
 
   get getControlRequest() { return this.frmBanka.controls; }

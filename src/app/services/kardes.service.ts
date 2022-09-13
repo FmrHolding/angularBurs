@@ -19,19 +19,15 @@ export class KardesService {
   }
 
   public setKardesKayit(kardes: any): Observable<any> {
-    return this.httpClient.post<any>(environment.apiURL + 'kardes/insert', kardes)
-      .pipe(map((data: any) => {
-        if (data.statusCode === 201) {
-          return this.httpClient.get<any[]>(environment.apiURL + "kardes/get?id=" + data.value);
-        } else {
-          return data;
-        }
-      })
-      );
+    return this.httpClient.post<any>(environment.apiURL + 'kardes/insert', kardes);
   }
 
   public setKardesGuncelle(kardes: any): Observable<any> {
     return this.httpClient.put<any>(environment.apiURL + 'kardes/update', kardes);
+  }
+
+  public setKardesCikar(id: number): Observable<any> {
+    return this.httpClient.delete<any>(environment.apiURL + 'kardes/delete?id=' + id);
   }
 
 }
