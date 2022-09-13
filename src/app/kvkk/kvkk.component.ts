@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { takeUntil } from 'rxjs';
 import { Subject } from 'rxjs';
-import { CihazipService } from '../services/cihazip.service';
 declare var $: any;
 
 @Component({
@@ -18,28 +16,16 @@ export class KvkkComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private toastr: ToastrService,
-    private ipService: CihazipService
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
     $('#modalDuyuru').modal('show');
     localStorage.removeItem('kvkkOnay');
-    this.getIP();
   }
 
   onModalKapat(): void {
     $('#modalDuyuru').modal('hide');
-  }
-
-  getIP(): void {
-    this.ipService.getDeviceIp().pipe(takeUntil(this.ngUnsubscribe$))
-      .subscribe({
-        next: (data: any) => { },
-        error: (err: any) => {
-          this.toastr.warning('Remote IP Hata:' + err.message, 'UYARI', { timeOut: 1500 });
-        }
-      });
   }
 
   isChecked(event): void {
