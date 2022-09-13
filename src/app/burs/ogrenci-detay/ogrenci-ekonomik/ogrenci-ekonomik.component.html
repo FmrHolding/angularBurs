@@ -164,8 +164,8 @@
         </div>
         <div class="col-lg-4 col-md-4 col-sm-4">
             <label for="">Aylık Kira *</label>
-            <input type="text" class="form-control" formControlName="kira" mask="seperator" thousandSeparator="."
-                placeholder="Aylık Kira">
+            <input type="text" class="form-control" formControlName="kira" mask="separator" thousandSeparator="."
+               minlength="3" placeholder="Aylık Kira">
             <div *ngIf="submitted && getControlRequest['kira'].errors" class="text-danger">
                 Ödediğiniz Aylık Kira Hakkında Bilgi Vermediniz.
             </div>

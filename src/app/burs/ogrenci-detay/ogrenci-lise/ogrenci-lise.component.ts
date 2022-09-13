@@ -143,10 +143,10 @@ export class OgrenciLiseComponent implements OnInit {
           this.liseService.setLiseKayit(this.frmBursLise.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                this.frmBursLise.disable;
-                this.ngLise.setDisabledState(true);
-                this.ngLiseTur.setDisabledState(true);
-                this.ngSinif.setDisabledState(true);
+                //this.frmBursLise.disable;
+                //this.ngLise.setDisabledState(true);
+                //this.ngLiseTur.setDisabledState(true);
+                //this.ngSinif.setDisabledState(true);
                 this.EdittoUpdate=true;
                 this.tabToUpdate.emit({ tabName: "Universite" });
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -180,10 +180,10 @@ export class OgrenciLiseComponent implements OnInit {
           this.liseService.setLiseGuncelle(this.frmBursLise.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
-                this.frmBursLise.disable;
-                this.ngLise.setDisabledState(true);
-                this.ngLiseTur.setDisabledState(true);
-                this.ngSinif.setDisabledState(true);
+                //this.frmBursLise.disable;
+                //this.ngLise.setDisabledState(true);
+                //this.ngLiseTur.setDisabledState(true);
+                //this.ngSinif.setDisabledState(true);
                 this.toastr.success(data.message, 'Bilgilendirme');
                 this.tabToUpdate.emit({ tabName: "Universite" });
               } else {

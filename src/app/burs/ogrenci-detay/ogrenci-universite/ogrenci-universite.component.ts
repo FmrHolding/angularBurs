@@ -128,7 +128,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
       { id: 2, burs: "%75 Burslu" },
       { id: 3, burs: "%50 Burslu" },
       { id: 4, burs: "%25 Burslu" },
-      { id: 5, burs: "%0 Ücretli Okuyorum" }
+      { id: 5, burs: "%0 (Ücretli Okuyorum)" }
     ]
   }
 
@@ -164,9 +164,12 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
         this.frmUniversite.get('bursid').setValue(5);
       } else {
         this.ngBurs.setDisabledState(false);
+        this.frmUniversite.get('bursid').setValue(null);
       }
     } else {
       this.frmUniversite.get('turid').setValue(null);
+      this.ngBurs.setDisabledState(false);
+      this.frmUniversite.get('bursid').setValue(null);
     }
   }
 
@@ -197,12 +200,14 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
           this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                /*
                 this.frmUniversite.disable;
                 this.ngUniversite.setDisabledState(true);
                 this.ngFakulte.setDisabledState(true);
                 this.ngSinif.setDisabledState(true);
                 this.ngTuru.setDisabledState(true);
                 this.ngBurs.setDisabledState(true);
+                */
                 this.tabToUpdate.emit({ tabName: "Banka" });
                 this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -236,12 +241,14 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy {
           this.universiteService.setUniversiteGuncelle(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
+                /*
                 this.frmUniversite.disable;
                 this.ngUniversite.setDisabledState(true);
                 this.ngFakulte.setDisabledState(true);
                 this.ngSinif.setDisabledState(true);
                 this.ngTuru.setDisabledState(true);
                 this.ngBurs.setDisabledState(true);
+                */
                 this.tabToUpdate.emit({ tabName: "Banka" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {

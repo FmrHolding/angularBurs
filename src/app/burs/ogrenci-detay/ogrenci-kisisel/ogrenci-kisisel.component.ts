@@ -216,12 +216,14 @@ export class OgrenciKisiselComponent implements OnInit {
           this.kisiselService.setKisiselKayit(this.frmKisisel.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                /*
                 this.frmKisisel.disable;
                 this.ngAileBeraber.setDisabledState(true);
                 this.ngFarkliSehir.setDisabledState(true);
                 this.IkametYer.setDisabledState(true);
                 this.ngSigara.setDisabledState(true);
                 this.ngIsletme.setDisabledState(true);
+                */
                 this.tabToUpdate.emit({ tabName: "Referans" });
                 this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -254,12 +256,14 @@ export class OgrenciKisiselComponent implements OnInit {
         if (result.value) {
           this.kisiselService.setKisiselGuncelle(this.frmKisisel.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
+              /*
               this.frmKisisel.disable;
               this.ngAileBeraber.setDisabledState(true);
               this.ngFarkliSehir.setDisabledState(true);
               this.IkametYer.setDisabledState(true);
               this.ngSigara.setDisabledState(true);
               this.ngIsletme.setDisabledState(true);
+              */
               this.tabToUpdate.emit({ tabName: "Referans" });
               if (data.statusCode === 200) {
                 this.toastr.success(data.message, 'Bilgilendirme');

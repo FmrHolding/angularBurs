@@ -153,8 +153,8 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
           this.bankaService.setBankaKayit(this.frmBanka.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                this.frmBanka.disable;
-                this.ngBanka.setDisabledState(true);
+                //this.frmBanka.disable;
+                //this.ngBanka.setDisabledState(true);
                 this.tabToUpdate.emit({ tabName: "Ekonomik" });
                 this.EdittoUpdate=true;
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -188,8 +188,8 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
           this.bankaService.setBankaGuncelle(this.frmBanka.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
-                this.frmBanka.disable;
-                this.ngBanka.setDisabledState(true);
+                //this.frmBanka.disable;
+                //this.ngBanka.setDisabledState(true);
                 this.tabToUpdate.emit({ tabName: "Ekonomik" });
                 this.toastr.success(data.message, 'Bilgilendirme');
               } else {
