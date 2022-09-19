@@ -2,18 +2,22 @@ import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Outpu
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
-import {  Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { LiseService } from 'src/app/services/lise.service';
 import { ParametreService } from 'src/app/services/parametre.service';
 import Swal from 'sweetalert2';
+import localeTr from '@angular/common/locales/tr';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(localeTr, 'tr');
 
 @Component({
   selector: 'app-ogrenci-lise',
   templateUrl: './ogrenci-lise.component.html'
 })
-export class OgrenciLiseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class OgrenciLiseComponent implements OnInit, OnDestroy {
 
   public frmBursLise: FormGroup;
+  locale: any = localeTr[0];
   EdittoUpdate: boolean = false;
   submitted = false;
   liseler: any = [];
@@ -40,22 +44,20 @@ export class OgrenciLiseComponent implements OnInit, OnDestroy, AfterViewInit {
       liseid: ['', [Validators.required]],
       liseturid: ['', [Validators.required]],
       sinifid: ['', [Validators.required]],
-      liseadi: ['', [Validators.required]]
+      liseadi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]]
     });
   }
 
   ngOnInit(): void {
     if (this.data[0].islemId === 2) {
       this.getViewLise(this.data[0].ogrenciId);
+      this.getViewLiseTur();
+      this.getViewSinif();
+    } else {
+      this.getViewLiseTur();
+      this.getViewSinif();
     }
     this.frmBursLise.get('ogrenciid').setValue(this.data[0].ogrenciId);
-    this.getViewLiseTur();
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.getViewSinif();
-    }, 0);
   }
 
   get getControlRequest() { return this.frmBursLise.controls; }

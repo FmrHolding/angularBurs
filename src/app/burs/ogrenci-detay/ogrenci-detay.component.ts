@@ -24,7 +24,7 @@ export class OgrenciDetayComponent implements OnInit {
         ogrenciId: ogrenciId,
         islemId: islemId
       })
-      this.tabName = 'Kardes'
+      this.tabName = 'Lise'
     } else {
       this.router.navigate(['/kvkk']);
     }

@@ -3,8 +3,7 @@
         <div class="col-lg-6">
             <label for="">Üniversiteniz *</label>
             <ng-select #ngUniversite [items]="universitler" bindLabel="universiteadi" bindValue="id"
-                (change)="onUniversite($event)"
-                formControlName="universiteid" placeholder="Üniversite Seçiniz">
+                (change)="onUniversite($event)" formControlName="universiteid" placeholder="Üniversite Seçiniz">
             </ng-select>
             <div *ngIf="submitted && getControlRequest['universiteid'].errors" class="text-danger">
                 Üniversite Seçmediniz.
@@ -13,8 +12,7 @@
         <div class="col-lg-6">
             <label for=""> Fakülteniz *</label>
             <ng-select #ngFakulte [items]="fakulteler" bindLabel="fakulteadi" bindValue="id"
-                (change)="onFakulte($event)"
-                formControlName="fakulteid" placeholder="Fakülte Seçiniz">
+                (change)="onFakulte($event)" formControlName="fakulteid" placeholder="Fakülte Seçiniz">
             </ng-select>
             <div *ngIf="submitted && getControlRequest['fakulteid'].errors" class="text-danger">
                 Fakülte Seçmediniz.
@@ -33,7 +31,7 @@
         <div class="col-lg-6">
             <label for="">Sınıfınız *</label>
             <ng-select #ngSinif [items]="siniflar" bindLabel="sinif" bindValue="id" (change)="onSinif($event)"
-             formControlName="sinifid"   placeholder="Sınıf Seçiniz">
+                formControlName="sinifid" placeholder="Sınıf Seçiniz">
             </ng-select>
             <div *ngIf="submitted && getControlRequest['sinifid'].errors" class="text-danger">
                 Sınıf Seçmediniz.
@@ -44,7 +42,7 @@
         <div class="col-lg-6">
             <label for=""> Üniversite Tipi *</label>
             <ng-select #ngTuru [items]="turler" bindLabel="turu" bindValue="id" (change)="onTuru($event)"
-              formControlName="turid"  placeholder="Üniversite Tipi Seçiniz">
+                formControlName="turid" placeholder="Üniversite Tipi Seçiniz">
             </ng-select>
             <div *ngIf="submitted && getControlRequest['turid'].errors" class="text-danger">
                 Üniversite Tipi Seçmediniz.
@@ -53,14 +51,24 @@
         <div class="col-lg-6">
             <label for="">Vakıf (Özel) Üniversitesi Bursluluk Oranı*</label>
             <ng-select #ngBurs [items]="burslar" bindLabel="burs" bindValue="id" (change)="onBurs($event)"
-           formControlName="bursid"  placeholder="Burs Türü Seçiniz">
+                formControlName="bursid" placeholder="Burs Türü Seçiniz">
             </ng-select>
             <div *ngIf="submitted && getControlRequest['bursid'].errors" class="text-danger">
                 Burs Türünü Seçmediniz.
             </div>
         </div>
     </div>
-    <div class="form-group row">              
+    <div class="form-group row">
+        <div class="col-lg-6">
+            <div class="checkbox checkbox-success">
+                <label>
+                    <input id="universite" type="checkbox" (change)="onUniversiteVar($event)">
+                    Üniversite Okumuyorum
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
         <div class="col-lg-6 col-md-6 col-sm-6">
             <div class="text-left">
                 <div class="btn-group">
@@ -71,10 +79,11 @@
         <div class="col-lg-2 col-md-2 col-sm-2 offset-4">
             <div class="text-right">
                 <div class="btn-group">
-                    <button type="submit" class="btn btn-primary" (click)="insertBilgi()" *ngIf="!EdittoUpdate"> Kaydet
+                    <button type="submit" class="btn btn-primary" (click)="insertBilgi()" *ngIf="!EdittoUpdate && !universite"> Kaydet
                         ve İlerle</button>
-                    <button type="submit" class="btn btn-primary" (click)="updateBilgi()" *ngIf="EdittoUpdate"> Güncelle
+                    <button type="submit" class="btn btn-primary" (click)="updateBilgi()" *ngIf="EdittoUpdate && !universite"> Güncelle
                         ve İlerle</button>
+                        <button type="button" class="btn btn-success" (click)="nextBilgi()" *ngIf="universite"> İleri</button>
                 </div>
             </div>
         </div>

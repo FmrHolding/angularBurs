@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { EvrakService } from 'src/app/services/evrak.service';
 import { OgrenciService } from 'src/app/services/ogrenci.service';
+import { StoreService } from 'src/app/services/store.service';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 declare var $: any;
@@ -24,6 +25,14 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
   evrakAdresi: any = [];
   evraktur: any = [];
   evrak: File = null;
+  evraktam: boolean = false;
+  ReferansMektubu: boolean = false;
+  Ikametgah: boolean = false;
+  SabikaKaydi: boolean = false;
+  OgrenciBelgesi: boolean = false;
+  Transkript: boolean = false;
+  NufusCuzdani: boolean = false;
+  HesapCuzdani: boolean = false;
   private ngUnsubscribe$ = new Subject<void>();
 
   @Input() data: any = [];
@@ -34,13 +43,10 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
     private evrakService: EvrakService,
     private ogranciService: OgrenciService,
     private fb: FormBuilder,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private localStore: StoreService
   ) {
-    this.frmEvrak = this.fb.group({
-      ogrenciid: [0, [Validators.required]],
-      evrakadi: ['', [Validators.required]],
-      evrak: ['', [Validators.required]]
-    });
+
   }
 
   ngOnInit(): void {
@@ -48,7 +54,8 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
       this.getViewEvrak(this.data[0].ogrenciId);
     }
     this.evrakAdresi = environment.apiFile;
-    this.frmEvrak.get('ogrenciid').setValue(this.data[0].ogrenciId);
+    this.setEvrakForm();
+    this.onEvrakKontrol();
   }
 
   get getControlRequest() { return this.frmEvrak.controls; }
@@ -59,12 +66,22 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
     }, 0);
   }
 
+  setEvrakForm(): void {
+    this.frmEvrak = this.fb.group({
+      id: [0],
+      ogrenciid: [this.data[0].ogrenciId, [Validators.required]],
+      evrakadi: ['', [Validators.required]],
+      evrak: ['', [Validators.required]]
+    });
+  }
+
   getViewEvrak(ogrenciid: number): void {
     this.evrakService.getEvraklar(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
         if (data.value != null) {
           this.rows = data.value;
-        } 
+          this.onEvrakKontrol();
+        }
       },
       error: (err) => this.toastr.error(err, 'Hata')
     });
@@ -84,9 +101,75 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onEvrakTuru(event): void {
     if (event !== undefined) {
-      this.frmEvrak.get('evrakadi').setValue(event.tur);
+      if (this.rows.length > 0) {
+        this.rows.forEach(element => {
+          if (element.belgeadi === event.tur) {
+            this.frmEvrak.get('evrakadi').setValue(null);
+            this.toastr.warning("Eklemek istediğiniz belge var", 'UYARI');
+            return true;
+          } else {
+            this.frmEvrak.get('evrakadi').setValue(event.tur);
+          }
+        });
+      } else {
+        this.frmEvrak.get('evrakadi').setValue(event.tur);
+      }
     } else {
       this.frmEvrak.get('evrakadi').setValue(null);
+    }
+  }
+
+  onEvrakKontrol(): void {
+    this.ReferansMektubu = false;
+    this.Ikametgah = false;
+    this.SabikaKaydi = false;
+    this.OgrenciBelgesi = false;
+    this.Transkript = false;
+    this.NufusCuzdani = false;
+    this.HesapCuzdani = false;
+
+    let evraksay: number = 0;
+    this.rows.forEach(element => {
+      if (element.belgeadi === this.evraktur[0].tur) {
+        this.ReferansMektubu = true;
+      } else if (element.belgeadi === this.evraktur[1].tur) {
+        this.Ikametgah = true;
+        evraksay = evraksay + 1;
+      } else if (element.belgeadi === this.evraktur[2].tur) {
+        this.SabikaKaydi = true;
+        evraksay = evraksay + 1;
+      } else if (element.belgeadi === this.evraktur[3].tur) {
+        this.OgrenciBelgesi = true;
+        evraksay = evraksay + 1;
+      } else if (element.belgeadi === this.evraktur[4].tur) {
+        this.Transkript = true;
+        evraksay = evraksay + 1;
+      } else if (element.belgeadi === this.evraktur[5].tur) {
+        this.NufusCuzdani = true;
+        evraksay = evraksay + 1;
+      } else if (element.belgeadi === this.evraktur[6].tur) {
+        this.HesapCuzdani = true;
+        evraksay = evraksay + 1;
+      }
+    });
+    if (this.localStore.getData('transkrip') === 'true') {
+      if (evraksay === 6) {
+        this.evraktam = true;
+      } else {
+        this.evraktam = false;
+      }
+    } else if (this.localStore.getData('transkrip') === 'false') {
+      if (evraksay === 5) {
+        this.evraktam = true;
+      } else {
+        this.evraktam = false;
+      }
+    } else if (this.localStore.getData('universite') === 'true') {
+      if (evraksay === 5) {
+        this.evraktam = true;
+      } else {
+        this.evraktam = false;
+      }
     }
   }
 
@@ -101,6 +184,7 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onYeniEvrak(): void {
+    this.setEvrakForm();
     $('#modalEvrak').modal('show');
   }
 
@@ -130,6 +214,7 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
               this.rows.splice(index, 1);
               this.rows = [...this.rows];
               this.toastr.success(data.message, 'Bilgilendirme');
+              this.onEvrakKontrol();
             } else {
               this.toastr.error(data.message, 'Hata');
             }
@@ -169,6 +254,7 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
                       this.rows.push(data.value);
                       this.rows = [...this.rows];
                       this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
+                      this.onEvrakKontrol();
                     } else {
                       this.toastr.error(data.message, 'Hata')
                     }
@@ -187,32 +273,37 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   endToBurs(): void {
-    Swal.fire({
-      title: 'Başvuru Tamamlam',
-      text: 'Başvurunuz Kaydedilip Kapatılacaktır. Onaylıyor musunuz?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonText: 'Vazgeç',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet'
-    }).then((result) => {
-      if (result.value) {
-        this.ogranciService.setOgrenciEndtoBurs(this.data[0].ogrenciId).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-          next: (data: any) => {
-            if (data.statusCode === 200) {
-              this.toastr.success(data.message, 'Bilgilendirme');
-              setTimeout(() => {
-                this.router.navigate(['/kvkk']);
-              }, 1000);
-            } else {
-              this.toastr.error(data.message, 'Hata');
-            }
-          },
-          error: (err) => this.toastr.error(err, 'Hata')
-        });
-      }
-    });
+    this.onEvrakKontrol();
+    if (!this.evraktam) {
+      this.toastr.warning("Eklenmesi gereken evraklarda eksiklik var.", 'UYARI');
+    } else {
+      Swal.fire({
+        title: 'Başvuru Tamamlam',
+        text: 'Başvurunuz Kaydedilip Kapatılacaktır. Onaylıyor musunuz?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonText: 'Vazgeç',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Evet'
+      }).then((result) => {
+        if (result.value) {
+          this.ogranciService.setOgrenciEndtoBurs(this.data[0].ogrenciId, 1, 1).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+            next: (data: any) => {
+              if (data.statusCode === 200) {
+                this.toastr.success(data.message, 'Bilgilendirme');
+                setTimeout(() => {
+                  this.router.navigate(['/kvkk']);
+                }, 1000);
+              } else {
+                this.toastr.error(data.message, 'Hata');
+              }
+            },
+            error: (err) => this.toastr.error(err, 'Hata')
+          });
+        }
+      });
+    }
   }
 
   backBilgi(): void {

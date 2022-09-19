@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import localeTr from '@angular/common/locales/tr';
 import { registerLocaleData } from '@angular/common';
@@ -7,8 +7,7 @@ import Swal from 'sweetalert2';
 import { KardesService } from 'src/app/services/kardes.service';
 import { ToastrService } from 'ngx-toastr';
 import { ColumnMode } from '@swimlane/ngx-datatable';
-import { Router } from '@angular/router';
-import { StoreService } from 'src/app/services/store.service';
+import { NgSelectComponent } from '@ng-select/ng-select';
 registerLocaleData(localeTr, 'tr');
 declare var $: any;
 
@@ -28,44 +27,42 @@ export class OgrenciKardesComponent implements OnInit, OnDestroy {
 
   @Input() data: any = [];
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
+  @ViewChild('ngMedeniDurum', { static: true }) ngMedeniDurum: NgSelectComponent;
 
   constructor(
-    private router: Router,
-    private localStore: StoreService,
     private kardesService: KardesService,
     private fb: FormBuilder,
     private toastr: ToastrService
   ) {
+
+  }
+
+  ngOnInit(): void {
+    if (this.data[0].islemId === 2) {
+      this.getViewKardesler(this.data[0].ogrenciId);
+    }
+    this.setKardesForm();
+  }
+
+  setKardesForm(): void {
     this.frmKardes = this.fb.group({
       id: [0],
-      ogrenciid: [0, [Validators.required]],
-      adisoyadi: ['', [Validators.required]],
-      yas: ['', [Validators.required]],
+      ogrenciid: [this.data[0].ogrenciId, [Validators.required]],
+      adisoyadi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
+      yas: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
       medenihalid: ['', [Validators.required]],
-      okul: ['', [Validators.required]],
+      okul: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
       gelirburs: ['', [Validators.required]]
     });
   }
 
-  ngOnInit(): void {
-    if (this.localStore.getData('kvkkOnay') === 'true') {
-      if (this.data[0].islemId === 2) {
-        this.getViewKardes(this.data[0].ogrenciId);
-      }
-      this.frmKardes.get('ogrenciid').setValue(this.data[0].ogrenciId);
-    } else {
-      this.router.navigate(['/kvkk']);
-    }
-  }
-
   get getControlRequest() { return this.frmKardes.controls; }
 
-  getViewKardes(ogrenciid: number): void {
+  getViewKardesler(ogrenciid: number): void {
     this.kardesService.getKardesler(ogrenciid).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
         if (data.value != null) {
-          this.frmKardes.patchValue(data.value);
-          this.rows = data.value;
+          this.rows = data.value
         }
       },
       error: (err) => this.toastr.error(err, 'Hata')
@@ -81,6 +78,7 @@ export class OgrenciKardesComponent implements OnInit, OnDestroy {
   }
 
   onYeniKardes(): void {
+    this.setKardesForm();
     this.getViewMedeniDurum();
     $('#modalKardes').modal('show');
   }
@@ -104,7 +102,7 @@ export class OgrenciKardesComponent implements OnInit, OnDestroy {
   onDelete(index, row): void {
     Swal.fire({
       title: 'Kardeş Silme',
-      html:row.adisoyadi + ' silinecektir. <br> Onaylıyor musunuz?',
+      html: row.adisoyadi + ' silinecektir. <br> Onaylıyor musunuz?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -155,6 +153,8 @@ export class OgrenciKardesComponent implements OnInit, OnDestroy {
                       this.rows = [...this.rows];
                       this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
                       this.frmKardes.reset();
+                      this.ngMedeniDurum.handleClearClick();
+                      $('#modalKardes').modal('hide');
                     } else {
                       this.toastr.error(data.message, 'Hata')
                     }

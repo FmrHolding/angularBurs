@@ -29,21 +29,25 @@ export class OgrenciReferansComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private toastr: ToastrService
   ) {
-    this.frmReferans = this.fb.group({
-      id: [0],
-      ogrenciid: [0, [Validators.required]],
-      adisoyadi: ['', [Validators.required]],
-      yakinlik: ['', [Validators.required]],
-      gorevi: ['', [Validators.required]],
-      ceptelefon: ['', [Validators.required]]
-    });
+
   }
 
   ngOnInit(): void {
     if (this.data[0].islemId === 2) {
       this.getViewRerefrans(this.data[0].ogrenciId);
     }
-    this.frmReferans.get('ogrenciid').setValue(this.data[0].ogrenciId);
+    this.setReferansForm();
+  }
+
+  setReferansForm(): void {
+    this.frmReferans = this.fb.group({
+      id: [0],
+      ogrenciid: [this.data[0].ogrenciId, [Validators.required]],
+      adisoyadi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
+      yakinlik: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
+      gorevi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
+      ceptelefon: ['', [Validators.required]]
+    });
   }
 
   get getControlRequest() { return this.frmReferans.controls; }
@@ -64,6 +68,7 @@ export class OgrenciReferansComponent implements OnInit, OnDestroy {
   }
 
   onYeniReferans(): void {
+    this.setReferansForm();
     $('#modalReferans').modal('show');
   }
 

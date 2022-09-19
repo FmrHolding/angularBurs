@@ -42,7 +42,7 @@
     <div class="form-group row">
         <div class="col-lg-9 col-md-9 col-sm-9">
             <label for=""> Babanızın Mesleği *</label>
-            <input type="text" class="form-control" formControlName="babameslek"
+            <input type="text" class="form-control" formControlName="babameslek" maxlength="50"
                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" placeholder="Babanızın Mesleği">
             <div *ngIf="submitted && getControlRequest['babameslek'].errors" class="text-danger">
                 Babanızın Mesleğini Belirtmediniz.
@@ -88,7 +88,7 @@
     <div class="form-group row">
         <div class="col-lg-9 col-md-9 col-sm-9">
             <label for=""> Anneniz Mesleği *</label>
-            <input type="text" class="form-control" formControlName="annemeslek"
+            <input type="text" class="form-control" formControlName="annemeslek" maxlength="50"
                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" placeholder="Anneniz Mesleği">
             <div *ngIf="submitted && getControlRequest['annemeslek'].errors" class="text-danger">
                 Annenizin Mesleğini Belirtmediniz.
@@ -119,7 +119,7 @@
             <label for=""> Varsa, Ailenin Toplam Net Gelirine Katkı Sağlayan Diğer
                 Bireyler Hakkında Verilebilecek Bilgiler*
             </label>
-            <input type="text" class="form-control" formControlName="geliraciklama"
+            <input type="text" class="form-control" formControlName="geliraciklama" maxlength="250"
                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" placeholder="Net Gelirler Muhteviyatı">
             <div *ngIf="submitted && getControlRequest['geliraciklama'].errors" class="text-danger">
                 Net Gelirler Muhteviyatını Belirtmediniz.
@@ -129,7 +129,7 @@
     <div class="form-group row">
         <div class="col-lg-12 col-md-12 col-sm-12">
             <label for=""> Aile üyelerinizde sürekli/ciddi bir sağlık sorunu varmı? *</label>
-            <textarea cols="30" rows="3" class="form-control" formControlName="ailesaglik"
+            <textarea cols="30" rows="3" class="form-control" formControlName="ailesaglik" maxlength="250"
                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
                 placeholder="Sağlık Sorununuzu Yazınız"></textarea>
             <div *ngIf="submitted && getControlRequest['ailesaglik'].errors" class="text-danger">
@@ -140,7 +140,7 @@
     <div class="form-group row">
         <div class="col-lg-12 col-md-12 col-sm-12">
             <label for=""> Ailenizin İkametgah Adresi *</label>
-            <input type="text" class="form-control" formControlName="veliadres"
+            <input type="text" class="form-control" formControlName="veliadres" maxlength="250"
                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" placeholder="Ailenizin İkametgah Adresi">
             <div *ngIf="submitted && getControlRequest['veliadres'].errors" class="text-danger">
                 Ailenizin İkametgah Adresini Belirtmediniz.

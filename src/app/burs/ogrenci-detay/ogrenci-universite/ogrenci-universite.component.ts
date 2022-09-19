@@ -4,6 +4,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { ParametreService } from 'src/app/services/parametre.service';
+import { StoreService } from 'src/app/services/store.service';
 import { UniversiteService } from 'src/app/services/universite.service';
 import Swal from 'sweetalert2';
 
@@ -14,8 +15,9 @@ import Swal from 'sweetalert2';
 
 export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  public frmUniversite: FormGroup;
+  frmUniversite: FormGroup;
   EdittoUpdate: boolean = false;
+  universite: boolean = false;
   submitted = false;
   universitler: any[];
   siniflar: any[];
@@ -37,14 +39,15 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
     private fb: FormBuilder,
     private parameterService: ParametreService,
     private universiteService: UniversiteService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private localStore: StoreService
   ) {
     this.frmUniversite = this.fb.group({
       id: [0],
       ogrenciid: [0, [Validators.required]],
       universiteid: ['', [Validators.required]],
       fakulteid: ['', [Validators.required]],
-      bolum: ['', [Validators.required]],
+      bolum: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
       sinifid: ['', [Validators.required]],
       turid: ['', [Validators.required]],
       bursid: ['', [Validators.required]]
@@ -162,8 +165,17 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   onSinif(event): void {
+    this.localStore.removeData('transkrip');
+    this.localStore.removeData('universite');
     if (event !== undefined) {
       this.frmUniversite.get('sinifid').setValue(event.id);
+      if (event.id <= 3) {
+        this.localStore.saveData('transkrip', 'false');
+        this.localStore.saveData('universite', 'false');
+      } else {
+        this.localStore.saveData('transkrip', 'true');
+        this.localStore.saveData('universite', 'false');
+      }
     } else {
       this.frmUniversite.get('sinifid').setValue(null);
     }
@@ -194,6 +206,20 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
     }
   }
 
+  onUniversiteVar(event): void {
+    this.localStore.removeData('universite');
+    this.localStore.removeData('transkrip');
+    if (!event.target.checked) {
+      this.universite = false;
+      this.localStore.saveData('universite', 'false');
+      this.localStore.saveData('transkrip', 'false');
+    } else {
+      this.universite = true;
+      this.localStore.saveData('universite', 'true');
+      this.localStore.saveData('transkrip', 'false');
+    }
+  }
+
   insertBilgi(): void {
     this.submitted = true;
     if (this.frmUniversite.invalid) {
@@ -213,6 +239,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
           this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                localStorage.setItem('universite', this.frmUniversite.get('sinifid').value.toString());
                 this.tabToUpdate.emit({ tabName: "Banka" });
                 this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -261,6 +288,10 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
 
   backBilgi(): void {
     this.tabToUpdate.emit({ tabName: "Lise" });
+  }
+
+  nextBilgi(): void {
+    this.tabToUpdate.emit({ tabName: "Evrak" });
   }
 
   ngOnDestroy(): void {

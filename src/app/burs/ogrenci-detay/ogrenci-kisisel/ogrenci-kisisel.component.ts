@@ -7,8 +7,6 @@ import { Subject, takeUntil } from 'rxjs';
 import { KisiselService } from 'src/app/services/kisisel.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
-import { StoreService } from 'src/app/services/store.service';
 registerLocaleData(localeTr, 'tr');
 
 @Component({
@@ -39,8 +37,6 @@ export class OgrenciKisiselComponent implements OnInit, OnDestroy {
   @ViewChild('ngIsletme', { static: true }) ngIsletme: NgSelectComponent;
 
   constructor(
-    private router: Router,
-    private localStore: StoreService,
     private kisiselService: KisiselService,
     private fb: FormBuilder,
     private toastr: ToastrService
@@ -52,7 +48,7 @@ export class OgrenciKisiselComponent implements OnInit, OnDestroy {
       farkliikametid: [''],
       ikametyeriid: ['', [Validators.required]],
       yurtadi: ['', [Validators.required]],
-      saglikdurumu: ['', [Validators.required]],
+      saglikdurumu: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
       adres: ['', [Validators.required]],
       kira: ['', [Validators.required]],
       diger: ['', [Validators.required]],
@@ -69,19 +65,15 @@ export class OgrenciKisiselComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.localStore.getData('kvkkOnay') === 'true') {
-      if (this.data[0].islemId === 2) {
-        this.getViewKisisel(this.data[0].ogrenciId);
-      }
-      this.frmKisisel.get('ogrenciid').setValue(this.data[0].ogrenciId);
-      this.getViewAileileIkamet();
-      this.getViewFarklIkamet();
-      this.getViewIkametYeri();
-      this.getViewSigara();
-      this.getViewCalismaDurumu();      
-    } else {
-      this.router.navigate(['/kvkk']);
+    if (this.data[0].islemId === 2) {
+      this.getViewKisisel(this.data[0].ogrenciId);
     }
+    this.frmKisisel.get('ogrenciid').setValue(this.data[0].ogrenciId);
+    this.getViewAileileIkamet();
+    this.getViewFarklIkamet();
+    this.getViewIkametYeri();
+    this.getViewSigara();
+    this.getViewCalismaDurumu();     
   }
 
   get getControlRequest() { return this.frmKisisel.controls; }

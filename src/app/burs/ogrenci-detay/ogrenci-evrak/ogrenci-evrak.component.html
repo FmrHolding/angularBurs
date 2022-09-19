@@ -52,7 +52,8 @@
         <div class="col-lg-2 col-md-2 col-sm-2 offset-4">
             <div class="text-right">
                 <div class="btn-group">
-                    <button type="submit" class="btn btn-warning" (click)="endToBurs()"> Sonlandır
+                    <button type="submit" class="btn btn-warning" (click)="endToBurs()">
+                        Sonlandır
                     </button>
                 </div>
             </div>
@@ -104,8 +105,16 @@
             Aşağıda yazılı olan belgelerden <span class="text-danger font-bold">Kırmızı</span> olarak işaretlenmiş
             olan belgeler zorunludur. Eksik olması durumunda başvrunuz geçerli olmayacaktır.
             <br>
-            Referans Mektubu,<span class="text-danger font-bold">İkametgâh,Sabıka Kaydı,Öğrenci Belgesi,Transkript,Nüfus Cüzdanı
-                Fotokopisi,Hesap Cüzdanı Fotokopisi</span>
+            <span class="text-dark font-bold">Referans Mektubu</span>,
+            <span ngClass="{{Ikametgah==true ?'text-dark font-bold':'text-danger font-bold'}}">İkametgâh</span>,
+            <span ngClass="{{SabikaKaydi==true ?'text-dark font-bold':'text-danger font-bold'}}">Sabıka Kaydı</span>,
+            <span ngClass="{{OgrenciBelgesi==true ?'text-dark font-bold':'text-danger font-bold'}}">Öğrenci
+                Belgesi</span>,
+            <span ngClass="{{Transkript==true ?'text-dark font-bold':'text-danger font-bold'}}">Transkript</span>,
+            <span ngClass="{{NufusCuzdani==true ?'text-dark font-bold':'text-danger font-bold'}}">Nüfus Cüzdanı
+                Fotokopisi</span>,
+            <span ngClass="{{HesapCuzdani==true ?'text-dark font-bold':'text-danger font-bold'}}">Hesap Cüzdanı
+                Fotokopisi</span>
         </label>
     </div>
 </div>

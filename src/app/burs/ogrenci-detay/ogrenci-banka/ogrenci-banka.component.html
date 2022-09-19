@@ -12,7 +12,7 @@
         <div class="col-lg-6">
             <label for=""> Şube Kodu *</label>
             <input type="text" class="form-control" formControlName="subekodu" mask="000000000" maxlength="9"
-                [validation]="true" placeholder="Şube Kodu">
+                [validation]="true" placeholder="Şube Kodu (9 Hane)">
             <div *ngIf="submitted && getControlRequest['subekodu'].errors" class="text-danger">
                 Şube Kodu Yazmadınız.
             </div>
@@ -21,8 +21,8 @@
     <div class="form-group row">
         <div class="col-lg-6">
             <label for="">Hesap No *</label>
-            <input type="text" class="form-control" formControlName="hesapno" mask="00000000" maxlength="8"
-                [validation]="true" placeholder="Hesap No">
+            <input type="text" class="form-control" formControlName="hesapno" mask="00000000" maxlength="9"
+                [validation]="true" placeholder="Hesap No (9 Hane)">
             <div *ngIf="submitted && getControlRequest['hesapno'].errors" class="text-danger">
                 Hesap No Yazmadınız.
             </div>
