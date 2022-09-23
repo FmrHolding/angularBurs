@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {  Router } from '@angular/router';
 import { StoreService } from 'src/app/services/store.service';
 
 @Component({
@@ -11,7 +11,6 @@ export class OgrenciDetayComponent implements OnInit {
   data: any = [];
   tabName: string = null;
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     private localStore: StoreService
   ) { }

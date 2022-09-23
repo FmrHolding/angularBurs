@@ -48,10 +48,10 @@ export class OgrenciKardesComponent implements OnInit, OnDestroy {
     this.frmKardes = this.fb.group({
       id: [0],
       ogrenciid: [this.data[0].ogrenciId, [Validators.required]],
-      adisoyadi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
-      yas: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
+      adisoyadi: ['', [Validators.required]],
+      yas: ['', [Validators.required]],
       medenihalid: ['', [Validators.required]],
-      okul: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
+      okul: ['', [Validators.required]],
       gelirburs: ['', [Validators.required]]
     });
   }

@@ -44,7 +44,7 @@ export class OgrenciLiseComponent implements OnInit, OnDestroy {
       liseid: ['', [Validators.required]],
       liseturid: ['', [Validators.required]],
       sinifid: ['', [Validators.required]],
-      liseadi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]]
+      liseadi: ['', [Validators.required, Validators.maxLength(100)]]
     });
   }
 

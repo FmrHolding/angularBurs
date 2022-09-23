@@ -21,7 +21,7 @@
     <div class="form-group row">
         <div class="col-lg-6">
             <label for="">Hesap No *</label>
-            <input type="text" class="form-control" formControlName="hesapno" mask="00000000" maxlength="9"
+            <input type="text" class="form-control" formControlName="hesapno" mask="000000000" maxlength="9"
                 [validation]="true" placeholder="Hesap No (9 Hane)">
             <div *ngIf="submitted && getControlRequest['hesapno'].errors" class="text-danger">
                 Hesap No Yazmadınız.

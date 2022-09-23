@@ -73,7 +73,7 @@
                     <div class="modal-body">
                         <div class="form-group row">
                             <div class="col-lg-5 col-md-5 col-sm-5">
-                                <label for=""> Adı ve Soyadı *</label>
+                                <label> Adı ve Soyadı *</label>
                                 <input type="text" class="form-control" formControlName="adisoyadi"
                                     oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
                                     placeholder="Kardeşin Adı ve Soyadı">
@@ -82,7 +82,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-3">
-                                <label for=""> Yaş *</label>
+                                <label> Yaş *</label>
                                 <input type="number" class="form-control" formControlName="yas"
                                     placeholder="Kardeşin Yaşı">
                                 <div *ngIf="submitted && getControlRequest['yas'].errors" class="text-danger">
@@ -90,7 +90,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
-                                <label for=""> Medeni Durum *</label>
+                                <label> Medeni Durum *</label>
                                 <ng-select #ngMedeniDurum [items]="medenidurumlar" bindLabel="durumu" bindValue="id"
                                     (change)="onMedeniDurum($event)" placeholder="Medeni Durumu">
                                 </ng-select>
@@ -101,7 +101,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-lg-12 col-md-12 col-sm-12">
-                                <label for=""> Okulu *</label>
+                                <label> Okulu *</label>
                                 <input type="text" class="form-control" formControlName="okul"
                                     oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
                                     placeholder="Okuduğu/Mezun Olduğu Okulu">
@@ -112,7 +112,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-lg-4 col-md-4 col-sm-4">
-                                <label for=""> Aldığı Burs / Net Gelir *</label>
+                                <label> Aldığı Burs / Net Gelir *</label>
                                 <input type="text" class="form-control" formControlName="gelirburs" mask="separator"
                                     thousandSeparator="." thousandSeparator="." placeholder="Aldığınız Gelir/Burs">
                                 <div *ngIf="submitted && getControlRequest['gelirburs'].errors" class="text-danger">

@@ -74,7 +74,7 @@
                     <div class="modal-body">
                         <div class="form-group row">
                             <div class="col-lg-7 col-md-7 col-sm-7">
-                                <label for=""> Adı ve Soyadı</label>
+                                <label> Adı ve Soyadı</label>
                                 <input type="text" class="form-control" formControlName="adisoyadi" maxlength="30"
                                     oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
                                     placeholder="Adı ve Soyadı">
@@ -83,7 +83,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-5 col-md-5 col-sm-5">
-                                <label for=""> Yakınlık Derecesi</label>
+                                <label> Yakınlık Derecesi</label>
                                 <input type="text" class="form-control" formControlName="yakinlik" maxlength="30"
                                     oninput="this.value=this.value.toLocaleUpperCase('tr-TR')"
                                     placeholder="Yakınlık Derecesi">
@@ -94,7 +94,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-lg-8 col-md-8 col-sm-8">
-                                <label for=""> Mesleği/Görevi</label>
+                                <label> Mesleği/Görevi</label>
                                 <input type="text" class="form-control" formControlName="gorevi"
                                     oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" maxlength="100"
                                     placeholder="Mesleği Görevi">
@@ -103,7 +103,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
-                                <label for="">Cep Telefonu</label>
+                                <label>Cep Telefonu</label>
                                 <input type="text" class="form-control" mask="(0000) 000 00 00" [showMaskTyped]="true"
                                     [validation]="true" formControlName="ceptelefon" placeholder="Cep Telefonu">
                                 <div *ngIf="submitted && getControlRequest['ceptelefon'].errors" class="text-danger">

@@ -65,15 +65,15 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
     this.frmOnBilgi = this.formBuilder.group({
       id: [0],
       firmaid: ['', [Validators.required]],
-      adisoyadi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
-      babaadi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
-      anneadi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
-      dogumyeri: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
+      adisoyadi: ['', [Validators.required]],
+      babaadi: ['', [Validators.required]],
+      anneadi: ['', [Validators.required]],
+      dogumyeri: ['', [Validators.required]],
       dogumtarihi: ['', [Validators.required]],
       cinsiyetid: [0, [Validators.required]],
       medenihalid: [0, [Validators.required]],
       tckimlik: ['', [Validators.required, Validators.minLength(11)]],
-      ceptelefonu: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
+      ceptelefonu: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.pattern(/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)]],
       resimyolu: ['', [Validators.required]],
       resimuzanti: [''],
@@ -87,6 +87,8 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.router.navigate(['/kvkk']);
     }
+    this.localStore.saveData('universite', 'false');
+    this.localStore.saveData('transkrip', 'true');
   }
 
   get getControlRequest() { return this.frmOnBilgi.controls; }
@@ -144,7 +146,16 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
     this.parametreService.getFirma().pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
         if (data.statusCode == 200) {
-          this.firmalar = data.value;
+          let firma: any = [];
+          data.value.forEach(element => {
+            if (element.id < 14) {
+              firma.push({
+                id: element.id,
+                unvani: element.unvani
+              });
+            }
+          });
+          this.firmalar = firma;
         } else {
           this.toastr.error(data.message, 'Hata')
         }

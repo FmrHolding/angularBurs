@@ -47,7 +47,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
       ogrenciid: [0, [Validators.required]],
       universiteid: ['', [Validators.required]],
       fakulteid: ['', [Validators.required]],
-      bolum: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
+      bolum: ['', [Validators.required]],
       sinifid: ['', [Validators.required]],
       turid: ['', [Validators.required]],
       bursid: ['', [Validators.required]]
@@ -291,7 +291,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   nextBilgi(): void {
-    this.tabToUpdate.emit({ tabName: "Evrak" });
+    this.tabToUpdate.emit({ tabName: "Banka" });
   }
 
   ngOnDestroy(): void {

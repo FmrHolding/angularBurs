@@ -43,9 +43,9 @@ export class OgrenciReferansComponent implements OnInit, OnDestroy {
     this.frmReferans = this.fb.group({
       id: [0],
       ogrenciid: [this.data[0].ogrenciId, [Validators.required]],
-      adisoyadi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
-      yakinlik: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
-      gorevi: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
+      adisoyadi: ['', [Validators.required]],
+      yakinlik: ['', [Validators.required]],
+      gorevi: ['', [Validators.required]],
       ceptelefon: ['', [Validators.required]]
     });
   }

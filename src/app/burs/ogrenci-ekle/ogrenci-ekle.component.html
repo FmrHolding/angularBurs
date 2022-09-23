@@ -23,10 +23,9 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="form-group row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <label for=""> T.C. Kimlik No *</label>
+                            <label> T.C. Kimlik No *</label>
                             <input type="text" class="form-control" formControlName="tckimlik"
                                 placeholder="T.C. Kimlik No"
                                 onkeypress="if (event.keyCode != 8 && event.keyCode != 0 && (event.keyCode < 48 || event.keyCode > 57)) return false;"
@@ -36,7 +35,7 @@
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <label for=""> Adı Soyadı *</label>
+                            <label> Adı Soyadı *</label>
                             <input type="text" class="form-control" formControlName="adisoyadi" maxlength="25"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')" #adSoyadInput>
                             <div *ngIf="submitted && (getControlRequest['adisoyadi'].errors || getControlRequest['adisoyadi'].untouched)"
@@ -47,7 +46,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
-                            <label for="">Hangi Birimimizin Referansı Üzerinden Başvuru Yapıyorsunuz (Eğer herhangi bir
+                            <label>Hangi Birimimizin Referansı Üzerinden Başvuru Yapıyorsunuz (Eğer herhangi bir
                                 birim üzerinden referansınız yoksa lütfen Holding Seçiniz) *</label>
                             <ng-select #ngFirma [items]="firmalar" bindLabel="unvani" bindValue="id"
                                 (change)="onSirket($event)" formControlName="firmaid" placeholder="Firma Seçiniz">
@@ -59,7 +58,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <label for=""> Baba Adı *</label>
+                            <label> Baba Adı *</label>
                             <input type="text" class="form-control" formControlName="babaadi" maxlength="20"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
                             <div *ngIf="submitted && getControlRequest['babaadi'].errors" class="text-danger">
@@ -67,7 +66,7 @@
                             </div>
                         </div>
                         <div class="col-lg-6">
-                            <label for=""> Anne Adı *</label>
+                            <label> Anne Adı *</label>
                             <input type="text" class="form-control" formControlName="anneadi" maxlength="20"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
                             <div *ngIf="submitted && getControlRequest['anneadi'].errors" class="text-danger">
@@ -77,7 +76,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <label for=""> Doğum Yeri *</label>
+                            <label> Doğum Yeri *</label>
                             <input type="text" class="form-control" formControlName="dogumyeri" maxlength="20"
                                 oninput="this.value=this.value.toLocaleUpperCase('tr-TR')">
                             <div *ngIf="submitted && getControlRequest['dogumyeri'].errors" class="text-danger">
@@ -85,7 +84,7 @@
                             </div>
                         </div>
                         <div class="col-lg-6">
-                            <label for=""> Doğum Tarihi *</label>
+                            <label> Doğum Tarihi *</label>
                             <my-date-picker [options]="myDatePickerOptions" [locale]="locale" placeholder="Doğum Tarihi"
                                 [selDate]="dogumtarihi" (dateChanged)="onDogumTarihi($event)">
                             </my-date-picker>
@@ -96,7 +95,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <label for=""> Cinsiyet *</label>
+                            <label> Cinsiyet *</label>
                             <ng-select #ngCinsiyet [items]="cinsiyetler" bindLabel="cinsiyeti" bindValue="id"
                                 formControlName="cinsiyetid" (change)="onCinsiyet($event)"
                                 placeholder="Cinsiyet Seçiniz">
@@ -106,7 +105,7 @@
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <label for=""> Medeni Durum *</label>
+                            <label> Medeni Durum *</label>
                             <ng-select #ngMedeniHal [items]="medenidurumlar" bindLabel="durumu" bindValue="id"
                                 formControlName="medenihalid" (change)="onMedeniDurum($event)"
                                 placeholder="Medeni Durum Seçiniz">
@@ -118,7 +117,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <label for=""> Cep Telefonu *</label>
+                            <label> Cep Telefonu *</label>
                             <input type="text" class="form-control" formControlName="ceptelefonu"
                                 mask='(0000) 000 00 00' [validation]="true" [showMaskTyped]="true"
                                 placeholder="Cep Telefonu">
@@ -127,7 +126,7 @@
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <label for=""> E-Mail Adresi *</label>
+                            <label> E-Mail Adresi *</label>
                             <input type="email" class="form-control" formControlName="email" maxlength="150"
                                 placeholder="E-Mail Adresi Giriniz">
                             <div *ngIf="submitted && getControlRequest['email'].errors" class="text-danger">

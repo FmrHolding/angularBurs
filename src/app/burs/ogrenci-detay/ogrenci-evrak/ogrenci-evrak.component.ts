@@ -143,7 +143,9 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
         evraksay = evraksay + 1;
       } else if (element.belgeadi === this.evraktur[4].tur) {
         this.Transkript = true;
-        evraksay = evraksay + 1;
+        if (this.localStore.getData('transkrip') === 'true') {
+          evraksay = evraksay + 1;
+        }
       } else if (element.belgeadi === this.evraktur[5].tur) {
         this.NufusCuzdani = true;
         evraksay = evraksay + 1;
@@ -158,13 +160,7 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         this.evraktam = false;
       }
-    } else if (this.localStore.getData('transkrip') === 'false') {
-      if (evraksay === 5) {
-        this.evraktam = true;
-      } else {
-        this.evraktam = false;
-      }
-    } else if (this.localStore.getData('universite') === 'true') {
+    } else if (this.localStore.getData('transkrip') === 'false' || this.localStore.getData('universite') === 'true') {
       if (evraksay === 5) {
         this.evraktam = true;
       } else {

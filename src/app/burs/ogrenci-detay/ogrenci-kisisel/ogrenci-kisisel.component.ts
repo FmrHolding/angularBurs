@@ -48,7 +48,7 @@ export class OgrenciKisiselComponent implements OnInit, OnDestroy {
       farkliikametid: [''],
       ikametyeriid: ['', [Validators.required]],
       yurtadi: ['', [Validators.required]],
-      saglikdurumu: ['', [Validators.required, Validators.pattern('^[a-zA-ZğüşöçİĞÜŞÖÇ \-\']+')]],
+      saglikdurumu: ['', [Validators.required]],
       adres: ['', [Validators.required]],
       kira: ['', [Validators.required]],
       diger: ['', [Validators.required]],
