@@ -96,8 +96,20 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
 
   getIbanDogrula(iban: string): boolean {
     if (iban.length === 32) {
+      var re = /Good/gi; 
+      const ibanNo=iban.replace(re,' ');
+      console.log(ibanNo);
+      console.log("Ülke:" + ibanNo.substring(0,2));
+      console.log("Rezerv No:" +ibanNo.substring(4,2));
+      console.log("Banka No:" + ibanNo.substring(10,6));
+      console.log("Kontrol No:" + ibanNo.substring(13,9));
+      console.log("Şube No No:" + ibanNo.substring(17,4));
       const ulkekodu = iban[0] + iban[1];
+      //const rezervhane = iban[0] + iban[1];
+      //const ulkekodu = iban[0] + iban[1];
+      //const ulkekodu = iban[0] + iban[1];
       const rezervhane = parseInt(iban[12]);
+      console.log();
       if (ulkekodu !== "TR") return false;
       else if (rezervhane != 0) return false;
       else return true;

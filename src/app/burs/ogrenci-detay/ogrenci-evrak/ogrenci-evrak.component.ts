@@ -122,9 +122,12 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy {
         evrakSay = evrakSay + 1;
       }
     });
-    if (evrakSay >= 3 && parseInt(localStorage.getItem('yas')) < 17) {
+
+    if (evrakSay == 3 && parseInt(localStorage.getItem('yas')) < 18) {
       return true;
-    } else if (evrakSay >= 3 && localStorage.getItem('transkrip') === 'false') {
+    } else if (evrakSay == 4 && localStorage.getItem('transkrip') === 'false') {
+      return true;
+    } else if (evrakSay == 5 && localStorage.getItem('transkrip') === 'true') {
       return true;
     } else {
       return false;
