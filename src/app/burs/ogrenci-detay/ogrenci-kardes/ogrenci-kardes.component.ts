@@ -146,21 +146,12 @@ export class OgrenciKardesComponent implements OnInit, OnDestroy {
           this.kardesService.setKardesKayit(this.frmKardes.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                this.kardesService.getKardes(data.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-                  next: (data: any) => {
-                    if (data.statusCode === 200 && data.value != null) {
-                      this.rows.push(data.value);
-                      this.rows = [...this.rows];
-                      this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
-                      this.frmKardes.reset();
-                      this.ngMedeniDurum.handleClearClick();
-                      $('#modalKardes').modal('hide');
-                    } else {
-                      this.toastr.error(data.message, 'Hata')
-                    }
-                  },
-                  error: (err) => this.toastr.error(err, 'Hata')
-                });
+                this.rows.push(data.value);
+                this.rows = [...this.rows];
+                this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
+                this.frmKardes.reset();
+                this.ngMedeniDurum.handleClearClick();
+                $('#modalKardes').modal('hide');
               } else {
                 this.toastr.error(data.message, 'Hata');
               }

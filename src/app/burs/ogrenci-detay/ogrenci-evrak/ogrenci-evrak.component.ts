@@ -1,12 +1,12 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgSelectComponent } from '@ng-select/ng-select';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, race, takeUntil } from 'rxjs';
 import { EvrakService } from 'src/app/services/evrak.service';
 import { OgrenciService } from 'src/app/services/ogrenci.service';
-import { StoreService } from 'src/app/services/store.service';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 declare var $: any;
@@ -16,7 +16,7 @@ declare var $: any;
   templateUrl: './ogrenci-evrak.component.html',
   styleUrls: ['./ogrenci-evrak.component.css']
 })
-export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
+export class OgrenciEvrakComponent implements OnInit, OnDestroy {
 
   frmEvrak: FormGroup;
   submitted = false;
@@ -25,46 +25,37 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
   evrakAdresi: any = [];
   evraktur: any = [];
   evrak: File = null;
-  evraktam: boolean = false;
-  ReferansMektubu: boolean = false;
   Ikametgah: boolean = false;
   SabikaKaydi: boolean = false;
   OgrenciBelgesi: boolean = false;
   Transkript: boolean = false;
   NufusCuzdani: boolean = false;
-  HesapCuzdani: boolean = false;
+  lise: boolean = false;
   private ngUnsubscribe$ = new Subject<void>();
 
   @Input() data: any = [];
   @Output() tabToUpdate: EventEmitter<any> = new EventEmitter();
+  
+  @ViewChild('evrakTuru', { static: true }) evrakTuru: NgSelectComponent;
 
   constructor(
     private router: Router,
     private evrakService: EvrakService,
     private ogranciService: OgrenciService,
     private fb: FormBuilder,
-    private toastr: ToastrService,
-    private localStore: StoreService
-  ) {
-
-  }
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     if (this.data[0].islemId === 2) {
       this.getViewEvrak(this.data[0].ogrenciId);
     }
     this.evrakAdresi = environment.apiFile;
+    this.getViewEvrakTur();
     this.setEvrakForm();
-    this.onEvrakKontrol();
   }
 
   get getControlRequest() { return this.frmEvrak.controls; }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.getViewEvrakTur();
-    }, 0);
-  }
 
   setEvrakForm(): void {
     this.frmEvrak = this.fb.group({
@@ -80,7 +71,6 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
       next: (data: any) => {
         if (data.value != null) {
           this.rows = data.value;
-          this.onEvrakKontrol();
         }
       },
       error: (err) => this.toastr.error(err, 'Hata')
@@ -89,13 +79,11 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getViewEvrakTur(): void {
     this.evraktur = [
-      { id: 1, tur: "ReferansMektubu", aciklama: 'Referans Mektubu' },
-      { id: 2, tur: "Ikametgah", aciklama: 'İkametgâh' },
-      { id: 3, tur: "SabikaKaydi", aciklama: 'Sabıka Kaydı' },
-      { id: 4, tur: "OgrenciBelgesi", aciklama: 'Öğrenci Belgesi ' },
-      { id: 5, tur: "Transkript", aciklama: 'Transkript' },
-      { id: 6, tur: "NufusCuzdani", aciklama: 'Nüfus Cüzdanı Fotokopisi' },
-      { id: 7, tur: "HesapCuzdani", aciklama: 'Hesap Cüzdanı Fotokopisi' }
+      { id: 1, tur: "Ikametgah", aciklama: 'İkametgâh' },
+      { id: 2, tur: "SabikaKaydi", aciklama: 'Sabıka Kaydı' },
+      { id: 3, tur: "OgrenciBelgesi", aciklama: 'Öğrenci Belgesi ' },
+      { id: 4, tur: "Transkript", aciklama: 'Transkript' },
+      { id: 5, tur: "NufusCuzdani", aciklama: 'Nüfus Cüzdanı Fotokopisi' }
     ]
   }
 
@@ -119,53 +107,27 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  onEvrakKontrol(): void {
-    this.ReferansMektubu = false;
-    this.Ikametgah = false;
-    this.SabikaKaydi = false;
-    this.OgrenciBelgesi = false;
-    this.Transkript = false;
-    this.NufusCuzdani = false;
-    this.HesapCuzdani = false;
-
-    let evraksay: number = 0;
+  onEvrakKontrol(): boolean {
+    let evrakSay: number = 0;
     this.rows.forEach(element => {
-      if (element.belgeadi === this.evraktur[0].tur) {
-        this.ReferansMektubu = true;
-      } else if (element.belgeadi === this.evraktur[1].tur) {
-        this.Ikametgah = true;
-        evraksay = evraksay + 1;
-      } else if (element.belgeadi === this.evraktur[2].tur) {
-        this.SabikaKaydi = true;
-        evraksay = evraksay + 1;
-      } else if (element.belgeadi === this.evraktur[3].tur) {
-        this.OgrenciBelgesi = true;
-        evraksay = evraksay + 1;
-      } else if (element.belgeadi === this.evraktur[4].tur) {
-        this.Transkript = true;
-        if (this.localStore.getData('transkrip') === 'true') {
-          evraksay = evraksay + 1;
-        }
-      } else if (element.belgeadi === this.evraktur[5].tur) {
-        this.NufusCuzdani = true;
-        evraksay = evraksay + 1;
-      } else if (element.belgeadi === this.evraktur[6].tur) {
-        this.HesapCuzdani = true;
-        evraksay = evraksay + 1;
+      if (element.belgeadi === 'Ikametgah') {
+        evrakSay = evrakSay + 1;
+      } else if (element.belgeadi === 'SabikaKaydi' && parseInt(localStorage.getItem('yas')) > 17) {
+        evrakSay = evrakSay + 1;
+      } else if (element.belgeadi === 'OgrenciBelgesi') {
+        evrakSay = evrakSay + 1;
+      } else if (element.belgeadi === 'Transkript' && localStorage.getItem('transkrip') === 'true') {
+        evrakSay = evrakSay + 1;
+      } else if (element.belgeadi === 'NufusCuzdani') {
+        evrakSay = evrakSay + 1;
       }
     });
-    if (this.localStore.getData('transkrip') === 'true') {
-      if (evraksay === 6) {
-        this.evraktam = true;
-      } else {
-        this.evraktam = false;
-      }
-    } else if (this.localStore.getData('transkrip') === 'false' || this.localStore.getData('universite') === 'true') {
-      if (evraksay === 5) {
-        this.evraktam = true;
-      } else {
-        this.evraktam = false;
-      }
+    if (evrakSay >= 3 && parseInt(localStorage.getItem('yas')) < 17) {
+      return true;
+    } else if (evrakSay >= 3 && localStorage.getItem('transkrip') === 'false') {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -175,12 +137,13 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
       this.evrak = evrak.target.files[0];
       this.frmEvrak.get('evrak').setValue(evrak.target.files[0].name);
     } else {
-      this.toastr.warning("Eklenecek Evrak boyutu 3MB az olmalı", 'UYARI');
+      this.toastr.error("Eklenecek Evrak boyutu en fazla 3MB olmalı", 'UYARI');
     }
   }
 
   onYeniEvrak(): void {
     this.setEvrakForm();
+    this.frmEvrak.get('evrak').clearValidators();
     $('#modalEvrak').modal('show');
   }
 
@@ -210,7 +173,6 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
               this.rows.splice(index, 1);
               this.rows = [...this.rows];
               this.toastr.success(data.message, 'Bilgilendirme');
-              this.onEvrakKontrol();
             } else {
               this.toastr.error(data.message, 'Hata');
             }
@@ -241,22 +203,16 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
           formDataEvrak.append('ogrenciid', this.frmEvrak.get('ogrenciid').value);
           formDataEvrak.append('evrakadi', this.frmEvrak.get('evrakadi').value);
           formDataEvrak.append('evrak', this.evrak);
+          formDataEvrak.append('tckimlik', this.data[0].tckimlik);
           this.evrakService.setEvrakKayit(formDataEvrak).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                this.evrakService.getEvrak(data.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-                  next: (data: any) => {
-                    if (data.statusCode === 200 && data.value != null) {
-                      this.rows.push(data.value);
-                      this.rows = [...this.rows];
-                      this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
-                      this.onEvrakKontrol();
-                    } else {
-                      this.toastr.error(data.message, 'Hata')
-                    }
-                  },
-                  error: (err) => this.toastr.error(err, 'Hata')
-                });
+                this.rows.push(data.value);
+                this.rows = [...this.rows];
+                this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
+                this.frmEvrak.get('evrak').clearValidators();
+                this.evrakTuru.handleClearClick();
+                $('#modalEvrak').modal('hide');
               } else {
                 this.toastr.error(data.message, 'Hata');
               }
@@ -269,13 +225,12 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   endToBurs(): void {
-    this.onEvrakKontrol();
-    if (!this.evraktam) {
-      this.toastr.warning("Eklenmesi gereken evraklarda eksiklik var.", 'UYARI');
+    if (!this.onEvrakKontrol()) {
+      this.toastr.error("Eksik belge var. Lütfen gerekli tüm belgeleri yükleyiniz.", 'Hata')
     } else {
       Swal.fire({
-        title: 'Başvuru Tamamlam',
-        text: 'Başvurunuz Kaydedilip Kapatılacaktır. Onaylıyor musunuz?',
+        title: 'Başvuru Tamamlama',
+        html: 'Başvurunuz Kaydedilip Kapatılacaktır.Bilgilerin eksiksiz olduğunu beyan ettiniz.<br> Onaylıyor musunuz?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -284,7 +239,7 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
         confirmButtonText: 'Evet'
       }).then((result) => {
         if (result.value) {
-          this.ogranciService.setOgrenciEndtoBurs(this.data[0].ogrenciId, 1, 1).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+          this.ogranciService.setOgrenciEndtoBurs(this.data[0].ogrenciId).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 200) {
                 this.toastr.success(data.message, 'Bilgilendirme');
@@ -292,7 +247,7 @@ export class OgrenciEvrakComponent implements OnInit, OnDestroy, AfterViewInit {
                   this.router.navigate(['/kvkk']);
                 }, 1000);
               } else {
-                this.toastr.error(data.message, 'Hata');
+                this.toastr.error(data.errors[0], 'Hata');
               }
             },
             error: (err) => this.toastr.error(err, 'Hata')

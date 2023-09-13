@@ -4,7 +4,6 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { ParametreService } from 'src/app/services/parametre.service';
-import { StoreService } from 'src/app/services/store.service';
 import { UniversiteService } from 'src/app/services/universite.service';
 import Swal from 'sweetalert2';
 
@@ -39,8 +38,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
     private fb: FormBuilder,
     private parameterService: ParametreService,
     private universiteService: UniversiteService,
-    private toastr: ToastrService,
-    private localStore: StoreService
+    private toastr: ToastrService
   ) {
     this.frmUniversite = this.fb.group({
       id: [0],
@@ -50,7 +48,8 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
       bolum: ['', [Validators.required]],
       sinifid: ['', [Validators.required]],
       turid: ['', [Validators.required]],
-      bursid: ['', [Validators.required]]
+      bursid: ['', [Validators.required]],
+      okuyor: [true]
     });
   }
 
@@ -63,6 +62,9 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
       this.getViewTur();
       this.getViewBurs();
     }, 0);
+
+    localStorage.setItem('universite', 'true');
+    localStorage.setItem('transkrip', 'true');
   }
 
   get getControlRequest() { return this.frmUniversite.controls; }
@@ -84,6 +86,7 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
           } else {
             this.ngBurs.setDisabledState(false);
           }
+          this.ValidatorsControl(data.value.okuyor);
         } else {
           this.ngUniversite.handleClearClick();
           this.ngFakulte.handleClearClick();
@@ -165,19 +168,16 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   onSinif(event): void {
-    this.localStore.removeData('transkrip');
-    this.localStore.removeData('universite');
     if (event !== undefined) {
       this.frmUniversite.get('sinifid').setValue(event.id);
-      if (event.id <= 3) {
-        this.localStore.saveData('transkrip', 'false');
-        this.localStore.saveData('universite', 'false');
+      if (parseInt(event.id) > 3 && parseInt(event.id) < 15) {
+        localStorage.setItem('transkrip', 'true');
       } else {
-        this.localStore.saveData('transkrip', 'true');
-        this.localStore.saveData('universite', 'false');
+        localStorage.setItem('transkrip', 'false');
       }
     } else {
       this.frmUniversite.get('sinifid').setValue(null);
+      localStorage.setItem('transkrip', 'false');
     }
   }
 
@@ -206,17 +206,52 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
     }
   }
 
-  onUniversiteVar(event): void {
-    this.localStore.removeData('universite');
-    this.localStore.removeData('transkrip');
-    if (!event.target.checked) {
-      this.universite = false;
-      this.localStore.saveData('universite', 'false');
-      this.localStore.saveData('transkrip', 'false');
+  isChecked(event): void {
+    if (event.target.checked) {
+      this.frmUniversite.get('okuyor').setValue(true);
+      localStorage.setItem('universite', 'false');
+      localStorage.setItem('transkrip', 'false');
     } else {
-      this.universite = true;
-      this.localStore.saveData('universite', 'true');
-      this.localStore.saveData('transkrip', 'false');
+      this.frmUniversite.get('okuyor').setValue(false);
+      localStorage.setItem('universite', 'true');
+      localStorage.setItem('transkrip', 'true');
+    }
+    this.ValidatorsControl(event.target.checked);
+  }
+
+  ValidatorsControl(value: boolean) {
+    if (value) {
+      this.frmUniversite.get('universiteid').clearValidators();
+      this.frmUniversite.get('universiteid').setValue(null);
+      this.frmUniversite.get('fakulteid').clearValidators();
+      this.frmUniversite.get('fakulteid').setValue(null);
+      this.frmUniversite.get('bolum').clearValidators();
+      this.frmUniversite.get('bolum').setValue(null);
+      this.frmUniversite.get('sinifid').clearValidators();
+      this.frmUniversite.get('sinifid').setValue(null);
+      this.frmUniversite.get('turid').clearValidators();
+      this.frmUniversite.get('turid').setValue(null);
+      this.frmUniversite.get('bursid').clearValidators();
+      this.frmUniversite.get('bursid').setValue(null);
+      this.ngUniversite.handleClearClick();
+      this.ngFakulte.handleClearClick();
+      this.ngSinif.handleClearClick();
+      this.ngTuru.handleClearClick();
+      this.ngBurs.handleClearClick();
+      this.ngBurs.setDisabledState(true);
+    } else {
+      this.frmUniversite.controls['universiteid'].setValidators([Validators.required]);
+      this.frmUniversite.controls['universiteid'].updateValueAndValidity();
+      this.frmUniversite.controls['fakulteid'].setValidators([Validators.required]);
+      this.frmUniversite.controls['fakulteid'].updateValueAndValidity();
+      this.frmUniversite.controls['bolum'].setValidators([Validators.required]);
+      this.frmUniversite.controls['bolum'].updateValueAndValidity();
+      this.frmUniversite.controls['sinifid'].setValidators([Validators.required]);
+      this.frmUniversite.controls['sinifid'].updateValueAndValidity();
+      this.frmUniversite.controls['turid'].setValidators([Validators.required]);
+      this.frmUniversite.controls['turid'].updateValueAndValidity();
+      this.frmUniversite.controls['bursid'].setValidators([Validators.required]);
+      this.frmUniversite.controls['bursid'].updateValueAndValidity();
     }
   }
 
@@ -239,7 +274,6 @@ export class OgrenciUniversiteComponent implements OnInit, OnDestroy, AfterViewI
           this.universiteService.setUniversiteKayit(this.frmUniversite.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                localStorage.setItem('universite', this.frmUniversite.get('sinifid').value.toString());
                 this.tabToUpdate.emit({ tabName: "Banka" });
                 this.EdittoUpdate = true;
                 this.toastr.success(data.message, 'Bilgilendirme');

@@ -11,11 +11,11 @@ import { registerLocaleData } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { environment } from 'src/environments/environment';
-import { StoreService } from 'src/app/services/store.service';
 import { TckontrolService } from 'src/app/common/tckontrol.service';
 import { InputkontrolService } from 'src/app/common/inputkontrol.service';
 import { FirmaService } from 'src/app/services/firma.service';
 registerLocaleData(localeTr, 'tr');
+declare var $: any;
 
 @Component({
   selector: 'app-ogrenci-ekle',
@@ -54,10 +54,9 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private parametreService: ParametreService,
     private ogrenciService: OgrenciService,
-    private firmaService:FirmaService,
+    private firmaService: FirmaService,
     private toastr: ToastrService,
     private formBuilder: FormBuilder,
-    private localStore: StoreService,
     private tcKontrol: TckontrolService,
     private inputKontrol: InputkontrolService
   ) {
@@ -77,18 +76,20 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
       email: ['', [Validators.required, Validators.pattern(/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)]],
       resimyolu: ['', [Validators.required]],
       resimuzanti: [''],
-      resimboyutu: ['']
+      resimboyutu: [''],
+      kvkkonay: [true]
     });
   }
 
-  ngOnInit(): void {
-    if (this.localStore.getData('kvkkOnay') === 'true') {
+  ngOnInit(): void {    
+    $('#modalDuyuru').modal('show');
+    if (localStorage.getItem('kvkkOnay') === 'true') {
       this.resimyolu = environment.apiFile;
+      this.frmOnBilgi.get('kvkkonay').setValue(true);
     } else {
       this.router.navigate(['/kvkk']);
+      this.frmOnBilgi.get('kvkkonay').setValue(false)
     }
-    this.localStore.saveData('universite', 'false');
-    this.localStore.saveData('transkrip', 'true');
   }
 
   get getControlRequest() { return this.frmOnBilgi.controls; }
@@ -103,11 +104,15 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
       this.ngMedeniHal.handleClearClick();
     }, 0);
   }
+  
+  onModalKapat(): void {
+    $('#modalDuyuru').modal('hide');
+  }
 
   getViewOgrenci(tckimlik: string): void {
-    this.ogrenciService.getOgrenci(tckimlik, 1).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
+    this.ogrenciService.getOgrenci(tckimlik).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
       next: (data: any) => {
-        if (data.statusCode === 404) {
+        if (data.statusCode === 200 && data.value != null && data.value.kapandi === true) {
           Swal.fire({
             icon: 'error',
             title: 'UYARI',
@@ -121,20 +126,19 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           });
         }
-        else if (data.statusCode === 200 && data.value != null) {
-          this.localStore.saveData('ogrenciId', data.value.id.toString());
-          this.localStore.saveData('IslemId', '2');
+        else if (data.statusCode === 200 && data.value != null && data.value.kapandi == false) {
+          localStorage.setItem('ogrenciId', data.value.id.toString());
+          localStorage.setItem('IslemId', '2');
           this.EdittoUpdate = true;
           this.yuklenecekResim = this.resimyolu + data.value.resimyolu;
           const dogumTarihi = new Date(data.value.dogumtarihi);
+          var time = new Date().getTime() - new Date(dogumTarihi).getTime();
+          var year =Math.floor(time / (365 *1000 * 3600 * 24)) ;      
+          localStorage.setItem('yas', year.toString());
           this.dogumtarihi = { year: dogumTarihi.getFullYear(), month: dogumTarihi.getMonth() + 1, day: dogumTarihi.getDate() };
           this.frmOnBilgi.patchValue(data.value);
+          this.frmOnBilgi.get('kvkkonay').setValue(true);
           this.frmOnBilgi.get('resimyolu').clearValidators();
-        } else {
-          this.EdittoUpdate = false;
-          this.ngFirma.handleClearClick();
-          this.ngCinsiyet.handleClearClick();
-          this.ngMedeniHal.handleClearClick();
         }
         this.adSoyadInput.nativeElement.focus();
       },
@@ -199,7 +203,7 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
       };
       reader.readAsDataURL(this.file);
     } else {
-      this.toastr.warning("Resim boyutu 3MB az olmalı", 'UYARI');
+      this.toastr.warning("Resim boyutu en fazla 3MB olmalı", 'UYARI');
     }
   }
 
@@ -220,6 +224,9 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
   onDogumTarihi(event): void {
     if (event.formatted !== '') {
       const date = new Date(event.date.year, event.date.month - 1, event.date.day);
+      var time = new Date().getTime() - new Date(date).getTime();
+      var year =Math.floor(time / (365 *1000 * 3600 * 24)) ;      
+      localStorage.setItem('yas', year.toString());
       this.frmOnBilgi.get('dogumtarihi').setValue(date.toLocaleDateString());
     } else {
       this.frmOnBilgi.get('dogumtarihi').setValue(null);
@@ -272,11 +279,23 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
           formData.append('ceptelefonu', this.frmOnBilgi.get('ceptelefonu').value);
           formData.append('email', this.frmOnBilgi.get('email').value);
           formData.append('ogrenciresim', this.file);
+          formData.append('kvkkonay', this.frmOnBilgi.get('kvkkonay').value);
           this.ogrenciService.setOgrenciKayit(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
                 this.toastr.success(data.message, 'Bilgilendirme');
-                this.firmaKayit(data.value, this.frmOnBilgi.get('firmaid').value, 1);
+                localStorage.setItem('ogrenciId', data.value.id.toString());
+                localStorage.setItem('IslemId', "1");
+                setTimeout(() => {
+                  this.router.navigate(['burs/detay/' + data.value.id + '/' + data.value.tckimlik +'/2023']);
+                }, 1000);
+              } else if (data.statusCode === 200) {
+                this.toastr.success(data.message, 'Bilgilendirme');
+                localStorage.setItem('ogrenciId', data.value.id.toString());
+                localStorage.setItem('IslemId', "1");
+                setTimeout(() => {
+                  this.router.navigate(['burs/detay']);
+                }, 1000);
               } else {
                 this.toastr.error(data.message, 'Hata');
               }
@@ -321,11 +340,17 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
           formData.append('resimyolu', this.frmOnBilgi.get('resimyolu').value);
           formData.append('resimuzanti', this.frmOnBilgi.get('resimuzanti').value);
           formData.append('resimboyutu', this.frmOnBilgi.get('resimboyutu').value);
+          formData.append('kvkkonay', this.frmOnBilgi.get('kvkkonay').value);
           this.ogrenciService.setOgrenciUpdate(formData).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
-              if (data.statusCode === 200) {
+              if (data.statusCode === 201) {
                 this.toastr.success(data.message, 'Bilgilendirme');
-                this.firmaKayit(this.frmOnBilgi.get('id').value, this.frmOnBilgi.get('firmaid').value, 2);
+                localStorage.setItem('ogrenciId', this.frmOnBilgi.get('id').value.toString());
+                localStorage.setItem('IslemId', "2");
+                
+                setTimeout(() => {
+                  this.router.navigate(['burs/detay/' + this.frmOnBilgi.get('id').value + '/' + this.frmOnBilgi.get('tckimlik').value +'/2023']);
+                }, 1000);
               } else {
                 this.toastr.error(data.message, 'Hata');
               }
@@ -348,8 +373,8 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
       next: (data: any) => {
         if (data.statusCode === 200) {
           this.toastr.success(data.message, 'Bilgilendirme');
-          this.localStore.saveData('ogrenciId', ogrenciid.toString());
-          this.localStore.saveData('IslemId', islem.toString())
+          localStorage.setItem('ogrenciId', ogrenciid.toString());
+          localStorage.setItem('IslemId', islem.toString());
           setTimeout(() => {
             this.router.navigate(['burs/detay']);
           }, 1500);

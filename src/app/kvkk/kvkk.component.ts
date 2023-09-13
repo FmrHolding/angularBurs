@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { StoreService } from '../services/store.service';
 declare var $: any;
 
 @Component({
@@ -12,27 +11,29 @@ declare var $: any;
 })
 export class KvkkComponent implements OnInit {
 
+  btnNext: boolean = false;
   private ngUnsubscribe$ = new Subject<void>();
 
   constructor(
-    private router: Router,
-    private localStore:StoreService
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    $('#modalDuyuru').modal('show');
-    this.localStore.clearData();
+    $('#modalKvkkDuyuru').modal('show');
+    localStorage.clear();
   }
 
   onModalKapat(): void {
-    $('#modalDuyuru').modal('hide');
+    $('#modalKvkkDuyuru').modal('hide');
   }
 
   isChecked(event): void {
     if (event.target.checked) {
-      this.localStore.saveData('kvkkOnay','true');
+      this.btnNext = true;
+      localStorage.setItem('kvkkOnay', 'true');
     } else {
-      this.localStore.saveData('kvkkOnay','false');
+      this.btnNext = false;
+      localStorage.setItem('kvkkOnay', 'false');
     }
   }
 

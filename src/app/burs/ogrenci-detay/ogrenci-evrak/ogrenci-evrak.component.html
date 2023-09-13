@@ -52,8 +52,8 @@
         <div class="col-lg-2 col-md-2 col-sm-2 offset-4">
             <div class="text-right">
                 <div class="btn-group">
-                    <button type="submit" class="btn btn-warning" (click)="endToBurs()">
-                        Sonlandır
+                    <button type="submit" class="btn btn-primary" (click)="endToBurs()">
+                        Başvuruyu Tamamla
                     </button>
                 </div>
             </div>
@@ -71,7 +71,7 @@
 
                         <div class="form-group row">
                             <div class="col-lg-12 col-md-12 col-sm-12">
-                                <ng-select [items]="evraktur" bindLabel="aciklama" bindValue="id"
+                                <ng-select #evrakTuru [items]="evraktur" bindLabel="aciklama" bindValue="id"
                                     (change)="onEvrakTuru($event)" placeholder="Evrak Türü">
                                 </ng-select>
                                 <div *ngIf="submitted && getControlRequest['evrakadi'].errors" class="text-danger">
@@ -99,22 +99,23 @@
 </form>
 <div class="ibox-content">
     <div class="text-left">
-        <label>
-            <span class="font-bold"> Önemli Uyarı</span>
+        <label class="h7">
+            1. Başvurunuz Lise öğrencisi için ise <span class="text-dark font-bold">Transkript</span> 18 yaşından
+            küçükler için <span class="text-dark font-bold">Sabıka
+                Kaydı</span> zorunluluğu yoktur.
             <br>
-            Aşağıda yazılı olan belgelerden <span class="text-danger font-bold">Kırmızı</span> olarak işaretlenmiş
-            olan belgeler zorunludur. Eksik olması durumunda başvrunuz geçerli olmayacaktır.
+            2. Aşağıda yazılı olan belgelerin eksik olması durumunda başvrunuz geçerli olmayacaktır.
             <br>
-            <span class="text-dark font-bold">Referans Mektubu</span>,
-            <span ngClass="{{Ikametgah==true ?'text-dark font-bold':'text-danger font-bold'}}">İkametgâh</span>,
-            <span ngClass="{{SabikaKaydi==true ?'text-dark font-bold':'text-danger font-bold'}}">Sabıka Kaydı</span>,
-            <span ngClass="{{OgrenciBelgesi==true ?'text-dark font-bold':'text-danger font-bold'}}">Öğrenci
-                Belgesi</span>,
-            <span ngClass="{{Transkript==true ?'text-dark font-bold':'text-danger font-bold'}}">Transkript</span>,
-            <span ngClass="{{NufusCuzdani==true ?'text-dark font-bold':'text-danger font-bold'}}">Nüfus Cüzdanı
-                Fotokopisi</span>,
-            <span ngClass="{{HesapCuzdani==true ?'text-dark font-bold':'text-danger font-bold'}}">Hesap Cüzdanı
-                Fotokopisi</span>
+            <br>
+            <ul>
+                <li class="text-danger">İkametgâh</li>
+                <li class="text-danger">Sabıka Kaydı <span class="text-dark">(18 yaşından küçükler
+                        hariç)</span></li>
+                <li class="text-danger">Öğrenci Belgesi</li>
+                <li class="text-danger">Transkript <span class="text-dark">(Üniversite yeni başlayanlar
+                        hariç)</span></li>
+                <li class="text-danger">Nüfus Cüzdanı Fotokopisi</li>
+            </ul>
         </label>
     </div>
 </div>

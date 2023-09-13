@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {  Router } from '@angular/router';
-import { StoreService } from 'src/app/services/store.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-ogrenci-detay',
@@ -12,17 +11,22 @@ export class OgrenciDetayComponent implements OnInit {
   tabName: string = null;
   constructor(
     private router: Router,
-    private localStore: StoreService
+    private activeRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    if (this.localStore.getData('kvkkOnay') === 'true') {
-      const ogrenciId = parseInt(this.localStore.getData('ogrenciId'));
-      const islemId = parseInt(this.localStore.getData('IslemId'));
+    const routeParams = this.activeRoute.snapshot.params;
+    if (localStorage.getItem('kvkkOnay') === 'true') {
+      const islemId = parseInt(localStorage.getItem('IslemId'));
+      const universite = localStorage.getItem('universite');
       this.data = ({
-        ogrenciId: ogrenciId,
-        islemId: islemId
-      })
+        ogrenciId: routeParams['id'],
+        islemId: islemId,
+        universite: universite,
+        tckimlik: routeParams['tckimlik'],
+        yil: routeParams['year']
+      });
+
       this.tabName = 'Lise'
     } else {
       this.router.navigate(['/kvkk']);

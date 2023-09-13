@@ -33,7 +33,7 @@
         <div class="col-lg-4 col-md-4 col-sm-4">
             <label> Babanızın Cep No *</label>
             <input type="text" class="form-control" formControlName="babatelefon" mask='(0000) 000 00 00'
-                [validation]="true" [showMaskTyped]="true" placeholder="Babanızın Cep Telefonu">
+                [value]="00000000000" [validation]="true" [showMaskTyped]="true" placeholder="Babanızın Cep Telefonu">
             <div *ngIf="submitted && getControlRequest['babatelefon'].errors" class="text-danger">
                 Babanızın Cep Telefonunu Belirtmediniz.
             </div>
@@ -79,7 +79,7 @@
         <div class="col-lg-4 col-md-4 col-sm-4">
             <label> Anneniz Cep No *</label>
             <input type="text" formControlName="annetelefon" class="form-control" mask='(0000) 000 00 00'
-                [validation]="true" [showMaskTyped]="true" placeholder="Anneniz Cep Telefonu">
+                [value]="00000000000" [validation]="true" [showMaskTyped]="true" placeholder="Anneniz Cep Telefonu">
             <div *ngIf="submitted && getControlRequest['annetelefon'].errors" class="text-danger">
                 Annenizin Telefonunu Belirtmediniz.
             </div>
@@ -165,7 +165,7 @@
         <div class="col-lg-4 col-md-4 col-sm-4">
             <label>Aylık Kira *</label>
             <input type="text" class="form-control" formControlName="kira" mask="separator" thousandSeparator="."
-               minlength="3" placeholder="Aylık Kira">
+                minlength="3" placeholder="Aylık Kira">
             <div *ngIf="submitted && getControlRequest['kira'].errors" class="text-danger">
                 Ödediğiniz Aylık Kira Hakkında Bilgi Vermediniz.
             </div>

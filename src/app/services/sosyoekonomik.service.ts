@@ -11,15 +11,15 @@ export class SosyoekonomikService {
   constructor(private httpClient: HttpClient) { }
 
   public getEkonomik(ogrenciid:number): Observable<any[]> {
-    return this.httpClient.get<any[]>(environment.apiURL + 'sosyoekonomik/get?ogrenciid=' + ogrenciid);
+    return this.httpClient.get<any[]>(environment.apiURL + 'ekonomik/get?ogrenciid=' + ogrenciid);
   }
 
   public setEkonomikKayit(ekonomik: any): Observable<any> {
-    return this.httpClient.post<any>(environment.apiURL + 'sosyoekonomik/insert', ekonomik);
+    return this.httpClient.post<any>(environment.apiURL + 'ekonomik/insert', ekonomik);
   }
 
   public setEkonomikGuncelle(ekonomik: any): Observable<any> {
-    return this.httpClient.put<any>(environment.apiURL + 'sosyoekonomik/update', ekonomik);
+    return this.httpClient.put<any>(environment.apiURL + 'ekonomik/update', ekonomik);
   }
 
 }

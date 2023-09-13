@@ -129,19 +129,12 @@ export class OgrenciReferansComponent implements OnInit, OnDestroy {
           this.referansService.setReferansKayit(this.frmReferans.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
-                this.referansService.getReferans(data.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
-                  next: (data: any) => {
-                    if (data.statusCode === 200 && data.value != null) {
-                      this.rows.push(data.value);
-                      this.rows = [...this.rows];
-                      this.EdittoUpdate = true;
-                      this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
-                    } else {
-                      this.toastr.error(data.message, 'Hata')
-                    }
-                  },
-                  error: (err) => this.toastr.error(err, 'Hata')
-                });
+                this.toastr.success(data.message, 'Bilgilendirme', { timeOut: 750 });
+                this.rows.push(data.value);
+                this.rows = [...this.rows];
+                this.frmReferans.reset();
+                $('#modalReferans').modal('hide');
+                this.EdittoUpdate = true;
               } else {
                 this.toastr.error(data.message, 'Hata');
               }
@@ -154,7 +147,11 @@ export class OgrenciReferansComponent implements OnInit, OnDestroy {
   }
 
   nextBilgi(): void {
-    this.tabToUpdate.emit({ tabName: "Evrak" });
+    if (this.rows.length > 0) {
+      this.tabToUpdate.emit({ tabName: "Evrak" });
+    } else {
+      this.toastr.error("En az bir referans girilmesi zorunludur.", 'Hata');
+    }
   }
 
   backBilgi(): void {

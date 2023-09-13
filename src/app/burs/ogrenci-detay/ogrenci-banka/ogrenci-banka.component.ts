@@ -95,11 +95,13 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
   }
 
   getIbanDogrula(iban: string): boolean {
-    const ulkekodu = iban[0] + iban[1];
-    const rezervhane = parseInt(iban[12]);
-    if (ulkekodu !== "TR") return false;
-    else if (rezervhane != 0) return false;
-    else return true;
+    if (iban.length === 32) {
+      const ulkekodu = iban[0] + iban[1];
+      const rezervhane = parseInt(iban[12]);
+      if (ulkekodu !== "TR") return false;
+      else if (rezervhane != 0) return false;
+      else return true;
+    }
   }
 
   onTcKimlikKontrol(event): void {
@@ -154,9 +156,9 @@ export class OgrenciBankaComponent implements OnInit, OnDestroy {
           this.bankaService.setBankaKayit(this.frmBanka.value).pipe(takeUntil(this.ngUnsubscribe$)).subscribe({
             next: (data: any) => {
               if (data.statusCode === 201) {
+                this.toastr.success(data.message, 'Bilgilendirme');
                 this.tabToUpdate.emit({ tabName: "Ekonomik" });
                 this.EdittoUpdate = true;
-                this.toastr.success(data.message, 'Bilgilendirme');
               } else {
                 this.toastr.error(data.message, 'Hata');
               }

@@ -39,12 +39,13 @@ export class OgrenciLiseComponent implements OnInit, OnDestroy {
     private toastr: ToastrService
   ) {
     this.frmBursLise = this.fb.group({
-      id: [0, [Validators.required]],
+      id: [0],
       ogrenciid: [0, [Validators.required]],
       liseid: ['', [Validators.required]],
       liseturid: ['', [Validators.required]],
       sinifid: ['', [Validators.required]],
-      liseadi: ['', [Validators.required, Validators.maxLength(100)]]
+      liseadi: ['', [Validators.required, Validators.maxLength(100)]],
+      okuyor: [false]
     });
   }
 
@@ -68,6 +69,7 @@ export class OgrenciLiseComponent implements OnInit, OnDestroy {
         if (data.statusCode === 200 && data.value != null) {
           this.EdittoUpdate = true;
           this.frmBursLise.patchValue(data.value);
+          this.ValidatorsControl(data.value.okuyor);
           this.getViewLiseler(data.value.liseturid);
         } else {
           this.EdittoUpdate = false;
@@ -140,8 +142,43 @@ export class OgrenciLiseComponent implements OnInit, OnDestroy {
     }
   }
 
+  isChecked(event): void {
+    if (event.target.checked) {
+      this.frmBursLise.get('okuyor').setValue(true);
+    } else {
+      this.frmBursLise.get('okuyor').setValue(false);
+    }
+    this.ValidatorsControl(event.target.checked);
+  }
+
+  ValidatorsControl(value: boolean) {
+    if (value) {
+      this.frmBursLise.get('liseid').clearValidators();
+      this.frmBursLise.get('liseid').setValue(null);
+      this.frmBursLise.get('liseturid').clearValidators();
+      this.frmBursLise.get('liseturid').setValue(null);
+      this.frmBursLise.get('sinifid').clearValidators();
+      this.frmBursLise.get('sinifid').setValue(null);
+      this.frmBursLise.get('liseadi').clearValidators();
+      this.frmBursLise.get('liseadi').setValue(null);
+      this.ngLise.handleClearClick();
+      this.ngLiseTur.handleClearClick();
+      this.ngSinif.handleClearClick();
+    } else {
+      this.frmBursLise.controls['liseid'].setValidators([Validators.required]);
+      this.frmBursLise.controls['liseid'].updateValueAndValidity();
+      this.frmBursLise.controls['liseturid'].setValidators([Validators.required]);
+      this.frmBursLise.controls['liseturid'].updateValueAndValidity();
+      this.frmBursLise.controls['sinifid'].setValidators([Validators.required]);
+      this.frmBursLise.controls['sinifid'].updateValueAndValidity();
+      this.frmBursLise.controls['liseadi'].setValidators([Validators.required, Validators.maxLength(100)]);
+      this.frmBursLise.controls['liseadi'].updateValueAndValidity();
+    }
+  }
+
   insertBilgi(): void {
     this.submitted = true;
+    console.log(this.submitted);
     if (this.frmBursLise.invalid) {
       return;
     } else {
