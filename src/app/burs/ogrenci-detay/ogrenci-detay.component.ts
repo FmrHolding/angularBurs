@@ -27,7 +27,7 @@ export class OgrenciDetayComponent implements OnInit {
         yil: routeParams['year']
       });
 
-      this.tabName = 'Banka'
+      this.tabName = 'Lise'
     } else {
       this.router.navigate(['/kvkk']);
     }
