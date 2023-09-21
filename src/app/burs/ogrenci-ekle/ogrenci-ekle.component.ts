@@ -77,7 +77,8 @@ export class OgrenciEkleComponent implements OnInit, OnDestroy, AfterViewInit {
       resimyolu: ['', [Validators.required]],
       resimuzanti: [''],
       resimboyutu: [''],
-      kvkkonay: [true]
+      kvkkonay: [true],
+      
     });
   }
 
